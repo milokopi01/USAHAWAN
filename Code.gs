@@ -1,16 +1,13 @@
 /**
  * =========================================================================
- * KH PACKAGING — KEUSAHAWANAN PRO (Google Apps Script Backend)
+ * KH PACKAGING — KEUSAHAWANAN PRO v5 (Google Apps Script Backend)
+ * Termasuk Modul Jualan Harian + Audit Tunai + Gaji Pekerja PPKI
  * =========================================================================
- * Panduan Pemasangan:
- * 1. Muat naik fail DATABASE_KEUSAHAWANAN_PRO_2024_2025.xlsx ke Google Drive.
- * 2. Buka fail tersebut dengan Google Sheets -> File -> Save as Google Sheets.
- * 3. Pergi ke menu Extensions -> Apps Script.
- * 4. Padam semua kod sedia ada, tampal (paste) keseluruhan kod ini & tekan Save.
- * 5. Klik Deploy -> New deployment -> Type: Web app.
- *    - Execute as: Me
- *    - Who has access: Anyone
- * 6. Salin Web App URL dan tampal ke dalam menu Tetapan aplikasi PWA anda.
+ * Panduan Kemas Kini Apps Script:
+ * 1. Buka Google Sheet anda -> Extensions -> Apps Script.
+ * 2. Gantikan keseluruhan kod dengan kod ini & tekan Save.
+ * 3. Klik Deploy -> Manage deployments -> ikon Pensel (Edit) -> Version: New version -> Deploy.
+ *    (URL Web App anda kekal SAMA, tidak perlu tukar index.html!)
  * =========================================================================
  */
 
@@ -18,6 +15,8 @@ const SHEET_DAILY   = "Ringkasan_Harian";
 const SHEET_ITEMS   = "Rekod_Jualan";
 const SHEET_CATALOG = "Katalog_Produk";
 const SHEET_SET     = "Tetapan_App";
+const SHEET_GAJI    = "Rekod_Gaji";
+const SHEET_PEKERJA = "Ringkasan_Pekerja";
 
 const MALAY_MONTHS = [
   "JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN",
@@ -50,18 +49,13 @@ function doPost(e) {
     const payload = JSON.parse(raw);
     const action = payload.action || "";
 
-    if (action === "saveDailySales") {
-      return jsonResponse({ ok: true, data: saveDailySales(payload) });
-    }
-    if (action === "deleteDailyRecord") {
-      return jsonResponse({ ok: true, data: deleteDailyRecord(payload) });
-    }
-    if (action === "saveProduct") {
-      return jsonResponse({ ok: true, data: saveProduct(payload) });
-    }
-    if (action === "deleteProduct") {
-      return jsonResponse({ ok: true, data: deleteProduct(payload) });
-    }
+    if (action === "saveDailySales") return jsonResponse({ ok: true, data: saveDailySales(payload) });
+    if (action === "deleteDailyRecord") return jsonResponse({ ok: true, data: deleteDailyRecord(payload) });
+    if (action === "saveProduct") return jsonResponse({ ok: true, data: saveProduct(payload) });
+    if (action === "deleteProduct") return jsonResponse({ ok: true, data: deleteProduct(payload) });
+    if (action === "saveGaji") return jsonResponse({ ok: true, data: saveGaji(payload) });
+    if (action === "deleteGaji") return jsonResponse({ ok: true, data: deleteGaji(payload) });
+
     return jsonResponse({ ok: false, error: "Tindakan POST tidak dikenali: " + action });
   } catch (err) {
     return jsonResponse({ ok: false, error: err.toString() });
@@ -127,12 +121,45 @@ function getCatalog() {
   return list;
 }
 
+function getGajiData(ss) {
+  const shGaji = ss.getSheetByName(SHEET_GAJI);
+  const gajiList = [];
+  if (shGaji && shGaji.getLastRow() > 1) {
+    const rows = shGaji.getDataRange().getValues();
+    for (let i = 1; i < rows.length; i++) {
+      const nama = String(rows[i][3] || "").trim();
+      if (!nama) continue;
+      gajiList.push({
+        id: String(rows[i][0] || ("GJ-" + i)),
+        tarikh: formatDateYMD(rows[i][1]),
+        bulan: String(rows[i][2] || ""),
+        nama: nama.toUpperCase(),
+        jenis: String(rows[i][4] || "GAJI HARIAN"),
+        jumlah: Number(rows[i][5]) || 0,
+        catatan: String(rows[i][6] || "")
+      });
+    }
+  }
+  gajiList.sort((a, b) => b.tarikh.localeCompare(a.tarikh));
+
+  const staffSet = {};
+  const shStaff = ss.getSheetByName(SHEET_PEKERJA);
+  if (shStaff && shStaff.getLastRow() > 1) {
+    const sRows = shStaff.getDataRange().getValues();
+    for (let i = 1; i < sRows.length; i++) {
+      const nm = String(sRows[i][1] || "").trim().toUpperCase();
+      if (nm && nm !== "JUMLAH KESELURUHAN") staffSet[nm] = true;
+    }
+  }
+  gajiList.forEach(g => { staffSet[g.nama] = true; });
+  return { gajiList: gajiList, staffNames: Object.keys(staffSet).sort() };
+}
+
 function getBootstrapData() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const settings = getSettings();
   const catalog = getCatalog();
 
-  // Ringkasan Harian
   const shDaily = ss.getSheetByName(SHEET_DAILY);
   const dailyList = [];
   if (shDaily && shDaily.getLastRow() > 1) {
@@ -156,10 +183,8 @@ function getBootstrapData() {
       });
     }
   }
-  // Sort newest first
   dailyList.sort((a, b) => b.tarikh.localeCompare(a.tarikh));
 
-  // Rekod Jualan (for Category Analytics)
   const shItems = ss.getSheetByName(SHEET_ITEMS);
   const catMap = {};
   if (shItems && shItems.getLastRow() > 1) {
@@ -176,6 +201,7 @@ function getBootstrapData() {
     }
   }
   const categoryStats = Object.values(catMap).sort((a, b) => b.jualan - a.jualan);
+  const gajiObj = getGajiData(ss);
 
   return {
     settings: {
@@ -185,7 +211,9 @@ function getBootstrapData() {
     },
     catalog: catalog,
     dailyList: dailyList,
-    categoryStats: categoryStats
+    categoryStats: categoryStats,
+    gajiList: gajiObj.gajiList,
+    staffNames: gajiObj.staffNames
   };
 }
 
@@ -225,7 +253,7 @@ function getDailyDetail(tarikh) {
           jualanSebenar: Number(rows[i][8]) || 0,
           varians: Number(rows[i][9]) || 0,
           status: String(rows[i][10] || ""),
-          catatan: String(rows[i][11] || "")
+          catatan: String(rows[i][11]) || ""
         };
         break;
       }
@@ -253,17 +281,14 @@ function saveDailySales(payload) {
     const jualanSebenar = Number(payload.jualanSebenar) || 0;
     const catatan = String(payload.catatan || "").trim();
 
-    // Parse Malay month/day
     const parts = tarikh.split("-").map(Number);
     const dtObj = new Date(parts[0], parts[1] - 1, parts[2]);
     const bulanStr = MALAY_MONTHS[dtObj.getMonth()] + " " + parts[0];
     const hariStr = MALAY_DAYS[dtObj.getDay()];
 
-    // Remove existing rows for this date (Update/Overwrite mode cleanly)
     removeRowsByDate(shItems, 2, tarikh);
     removeRowsByDate(shDaily, 2, tarikh);
 
-    // Append item rows with live formulas
     let totalExpected = 0;
     let totalUnit = 0;
     let nextItemRow = shItems.getLastRow() + 1;
@@ -281,45 +306,27 @@ function saveDailySales(payload) {
       const r = nextItemRow + idx;
       const idRek = "RK-" + tarikh.replace(/-/g, "") + "-" + (idx + 1);
       shItems.appendRow([
-        idRek,
-        tarikh,
-        bulanStr,
-        parts[0],
+        idRek, tarikh, bulanStr, parts[0],
         String(it.kategori || "").toUpperCase(),
-        sAwal,
-        sTambah,
-        `=F${r}+G${r}`,
-        baki,
-        `=H${r}-I${r}`,
-        harga,
-        `=J${r}*K${r}`,
-        "PWA APP"
+        sAwal, sTambah, `=F${r}+G${r}`, baki, `=H${r}-I${r}`, harga, `=J${r}*K${r}`, "PWA APP"
       ]);
     });
 
-    // Append daily summary row with live formulas
     const dr = shDaily.getLastRow() + 1;
     const idHari = "HR-" + tarikh.replace(/-/g, "");
     shDaily.appendRow([
-      idHari,
-      tarikh,
-      bulanStr,
-      parts[0],
-      hariStr,
-      items.length,
-      totalUnit,
+      idHari, tarikh, bulanStr, parts[0], hariStr,
+      items.length, totalUnit,
       Number(totalExpected.toFixed(2)),
       Number(jualanSebenar.toFixed(2)),
       `=I${dr}-H${dr}`,
       `=IF(ROUND(J${dr},2)=0,"SEIMBANG",IF(J${dr}>0,"LEBIHAN (+)","KURANGAN (-)"))`,
-      catatan,
-      "PWA APP"
+      catatan, "PWA APP"
     ]);
 
     SpreadsheetApp.flush();
     return {
-      saved: true,
-      tarikh: tarikh,
+      saved: true, tarikh: tarikh,
       jualanDijangka: Number(totalExpected.toFixed(2)),
       jualanSebenar: Number(jualanSebenar.toFixed(2)),
       varians: Number((jualanSebenar - totalExpected).toFixed(2))
@@ -327,6 +334,63 @@ function saveDailySales(payload) {
   } finally {
     lock.releaseLock();
   }
+}
+
+function ensureGajiSheet(ss) {
+  let sh = ss.getSheetByName(SHEET_GAJI);
+  if (!sh) {
+    sh = ss.insertSheet(SHEET_GAJI);
+    sh.appendRow(["ID_Gaji", "Tarikh", "Bulan_Rujukan", "Nama_Pekerja", "Jenis_Transaksi", "Jumlah_RM", "Catatan"]);
+  }
+  return sh;
+}
+
+function saveGaji(payload) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sh = ensureGajiSheet(ss);
+    const tarikh = String(payload.tarikh || "").trim();
+    const nama = String(payload.nama || "").trim().toUpperCase();
+    const jenis = String(payload.jenis || "GAJI HARIAN").trim().toUpperCase();
+    const rawAmt = Math.abs(Number(payload.jumlah) || 0);
+    const catatan = String(payload.catatan || "").trim();
+
+    if (!tarikh || !nama) throw new Error("Sila masukkan tarikh dan nama pekerja.");
+    if (rawAmt <= 0 && jenis.indexOf("HADIR") === -1) throw new Error("Jumlah RM mestilah lebih daripada 0.");
+
+    const signedAmt = (jenis.indexOf("BAYAR") !== -1 || jenis.indexOf("PENDAHULUAN") !== -1) ? -rawAmt : rawAmt;
+    const parts = tarikh.split("-").map(Number);
+    const bulanStr = (parts.length >= 2 && parts[1] >= 1 && parts[1] <= 12) ? MALAY_MONTHS[parts[1] - 1].substring(0, 3) : "APP";
+    const idGaji = "GJ-" + new Date().getTime().toString().slice(-6);
+
+    sh.appendRow([idGaji, tarikh, bulanStr, nama, jenis, Number(signedAmt.toFixed(2)), catatan]);
+    SpreadsheetApp.flush();
+    return { saved: true, id: idGaji };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function deleteGaji(payload) {
+  const settings = getSettings();
+  if (String(payload.pin || "").trim() !== String(settings.PIN_ADMIN || "1234")) {
+    throw new Error("Kod PIN Admin tidak sah!");
+  }
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(SHEET_GAJI);
+  if (!sh) throw new Error("Tab Rekod_Gaji tidak dijumpai.");
+  const id = String(payload.id || "").trim();
+  const rows = sh.getDataRange().getValues();
+  for (let i = rows.length - 1; i >= 1; i--) {
+    if (String(rows[i][0]).trim() === id) {
+      sh.deleteRow(i + 1);
+      break;
+    }
+  }
+  SpreadsheetApp.flush();
+  return { deleted: true, id: id };
 }
 
 function removeRowsByDate(sheet, dateCol1Based, tarikh) {
@@ -377,9 +441,7 @@ function saveProduct(payload) {
       break;
     }
   }
-  if (!updated) {
-    sh.appendRow([kod, kategori, harga, ikon, status]);
-  }
+  if (!updated) sh.appendRow([kod, kategori, harga, ikon, status]);
   return { saved: true, catalog: getCatalog() };
 }
 

@@ -152,6 +152,7 @@
       <!-- Desktop Nav -->
       <nav class="hidden md:flex items-center gap-1.5">
         <button onclick="switchTab('rekod')" data-tab="rekod" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">📝 Rekod Harian</button>
+        <button onclick="switchTab('gaji')" data-tab="gaji" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">👷 Gaji Pekerja</button>
         <button onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">📊 Dashboard</button>
         <button onclick="switchTab('sejarah')" data-tab="sejarah" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">🗂️ Sejarah & Audit</button>
         <button onclick="switchTab('tetapan')" data-tab="tetapan" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">⚙️ Katalog</button>
@@ -256,6 +257,94 @@
       </div>
     </section>
 
+    <!-- ==================== TAB GAJI PEKERJA ==================== -->
+    <section id="tab-gaji" class="tab-section hidden space-y-3.5 md:space-y-4">
+      <div class="flex items-center justify-between gap-2">
+        <div>
+          <h2 class="text-base md:text-lg font-extrabold">👷 Gaji Pekerja PPKI</h2>
+          <p class="text-[11px] subtext">Rekod gaji harian, bayaran & baki semasa</p>
+        </div>
+        <button onclick="exportGajiPDF()" class="glass-pill px-3 py-2 min-h-[38px] text-xs font-extrabold active:scale-95">📄 PDF Gaji</button>
+      </div>
+
+      <!-- 3 KPI Ringkasan Gaji -->
+      <div class="grid grid-cols-3 gap-2 md:gap-3.5">
+        <div class="glass-3d p-3 md:p-4">
+          <div class="text-[9px] md:text-[10px] font-extrabold uppercase subtext">Jumlah Gaji</div>
+          <div id="kpiGajiEarned" class="text-base md:text-2xl font-extrabold text-indigo-600 mt-0.5">RM 0.00</div>
+        </div>
+        <div class="glass-3d p-3 md:p-4">
+          <div class="text-[9px] md:text-[10px] font-extrabold uppercase subtext">Sudah Bayar</div>
+          <div id="kpiGajiPaid" class="text-base md:text-2xl font-extrabold text-emerald-600 mt-0.5">RM 0.00</div>
+        </div>
+        <div class="glass-3d p-3 md:p-4">
+          <div class="text-[9px] md:text-[10px] font-extrabold uppercase subtext">Baki Semasa</div>
+          <div id="kpiGajiBal" class="text-base md:text-2xl font-extrabold text-amber-600 mt-0.5">RM 0.00</div>
+        </div>
+      </div>
+
+      <!-- Borang Rekod Gaji Pantas (Mesra Telefon) -->
+      <div id="formGajiPanel" class="glass-3d p-4 md:p-5 space-y-3 scroll-mt-24">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-extrabold">➕ Rekod Gaji / Bayaran Baharu</h3>
+          <span class="text-[10px] font-bold subtext">Terus ke Google Sheet</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Tarikh</label>
+            <input id="gajiTarikh" type="date" class="w-full glass-pill px-3 py-2 min-h-[44px] font-bold outline-none focus:ring-2 focus:ring-sky-400" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Nama Pekerja / Pelajar</label>
+            <input id="gajiNama" list="staffDatalist" type="text" placeholder="Pilih atau taip nama..." class="w-full glass-pill px-3 py-2 min-h-[44px] font-bold uppercase outline-none focus:ring-2 focus:ring-sky-400" />
+            <datalist id="staffDatalist"></datalist>
+          </div>
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Jenis Rekod</label>
+            <select id="gajiJenis" class="w-full glass-pill px-3 py-2 min-h-[44px] font-bold outline-none">
+              <option value="GAJI HARIAN">➕ Gaji Harian (+RM)</option>
+              <option value="BAYARAN / PENDAHULUAN">💸 Bayar / Ambil Gaji (-RM)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Jumlah (RM)</label>
+            <input id="gajiJumlah" type="number" inputmode="decimal" step="0.50" min="0" placeholder="0.00" class="w-full glass-pill px-3 py-2 min-h-[44px] font-extrabold text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-400" />
+          </div>
+        </div>
+
+        <!-- Cip Nilai Pantas + Catatan + Simpan -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-[10px] font-bold subtext mr-1">Pantas:</span>
+          <button type="button" onclick="setGajiAmt(1)" class="btn-chip">RM 1</button>
+          <button type="button" onclick="setGajiAmt(2)" class="btn-chip">RM 2</button>
+          <button type="button" onclick="setGajiAmt(5)" class="btn-chip">RM 5</button>
+          <button type="button" onclick="setGajiAmt(6)" class="btn-chip">RM 6</button>
+          <button type="button" onclick="setGajiAmt(10)" class="btn-chip">RM 10</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 items-end">
+          <div class="md:col-span-2">
+            <input id="gajiCatatan" type="text" placeholder="Catatan pilihan (cth: Kerja bungkus kacang / Bayar tunai)..." class="w-full glass-pill px-3.5 py-2.5 min-h-[44px] font-medium outline-none" />
+          </div>
+          <button id="btnSaveGaji" onclick="saveGajiRecord()" class="btn-3d w-full py-3 min-h-[48px] bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm">
+            💾 SIMPAN REKOD GAJI
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-Tab: Ringkasan Pekerja vs Sejarah Transaksi -->
+      <div class="glass-3d p-3 flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
+        <div class="grid grid-cols-2 gap-1.5 sm:flex">
+          <button id="btnGajiViewStaff" onclick="setGajiSubView('STAFF')" class="px-3.5 py-2 rounded-xl text-xs font-extrabold nav-active">👥 Ringkasan Pekerja</button>
+          <button id="btnGajiViewLog" onclick="setGajiSubView('LOG')" class="glass-pill px-3.5 py-2 text-xs font-extrabold">📋 Rekod Transaksi</button>
+        </div>
+        <input id="searchGaji" type="text" placeholder="Cari nama pekerja atau tarikh..." oninput="renderGajiTab()" class="glass-pill px-3.5 py-2 min-h-[40px] font-semibold sm:w-60 outline-none" />
+      </div>
+
+      <div id="gajiContentArea" class="space-y-2.5"></div>
+    </section>
+
     <!-- ==================== TAB 2: DASHBOARD ANALITIK ==================== -->
     <section id="tab-dashboard" class="tab-section hidden space-y-4">
       <div class="flex items-center justify-between gap-2">
@@ -348,7 +437,10 @@
     <button onclick="switchTab('rekod')" data-tab="rekod" class="tab-btn flex-1 py-2 min-h-[52px] rounded-2xl text-[11px] font-extrabold flex flex-col items-center justify-center leading-tight">
       <span class="text-base">📝</span><span>Rekod</span>
     </button>
-    <button onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn flex-1 py-2 min-h-[52px] rounded-2xl text-[11px] font-extrabold flex flex-col items-center justify-center leading-tight">
+    <button onclick="switchTab('gaji')" data-tab="gaji" class="tab-btn flex-1 py-2 min-h-[52px] rounded-2xl text-[10px] font-extrabold flex flex-col items-center justify-center leading-tight">
+      <span class="text-base">👷</span><span>Gaji</span>
+    </button>
+    <button onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn flex-1 py-2 min-h-[52px] rounded-2xl text-[10px] font-extrabold flex flex-col items-center justify-center leading-tight">
       <span class="text-base">📊</span><span>Analitik</span>
     </button>
     <button onclick="switchTab('sejarah')" data-tab="sejarah" class="tab-btn flex-1 py-2 min-h-[52px] rounded-2xl text-[11px] font-extrabold flex flex-col items-center justify-center leading-tight">
@@ -363,6 +455,9 @@
   <div id="toast" class="fixed top-16 left-3 right-3 md:left-auto md:right-4 md:max-w-sm z-50 hidden glass-3d px-4 py-3 text-xs font-extrabold text-center md:text-left shadow-xl"></div>
 
 <script>
+const DEFAULT_STAFF_NAMES = ["ADIB", "AIMAN", "AIMAN BESAR", "AIMAN PUDIN", "AISYAH", "AKMAL", "ALIA", "AMIR", "AZIM", "DINESH", "FARID", "FIRDAUS", "HAFIQ HAKIMI", "HAIKAL DANISH", "HAZIQ", "IKRAM", "INSYIRAH", "IRDINA", "IZZUL", "KUMITIRA", "MUZAKIR", "NISHANT", "PANG BAO DE", "QISYA", "SHAH", "SHAH HARIS", "SYARAFAT", "WAFIY"];
+const DEFAULT_GAJI_SEED = [{"id": "GJ-0292", "tarikh": "2026-12-10", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0291", "tarikh": "2026-12-10", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0290", "tarikh": "2026-12-10", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0289", "tarikh": "2026-12-02", "bulan": "FEB", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0288", "tarikh": "2026-11-06", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0287", "tarikh": "2026-11-06", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0286", "tarikh": "2026-11-06", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0285", "tarikh": "2026-11-05", "bulan": "MAC", "nama": "FARID", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0284", "tarikh": "2026-11-05", "bulan": "MAC", "nama": "AISYAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0283", "tarikh": "2026-11-05", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0282", "tarikh": "2026-11-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0281", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "WAFIY", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -59.0, "catatan": ""}, {"id": "GJ-0280", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "SYARAFAT", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -4.0, "catatan": ""}, {"id": "GJ-0279", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "SHAH", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -3.0, "catatan": ""}, {"id": "GJ-0278", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "QISYA", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -31.0, "catatan": ""}, {"id": "GJ-0277", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -5.0, "catatan": ""}, {"id": "GJ-0276", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "NISHANT", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -8.0, "catatan": ""}, {"id": "GJ-0275", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -90.0, "catatan": ""}, {"id": "GJ-0274", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -7.0, "catatan": ""}, {"id": "GJ-0273", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "IZZUL", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -30.0, "catatan": ""}, {"id": "GJ-0272", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "IRDINA", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -36.0, "catatan": ""}, {"id": "GJ-0271", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -5.0, "catatan": ""}, {"id": "GJ-0270", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "IKRAM", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -127.0, "catatan": ""}, {"id": "GJ-0269", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "HAZIQ", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -15.0, "catatan": ""}, {"id": "GJ-0268", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "HAIKAL DANISH", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -16.0, "catatan": ""}, {"id": "GJ-0267", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -69.0, "catatan": ""}, {"id": "GJ-0266", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "FARID", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -3.0, "catatan": ""}, {"id": "GJ-0265", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AZIM", "jenis": "CATATAN", "jumlah": 0.0, "catatan": "SUDAH AMBIL RM13"}, {"id": "GJ-0264", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AZIM", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -5.0, "catatan": ""}, {"id": "GJ-0263", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AMIR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -5.0, "catatan": ""}, {"id": "GJ-0262", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "ALIA", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -6.0, "catatan": ""}, {"id": "GJ-0261", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AKMAL", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -64.0, "catatan": ""}, {"id": "GJ-0260", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AISYAH", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -14.0, "catatan": ""}, {"id": "GJ-0259", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -65.0, "catatan": ""}, {"id": "GJ-0258", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "ADIB", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -17.0, "catatan": ""}, {"id": "GJ-0257", "tarikh": "2026-10-25", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0256", "tarikh": "2026-10-25", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0255", "tarikh": "2026-10-21", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0254", "tarikh": "2026-10-21", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0253", "tarikh": "2026-10-20", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -34.0, "catatan": ""}, {"id": "GJ-0252", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0251", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0250", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0249", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0248", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "AISYAH", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0247", "tarikh": "2026-10-18", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0246", "tarikh": "2026-10-18", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0245", "tarikh": "2026-10-18", "bulan": "MAC", "nama": "HAIKAL DANISH", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0244", "tarikh": "2026-10-15", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0243", "tarikh": "2026-10-15", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0242", "tarikh": "2026-10-15", "bulan": "MAC", "nama": "HAIKAL DANISH", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0241", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "SHAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0240", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -10.0, "catatan": ""}, {"id": "GJ-0239", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0238", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0237", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0236", "tarikh": "2026-10-13", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0235", "tarikh": "2026-10-13", "bulan": "MAC", "nama": "HAIKAL DANISH", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0234", "tarikh": "2026-10-13", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0233", "tarikh": "2026-10-08", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0232", "tarikh": "2026-10-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0231", "tarikh": "2026-10-08", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0230", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "SHAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0229", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0228", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0227", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0226", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "AZIM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0225", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0224", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0223", "tarikh": "2026-10-05", "bulan": "MAC", "nama": "SYARAFAT", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0222", "tarikh": "2026-10-05", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0221", "tarikh": "2026-10-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0220", "tarikh": "2026-10-01", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0219", "tarikh": "2026-10-01", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0218", "tarikh": "2026-09-30", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0217", "tarikh": "2026-09-29", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0216", "tarikh": "2026-09-29", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0215", "tarikh": "2026-09-29", "bulan": "MAC", "nama": "ALIA", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0214", "tarikh": "2026-09-28", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0213", "tarikh": "2026-09-28", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0212", "tarikh": "2026-09-28", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0211", "tarikh": "2026-09-28", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0210", "tarikh": "2026-09-27", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0209", "tarikh": "2026-09-24", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0208", "tarikh": "2026-09-22", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0207", "tarikh": "2026-09-22", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0206", "tarikh": "2026-09-22", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0205", "tarikh": "2026-09-21", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0204", "tarikh": "2026-09-21", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0203", "tarikh": "2026-09-21", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0202", "tarikh": "2026-09-17", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0201", "tarikh": "2026-09-17", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0200", "tarikh": "2026-09-15", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0199", "tarikh": "2026-09-15", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0198", "tarikh": "2026-09-13", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0197", "tarikh": "2026-09-13", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0196", "tarikh": "2026-09-09", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0195", "tarikh": "2026-09-09", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0194", "tarikh": "2026-09-08", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0193", "tarikh": "2026-09-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0192", "tarikh": "2026-09-08", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0191", "tarikh": "2026-09-06", "bulan": "MAC", "nama": "SYARAFAT", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0190", "tarikh": "2026-09-06", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0189", "tarikh": "2026-09-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0188", "tarikh": "2026-09-04", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0187", "tarikh": "2026-09-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0186", "tarikh": "2026-08-24", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0185", "tarikh": "2026-08-24", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0184", "tarikh": "2026-08-24", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0183", "tarikh": "2026-08-23", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0182", "tarikh": "2026-08-23", "bulan": "MAC", "nama": "AISYAH", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0181", "tarikh": "2026-08-20", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0180", "tarikh": "2026-08-20", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0179", "tarikh": "2026-08-19", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0178", "tarikh": "2026-08-19", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0177", "tarikh": "2026-08-18", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0176", "tarikh": "2026-08-18", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0175", "tarikh": "2026-08-17", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0174", "tarikh": "2026-08-17", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0173", "tarikh": "2026-08-17", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0172", "tarikh": "2026-08-16", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0171", "tarikh": "2026-08-16", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0170", "tarikh": "2026-08-12", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0169", "tarikh": "2026-08-12", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0168", "tarikh": "2026-08-12", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0167", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0166", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0165", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0164", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0163", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0162", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0161", "tarikh": "2026-08-09", "bulan": "MAC", "nama": "AISYAH", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0160", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0159", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0158", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0157", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0156", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0155", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0154", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0153", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0152", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0151", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0150", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0149", "tarikh": "2026-08-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0148", "tarikh": "2026-07-28", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0147", "tarikh": "2026-07-28", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0146", "tarikh": "2026-07-27", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0145", "tarikh": "2026-07-27", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0144", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0143", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0142", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0141", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0140", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0139", "tarikh": "2026-07-21", "bulan": "MAC", "nama": "SYARAFAT", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0138", "tarikh": "2026-07-21", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0137", "tarikh": "2026-07-21", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0136", "tarikh": "2026-07-20", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0135", "tarikh": "2026-07-13", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0134", "tarikh": "2026-07-13", "bulan": "MAC", "nama": "NISHANT", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0133", "tarikh": "2026-07-13", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0132", "tarikh": "2026-07-13", "bulan": "MAC", "nama": "FARID", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0131", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0130", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0129", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0128", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0127", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0126", "tarikh": "2026-07-08", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0125", "tarikh": "2026-07-08", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0124", "tarikh": "2026-07-08", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0123", "tarikh": "2026-07-07", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0122", "tarikh": "2026-07-07", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0121", "tarikh": "2026-07-07", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0120", "tarikh": "2026-07-07", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0119", "tarikh": "2026-07-06", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0118", "tarikh": "2026-07-05", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0117", "tarikh": "2026-07-05", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0116", "tarikh": "2026-07-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0115", "tarikh": "2026-06-30", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0114", "tarikh": "2026-06-30", "bulan": "MAC", "nama": "NISHANT", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0113", "tarikh": "2026-06-30", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0112", "tarikh": "2026-06-29", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0111", "tarikh": "2026-06-29", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0110", "tarikh": "2026-06-28", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0109", "tarikh": "2026-06-28", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0108", "tarikh": "2026-06-25", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0107", "tarikh": "2026-06-25", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0106", "tarikh": "2026-06-25", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0105", "tarikh": "2026-06-24", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0104", "tarikh": "2026-06-24", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0103", "tarikh": "2026-06-23", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0102", "tarikh": "2026-06-23", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0101", "tarikh": "2026-06-22", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0100", "tarikh": "2026-06-22", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0099", "tarikh": "2026-06-21", "bulan": "MAC", "nama": "NISHANT", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0098", "tarikh": "2026-06-21", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0097", "tarikh": "2026-06-21", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0096", "tarikh": "2026-06-18", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0095", "tarikh": "2026-06-18", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0094", "tarikh": "2026-06-16", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 8.0, "catatan": ""}, {"id": "GJ-0093", "tarikh": "2026-06-15", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0092", "tarikh": "2026-06-15", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0091", "tarikh": "2026-06-15", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0090", "tarikh": "2026-06-15", "bulan": "MAC", "nama": "AZIM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0089", "tarikh": "2026-06-14", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0088", "tarikh": "2026-06-14", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0087", "tarikh": "2026-06-09", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0086", "tarikh": "2026-06-09", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0085", "tarikh": "2026-06-08", "bulan": "MAC", "nama": "SHAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0084", "tarikh": "2026-06-08", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0083", "tarikh": "2026-06-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0082", "tarikh": "2026-06-08", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0081", "tarikh": "2026-06-07", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0080", "tarikh": "2026-06-05", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0079", "tarikh": "2026-06-05", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0078", "tarikh": "2026-06-05", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0077", "tarikh": "2026-06-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0076", "tarikh": "2026-06-04", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0075", "tarikh": "2026-06-04", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0074", "tarikh": "2026-06-04", "bulan": "MAC", "nama": "AMIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0073", "tarikh": "2026-05-21", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0072", "tarikh": "2026-05-20", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0071", "tarikh": "2026-05-20", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0070", "tarikh": "2026-05-19", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0069", "tarikh": "2026-05-18", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0068", "tarikh": "2026-05-18", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0067", "tarikh": "2026-05-10", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0066", "tarikh": "2026-05-10", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0065", "tarikh": "2026-05-10", "bulan": "MAC", "nama": "AZIM", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0064", "tarikh": "2026-05-10", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0063", "tarikh": "2026-05-05", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0062", "tarikh": "2026-05-05", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0061", "tarikh": "2026-05-05", "bulan": "MAC", "nama": "AMIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0060", "tarikh": "2026-05-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0059", "tarikh": "2026-05-04", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0058", "tarikh": "2026-05-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0057", "tarikh": "2026-04-28", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0056", "tarikh": "2026-04-27", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0055", "tarikh": "2026-04-27", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0054", "tarikh": "2026-04-26", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0053", "tarikh": "2026-04-24", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0052", "tarikh": "2026-04-23", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0051", "tarikh": "2026-04-23", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0050", "tarikh": "2026-04-23", "bulan": "MAC", "nama": "ALIA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0049", "tarikh": "2026-04-20", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0048", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "SHAH", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0047", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0046", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0045", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "AMIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0044", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "ALIA", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0043", "tarikh": "2026-04-16", "bulan": "MAC", "nama": "AISYAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0042", "tarikh": "2026-04-10", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0041", "tarikh": "2026-04-10", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0040", "tarikh": "2026-04-10", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0039", "tarikh": "2026-04-10", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0038", "tarikh": "2026-04-05", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0037", "tarikh": "2026-04-05", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0036", "tarikh": "2026-04-05", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0035", "tarikh": "2026-04-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0034", "tarikh": "2026-03-31", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0033", "tarikh": "2026-03-31", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0032", "tarikh": "2026-03-31", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0031", "tarikh": "2026-03-31", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0030", "tarikh": "2026-03-30", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0029", "tarikh": "2026-03-30", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0028", "tarikh": "2026-03-30", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0027", "tarikh": "2026-03-29", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0026", "tarikh": "2026-03-29", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0025", "tarikh": "2026-03-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0024", "tarikh": "2026-03-08", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0023", "tarikh": "2026-03-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0022", "tarikh": "2026-02-08", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0021", "tarikh": "2026-02-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0020", "tarikh": "2026-02-08", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0019", "tarikh": "2026-02-08", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0018", "tarikh": "2026-02-07", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0017", "tarikh": "2026-02-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0016", "tarikh": "2026-01-29", "bulan": "JAN", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0015", "tarikh": "2026-01-28", "bulan": "JAN", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0014", "tarikh": "2026-01-28", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0013", "tarikh": "2026-01-27", "bulan": "JAN", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0012", "tarikh": "2026-01-26", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0011", "tarikh": "2026-01-25", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0010", "tarikh": "2026-01-22", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0009", "tarikh": "2026-01-21", "bulan": "JAN", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0008", "tarikh": "2026-01-21", "bulan": "JAN", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0007", "tarikh": "2026-01-20", "bulan": "JAN", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0006", "tarikh": "2026-01-20", "bulan": "JAN", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0005", "tarikh": "2026-01-19", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0004", "tarikh": "2026-01-18", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0003", "tarikh": "2026-01-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0002", "tarikh": "2026-01-04", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0001", "tarikh": "2026-01-04", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}];
+
 const DEFAULT_CATALOG = [
   { kod: "PRD-01", kategori: "KACANG/BISKUT", harga: 1.00, ikon: "🍪", status: "AKTIF" },
   { kod: "PRD-02", kategori: "KACANG/BISKUT (RM2.00)", harga: 2.00, ikon: "🥜", status: "AKTIF" },
@@ -386,7 +481,10 @@ let state = {
   categoryStats: JSON.parse(localStorage.getItem("kh_cat_stats") || "[]"),
   localDetails: JSON.parse(localStorage.getItem("kh_local_details") || "{}"),
   formItems: {},
-  productFilter: "ALL"
+  productFilter: "ALL",
+  gajiList: JSON.parse(localStorage.getItem("kh_gaji_list") || "null") || DEFAULT_GAJI_SEED,
+  staffNames: JSON.parse(localStorage.getItem("kh_staff_names") || "null") || DEFAULT_STAFF_NAMES,
+  gajiSubView: "STAFF"
 };
 
 let chartMonthlyInst = null;
@@ -417,6 +515,7 @@ function switchTab(tabId) {
     b.classList.toggle("nav-active", b.dataset.tab === tabId);
   });
   window.scrollTo({ top: 0, behavior: "instant" });
+  if (tabId === "gaji") renderGajiTab();
   if (tabId === "dashboard") renderDashboard();
   if (tabId === "sejarah") renderHistory();
   if (tabId === "tetapan") renderCatalogManager();
@@ -711,6 +810,14 @@ async function syncFromCloud(silent = false) {
     localStorage.setItem("kh_catalog", JSON.stringify(state.catalog));
     localStorage.setItem("kh_daily_list", JSON.stringify(state.dailyList));
     localStorage.setItem("kh_cat_stats", JSON.stringify(state.categoryStats));
+    if (Array.isArray(d.gajiList) && d.gajiList.length > 0) {
+      state.gajiList = d.gajiList;
+      localStorage.setItem("kh_gaji_list", JSON.stringify(state.gajiList));
+    }
+    if (Array.isArray(d.staffNames) && d.staffNames.length > 0) {
+      state.staffNames = d.staffNames;
+      localStorage.setItem("kh_staff_names", JSON.stringify(state.staffNames));
+    }
     document.getElementById("appBrandName").textContent = state.brandName;
     updateConnBadge(true);
     initFormState();
@@ -1002,6 +1109,252 @@ function exportDailyPDF() {
   doc.save(`Laporan_Jualan_${tarikh}.pdf`);
 }
 
+
+// ==================== MODUL GAJI PEKERJA ====================
+function setGajiAmt(val) {
+  document.getElementById("gajiJumlah").value = val;
+}
+
+function setGajiSubView(view) {
+  state.gajiSubView = view;
+  const bS = document.getElementById("btnGajiViewStaff");
+  const bL = document.getElementById("btnGajiViewLog");
+  if (view === "STAFF") {
+    bS.className = "px-3.5 py-2 rounded-xl text-xs font-extrabold nav-active";
+    bL.className = "glass-pill px-3.5 py-2 text-xs font-extrabold";
+  } else {
+    bS.className = "glass-pill px-3.5 py-2 text-xs font-extrabold";
+    bL.className = "px-3.5 py-2 rounded-xl text-xs font-extrabold nav-active";
+  }
+  renderGajiTab();
+}
+
+function computeStaffSummary() {
+  const map = {};
+  (state.staffNames || []).forEach(nm => {
+    map[nm] = { nama: nm, hari: 0, earned: 0, paid: 0, balance: 0, rekod: 0 };
+  });
+  (state.gajiList || []).forEach(g => {
+    const nm = (g.nama || "").toUpperCase();
+    if (!nm) return;
+    if (!map[nm]) map[nm] = { nama: nm, hari: 0, earned: 0, paid: 0, balance: 0, rekod: 0 };
+    const amt = Number(g.jumlah) || 0;
+    map[nm].rekod++;
+    if (amt > 0) { map[nm].hari++; map[nm].earned += amt; }
+    else if (amt < 0) { map[nm].paid += Math.abs(amt); }
+    map[nm].balance = Number((map[nm].earned - map[nm].paid).toFixed(2));
+  });
+  return Object.values(map).sort((a, b) => (b.balance - a.balance) || (b.earned - a.earned));
+}
+
+function renderGajiTab() {
+  const dl = document.getElementById("staffDatalist");
+  const allNames = [...new Set([...(state.staffNames || []), ...(state.gajiList || []).map(g => g.nama)])].sort();
+  dl.innerHTML = allNames.map(n => `<option value="${n}"></option>`).join("");
+
+  const staffSummary = computeStaffSummary();
+  const totEarned = staffSummary.reduce((a, b) => a + b.earned, 0);
+  const totPaid = staffSummary.reduce((a, b) => a + b.paid, 0);
+  const totBal = Number((totEarned - totPaid).toFixed(2));
+
+  document.getElementById("kpiGajiEarned").textContent = "RM " + totEarned.toFixed(2);
+  document.getElementById("kpiGajiPaid").textContent = "RM " + totPaid.toFixed(2);
+  document.getElementById("kpiGajiBal").textContent = "RM " + totBal.toFixed(2);
+
+  const q = (document.getElementById("searchGaji").value || "").toLowerCase();
+  const area = document.getElementById("gajiContentArea");
+
+  if (state.gajiSubView === "STAFF") {
+    const list = staffSummary.filter(s => s.nama.toLowerCase().includes(q));
+    if (!list.length) {
+      area.innerHTML = `<div class="glass-3d p-6 text-center text-xs subtext">Tiada pekerja dijumpai.</div>`;
+      return;
+    }
+    area.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-3">` + list.map(s => {
+      const hasBal = s.balance > 0.005;
+      const badge = hasBal
+        ? `<span class="px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-amber-500/20 text-amber-700">BAKI RM ${s.balance.toFixed(2)}</span>`
+        : `<span class="px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-emerald-500/15 text-emerald-600">SELESAI ✓</span>`;
+      return `
+        <div class="glass-3d p-3.5 flex flex-col justify-between gap-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <div class="font-extrabold text-sm truncate">${s.nama}</div>
+              <div class="text-[11px] subtext mt-0.5">${s.hari} hari bergaji • Diperoleh: <b>RM ${s.earned.toFixed(2)}</b></div>
+              <div class="text-[11px] subtext">Sudah dibayar: <b class="text-emerald-600">RM ${s.paid.toFixed(2)}</b></div>
+            </div>
+            <div class="shrink-0">${badge}</div>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5 pt-2 border-t border-slate-400/20">
+            <button onclick="quickPayStaff('${encodeURIComponent(s.nama)}', ${s.balance})" class="glass-pill py-1.5 min-h-[36px] text-[11px] font-extrabold text-emerald-600 active:scale-95">
+              ${hasBal ? "💸 Bayar Baki" : "➕ Rekod Gaji"}
+            </button>
+            <button onclick="filterStaffLog('${encodeURIComponent(s.nama)}')" class="glass-pill py-1.5 min-h-[36px] text-[11px] font-extrabold active:scale-95">
+              📋 Lihat Rekod
+            </button>
+          </div>
+        </div>
+      `;
+    }).join("") + `</div>`;
+  } else {
+    const logs = (state.gajiList || []).filter(g =>
+      (g.nama + " " + g.tarikh + " " + g.jenis + " " + g.catatan).toLowerCase().includes(q)
+    );
+    if (!logs.length) {
+      area.innerHTML = `<div class="glass-3d p-6 text-center text-xs subtext">Tiada rekod transaksi gaji dijumpai.</div>`;
+      return;
+    }
+    area.innerHTML = logs.slice(0, 100).map(g => {
+      const amt = Number(g.jumlah) || 0;
+      const amtBadge = amt > 0
+        ? `<span class="text-sm font-extrabold text-indigo-600">+RM ${amt.toFixed(2)}</span>`
+        : amt < 0
+        ? `<span class="text-sm font-extrabold text-emerald-600">-RM ${Math.abs(amt).toFixed(2)}</span>`
+        : `<span class="text-xs font-bold subtext">RM 0.00</span>`;
+      return `
+        <div class="glass-3d p-3.5 flex items-center justify-between gap-2">
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-extrabold text-xs md:text-sm">${g.nama}</span>
+              <span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-sky-500/15 text-sky-700">${g.jenis}</span>
+            </div>
+            <div class="text-[11px] subtext mt-0.5">📅 ${g.tarikh} ${g.catatan ? `• 📝 ${g.catatan}` : ""}</div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            ${amtBadge}
+            <button onclick="deleteGajiRecord('${g.id}')" class="glass-pill px-2.5 py-1.5 text-xs text-rose-600 font-bold active:scale-95">🗑️</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+}
+
+function quickPayStaff(encName, balance) {
+  const nama = decodeURIComponent(encName);
+  document.getElementById("gajiNama").value = nama;
+  if (balance > 0.005) {
+    document.getElementById("gajiJenis").value = "BAYARAN / PENDAHULUAN";
+    document.getElementById("gajiJumlah").value = balance.toFixed(2);
+    document.getElementById("gajiCatatan").value = "Bayaran baki gaji";
+  } else {
+    document.getElementById("gajiJenis").value = "GAJI HARIAN";
+    document.getElementById("gajiJumlah").value = "";
+    document.getElementById("gajiCatatan").value = "";
+  }
+  document.getElementById("formGajiPanel").scrollIntoView({ behavior: "smooth" });
+}
+
+function filterStaffLog(encName) {
+  document.getElementById("searchGaji").value = decodeURIComponent(encName);
+  setGajiSubView("LOG");
+}
+
+async function saveGajiRecord() {
+  const tarikh = document.getElementById("gajiTarikh").value;
+  const nama = document.getElementById("gajiNama").value.trim().toUpperCase();
+  const jenis = document.getElementById("gajiJenis").value;
+  const jumlah = Number(document.getElementById("gajiJumlah").value) || 0;
+  const catatan = document.getElementById("gajiCatatan").value.trim();
+
+  if (!tarikh || !nama) return showToast("Sila isi tarikh dan nama pekerja!", "error");
+  if (jumlah <= 0) return showToast("Sila masukkan jumlah RM yang sah.", "error");
+
+  const btn = document.getElementById("btnSaveGaji");
+  btn.disabled = true;
+  btn.textContent = "⏳ MENYIMPAN...";
+
+  const signedAmt = jenis.includes("BAYAR") ? -Math.abs(jumlah) : Math.abs(jumlah);
+  const tempId = "GJ-" + Date.now().toString().slice(-6);
+  const newRec = { id: tempId, tarikh, bulan: tarikh.substring(0, 7), nama, jenis, jumlah: signedAmt, catatan };
+
+  try {
+    const res = await fetch(state.gasUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "saveGaji", tarikh, nama, jenis, jumlah, catatan })
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || "Ralat simpan gaji");
+    newRec.id = json.data.id || tempId;
+    state.gajiList.unshift(newRec);
+    if (!state.staffNames.includes(nama)) state.staffNames.push(nama);
+    localStorage.setItem("kh_gaji_list", JSON.stringify(state.gajiList));
+    localStorage.setItem("kh_staff_names", JSON.stringify(state.staffNames));
+    showToast("✅ Rekod gaji berjaya disimpan ke Google Sheet!", "success");
+  } catch (err) {
+    state.gajiList.unshift(newRec);
+    if (!state.staffNames.includes(nama)) state.staffNames.push(nama);
+    localStorage.setItem("kh_gaji_list", JSON.stringify(state.gajiList));
+    localStorage.setItem("kh_staff_names", JSON.stringify(state.staffNames));
+    showToast("⚠️ Disimpan di telefon (Pastikan Code.gs telah dikemas kini): " + err.message, "error");
+  }
+
+  document.getElementById("gajiJumlah").value = "";
+  document.getElementById("gajiCatatan").value = "";
+  btn.disabled = false;
+  btn.textContent = "💾 SIMPAN REKOD GAJI";
+  renderGajiTab();
+}
+
+async function deleteGajiRecord(id) {
+  const pin = prompt("Masukkan PIN Admin (Lalai: 1234) untuk memadam rekod gaji ini:");
+  if (!pin) return;
+  try {
+    const res = await fetch(state.gasUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "deleteGaji", id, pin })
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+    state.gajiList = state.gajiList.filter(g => g.id !== id);
+    localStorage.setItem("kh_gaji_list", JSON.stringify(state.gajiList));
+    renderGajiTab();
+    showToast("🗑️ Rekod gaji dipadam.", "success");
+  } catch (err) {
+    if (pin === "1234") {
+      state.gajiList = state.gajiList.filter(g => g.id !== id);
+      localStorage.setItem("kh_gaji_list", JSON.stringify(state.gajiList));
+      renderGajiTab();
+      showToast("🗑️ Dipadam di telefon.", "info");
+    } else {
+      showToast("❌ " + err.message, "error");
+    }
+  }
+}
+
+function exportGajiPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const list = computeStaffSummary();
+  const today = new Date().toISOString().split("T")[0];
+
+  doc.setFontSize(15);
+  doc.setTextColor(15, 23, 42);
+  doc.text("LAPORAN GAJI PEKERJA PPKI (KH PEMBUNGKUSAN)", 14, 18);
+  doc.setFontSize(9);
+  doc.setTextColor(71, 85, 105);
+  doc.text(`Tarikh Dijana: ${today} | ${state.brandName}`, 14, 24);
+
+  const body = list.map((s, i) => [
+    i + 1, s.nama, s.hari, `RM ${s.earned.toFixed(2)}`, `RM ${s.paid.toFixed(2)}`, `RM ${s.balance.toFixed(2)}`,
+    s.balance > 0.005 ? "ADA BAKI" : "SELESAI"
+  ]);
+  const totE = list.reduce((a, b) => a + b.earned, 0);
+  const totP = list.reduce((a, b) => a + b.paid, 0);
+  body.push(["", "JUMLAH KESELURUHAN", "", `RM ${totE.toFixed(2)}`, `RM ${totP.toFixed(2)}`, `RM ${(totE - totP).toFixed(2)}`, ""]);
+
+  doc.autoTable({
+    startY: 30,
+    head: [["Bil", "Nama Pekerja", "Hari", "Jumlah Gaji", "Sudah Bayar", "Baki", "Status"]],
+    body: body,
+    headStyles: { fillColor: [30, 58, 95] },
+    styles: { fontSize: 8.5 }
+  });
+  doc.save(`Laporan_Gaji_Pekerja_${today}.pdf`);
+}
+
 // Bootstrap App
 window.addEventListener("DOMContentLoaded", () => {
   localStorage.removeItem("kh_gas_url");
@@ -1011,6 +1364,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   const today = new Date().toISOString().split("T")[0];
   document.getElementById("inputTarikh").value = today;
+  document.getElementById("gajiTarikh").value = today;
   initFormState();
   renderProductGrid();
   switchTab("rekod");
