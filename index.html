@@ -2,7 +2,10 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwnhSYi1_mfaVbUQwY-MFFi8UVDAuz8GPTAPRlcQ5zs7DGS2dBWPGfjIIn066KlqAuB/exec";</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#0f172a" />
   <title>KH Keusahawanan Pro — Sistem Jualan & Audit Stok 3D Glass</title>
   <link rel="manifest" href="manifest.json" />
@@ -15,57 +18,65 @@
   <style>
     :root {
       --bg-grad: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 48%, #ccfbf1 100%);
-      --glass-bg: rgba(255, 255, 255, 0.72);
-      --glass-border: rgba(255, 255, 255, 0.85);
-      --glass-shadow: 0 18px 40px -12px rgba(15, 23, 42, 0.14), inset 0 2px 3px rgba(255, 255, 255, 0.9), inset 0 -2px 4px rgba(15, 23, 42, 0.04);
+      --glass-bg: rgba(255, 255, 255, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.90);
+      --glass-shadow: 0 14px 32px -10px rgba(15, 23, 42, 0.14), inset 0 2px 3px rgba(255, 255, 255, 0.92), inset 0 -2px 4px rgba(15, 23, 42, 0.04);
       --text-main: #0f172a;
       --text-sub: #475569;
-      --input-bg: rgba(255, 255, 255, 0.85);
+      --input-bg: rgba(255, 255, 255, 0.92);
     }
     body.dark-glass {
       --bg-grad: radial-gradient(circle at 15% 20%, #1e1b4b 0%, #0f172a 55%, #042f2e 100%);
-      --glass-bg: rgba(30, 41, 59, 0.62);
-      --glass-border: rgba(148, 163, 184, 0.22);
-      --glass-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.55), inset 0 1px 2px rgba(255, 255, 255, 0.18), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
+      --glass-bg: rgba(30, 41, 59, 0.70);
+      --glass-border: rgba(148, 163, 184, 0.24);
+      --glass-shadow: 0 18px 38px -10px rgba(0, 0, 0, 0.55), inset 0 1px 2px rgba(255, 255, 255, 0.18), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
       --text-main: #f8fafc;
       --text-sub: #94a3b8;
-      --input-bg: rgba(15, 23, 42, 0.72);
+      --input-bg: rgba(15, 23, 42, 0.78);
     }
-    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    * {
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html { scroll-behavior: smooth; }
     body {
       min-height: 100vh;
       background: var(--bg-grad);
       background-attachment: fixed;
       color: var(--text-main);
       margin: 0;
-      padding-bottom: 92px;
-      transition: background 0.35s ease, color 0.35s ease;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: calc(104px + env(safe-area-inset-bottom));
+      transition: background 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
     }
+    button, input, select { touch-action: manipulation; }
+    /* Prevent iOS Safari auto-zoom on focus */
+    input, select, textarea { font-size: 16px !important; }
+
     /* Ambient 3D Floating Orbs */
     .orb {
-      position: fixed; border-radius: 9999px; filter: blur(70px); z-index: -1; opacity: 0.55; pointer-events: none;
+      position: fixed; border-radius: 9999px; filter: blur(65px); z-index: -1; opacity: 0.48; pointer-events: none;
       animation: floatOrb 12s ease-in-out infinite alternate;
     }
-    .orb-1 { width: 320px; height: 320px; background: #38bdf8; top: -80px; left: -80px; }
-    .orb-2 { width: 360px; height: 360px; background: #818cf8; bottom: -90px; right: -70px; animation-delay: 2s; }
-    .orb-3 { width: 240px; height: 240px; background: #2dd4bf; top: 45%; left: 55%; animation-delay: 4s; }
+    .orb-1 { width: 240px; height: 240px; background: #38bdf8; top: -60px; left: -60px; }
+    .orb-2 { width: 260px; height: 260px; background: #818cf8; bottom: -70px; right: -50px; animation-delay: 2s; }
+    .orb-3 { width: 180px; height: 180px; background: #2dd4bf; top: 48%; left: 52%; animation-delay: 4s; }
     @keyframes floatOrb {
       0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(24px, -24px) scale(1.08); }
+      100% { transform: translate(18px, -18px) scale(1.06); }
     }
 
     /* 3D Glass Card */
     .glass-3d {
       background: var(--glass-bg);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1.5px solid var(--glass-border);
       box-shadow: var(--glass-shadow);
-      border-radius: 24px;
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
-    }
-    .glass-3d-hover:hover {
-      transform: translateY(-3px);
+      border-radius: 22px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
     }
     .glass-pill {
       background: var(--input-bg);
@@ -78,28 +89,42 @@
     .btn-3d {
       position: relative;
       border-radius: 16px;
-      font-weight: 700;
-      transition: all 0.16s ease;
-      box-shadow: 0 6px 0 rgba(15, 23, 42, 0.18), 0 12px 20px -6px rgba(14, 165, 233, 0.35);
+      font-weight: 800;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      box-shadow: 0 5px 0 rgba(15, 23, 42, 0.18), 0 10px 18px -6px rgba(14, 165, 233, 0.35);
     }
     .btn-3d:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 rgba(15, 23, 42, 0.18), 0 4px 10px -4px rgba(14, 165, 233, 0.25);
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(15, 23, 42, 0.18), 0 4px 8px -4px rgba(14, 165, 233, 0.25);
     }
     .btn-chip {
-      border-radius: 10px; font-weight: 700; font-size: 11px; padding: 4px 8px;
-      background: rgba(14, 165, 233, 0.14); color: #0284c7; border: 1px solid rgba(14, 165, 233, 0.28);
-      transition: transform 0.1s;
+      min-height: 34px;
+      min-width: 44px;
+      border-radius: 11px;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 4px 10px;
+      background: rgba(14, 165, 233, 0.15);
+      color: #0284c7;
+      border: 1px solid rgba(14, 165, 233, 0.30);
+      transition: transform 0.1s ease;
     }
-    body.dark-glass .btn-chip { color: #38bdf8; background: rgba(56, 189, 248, 0.16); }
+    body.dark-glass .btn-chip { color: #38bdf8; background: rgba(56, 189, 248, 0.18); }
     .btn-chip:active { transform: scale(0.92); }
+
     .nav-active {
       background: linear-gradient(135deg, #0ea5e9, #4f46e5);
       color: #ffffff !important;
-      box-shadow: 0 8px 18px -4px rgba(79, 70, 229, 0.55);
+      box-shadow: 0 6px 14px -3px rgba(79, 70, 229, 0.55);
     }
     .subtext { color: var(--text-sub); }
-    input[type="number"]::-webkit-inner-spin-button { opacity: 0.4; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    .mobile-bottom-nav {
+      bottom: calc(10px + env(safe-area-inset-bottom));
+    }
   </style>
 </head>
 <body>
@@ -107,18 +132,18 @@
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 
-  <!-- TOP HEADER -->
-  <header class="sticky top-0 z-30 px-3 pt-3 md:px-6">
-    <div class="max-w-6xl mx-auto glass-3d px-4 py-3 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-lg shadow-lg">
+  <!-- TOP HEADER (Compact & Mobile-First) -->
+  <header class="sticky top-0 z-30 px-2.5 pt-2.5 md:px-6">
+    <div class="max-w-6xl mx-auto glass-3d px-3 py-2.5 md:px-4 md:py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-base shadow-lg">
           KH
         </div>
-        <div>
-          <h1 id="appBrandName" class="font-extrabold text-sm md:text-lg leading-tight tracking-tight">KH KEUSAHAWANAN PRO</h1>
-          <div class="flex items-center gap-2 text-xs subtext">
-            <span id="connBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 font-semibold">
-              ● Mod Luar Talian / Demo
+        <div class="min-w-0">
+          <h1 id="appBrandName" class="font-extrabold text-[13px] md:text-lg leading-tight tracking-tight truncate">KH KEUSAHAWANAN PRO</h1>
+          <div class="mt-0.5">
+            <span id="connBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 text-[10px] md:text-xs font-bold">
+              ● Menyambung...
             </span>
           </div>
         </div>
@@ -129,132 +154,162 @@
         <button onclick="switchTab('rekod')" data-tab="rekod" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">📝 Rekod Harian</button>
         <button onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">📊 Dashboard</button>
         <button onclick="switchTab('sejarah')" data-tab="sejarah" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">🗂️ Sejarah & Audit</button>
-        <button onclick="switchTab('tetapan')" data-tab="tetapan" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">⚙️ Katalog & Tetapan</button>
+        <button onclick="switchTab('tetapan')" data-tab="tetapan" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">⚙️ Katalog</button>
       </nav>
 
-      <div class="flex items-center gap-2">
-        <button onclick="syncFromCloud()" title="Segerak Google Sheet" class="glass-pill px-3 py-2 text-xs font-bold hover:scale-105 transition">🔄 Segerak</button>
-        <button onclick="toggleTheme()" id="themeBtn" title="Tukar Tema Glass" class="glass-pill px-3 py-2 text-xs font-bold hover:scale-105 transition">🌙</button>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button onclick="syncFromCloud()" title="Segerak Google Sheet" class="glass-pill px-2.5 py-2 min-h-[38px] text-xs font-extrabold active:scale-95 transition">🔄<span class="hidden sm:inline ml-1">Segerak</span></button>
+        <button onclick="toggleTheme()" id="themeBtn" title="Tukar Tema Glass" class="glass-pill px-2.5 py-2 min-h-[38px] text-xs font-extrabold active:scale-95 transition">🌙</button>
       </div>
     </div>
   </header>
 
   <!-- MAIN CONTENT -->
-  <main class="max-w-6xl mx-auto px-3 md:px-6 mt-5 space-y-5">
+  <main class="max-w-6xl mx-auto px-2.5 md:px-6 mt-3.5 md:mt-5 space-y-3.5 md:space-y-5">
 
     <!-- ==================== TAB 1: REKOD HARIAN ==================== -->
-    <section id="tab-rekod" class="tab-section space-y-5">
-      <!-- Date & Quick Bar -->
-      <div class="glass-3d p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="flex flex-wrap items-center gap-3">
+    <section id="tab-rekod" class="tab-section space-y-3.5 md:space-y-5">
+
+      <!-- Sticky Mini Live Summary Bar (Khusus Telefon) -->
+      <div class="md:hidden sticky top-[68px] z-20 glass-3d px-3 py-2 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
           <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider subtext mb-1">Tarikh Jualan</label>
-            <input id="inputTarikh" type="date" onchange="loadDateIfExists()" class="glass-pill px-3.5 py-2 text-sm font-bold outline-none focus:ring-2 focus:ring-sky-400" />
+            <div class="text-[9px] font-extrabold uppercase subtext leading-none">Unit</div>
+            <div id="miniUnit" class="text-sm font-extrabold">0</div>
           </div>
-          <div class="pt-4">
-            <span id="dateStatusPill" class="inline-block px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-500/15 text-sky-700">✨ Rekod Baharu</span>
+          <div class="h-6 w-px bg-slate-400/30"></div>
+          <div>
+            <div class="text-[9px] font-extrabold uppercase subtext leading-none">Dijangka</div>
+            <div id="miniExpected" class="text-sm font-extrabold text-sky-600">RM 0.00</div>
           </div>
         </div>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="resetForm()" class="glass-pill px-3.5 py-2 text-xs font-bold hover:bg-rose-500/10">🧹 Kosongkan</button>
-          <button onclick="exportDailyPDF()" class="glass-pill px-3.5 py-2 text-xs font-bold hover:bg-indigo-500/10">📄 Eksport PDF</button>
+        <a href="#panelAuditTunai" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-[11px] font-extrabold shadow">
+          💰 Tutup Tunai ↓
+        </a>
+      </div>
+
+      <!-- Date & Quick Filter Bar -->
+      <div class="glass-3d p-3.5 md:p-5 space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div class="flex items-end gap-2.5 flex-1">
+            <div class="flex-1 sm:flex-none">
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider subtext mb-1">Tarikh Jualan</label>
+              <input id="inputTarikh" type="date" onchange="loadDateIfExists()" class="w-full glass-pill px-3 py-2 min-h-[42px] font-bold outline-none focus:ring-2 focus:ring-sky-400" />
+            </div>
+            <span id="dateStatusPill" class="px-2.5 py-2 rounded-xl text-[11px] font-extrabold bg-sky-500/15 text-sky-700 whitespace-nowrap">✨ Baharu</span>
+          </div>
+          <div class="grid grid-cols-2 sm:flex gap-2">
+            <button onclick="resetForm()" class="glass-pill px-3 py-2 min-h-[40px] text-xs font-extrabold active:scale-95">🧹 Kosongkan</button>
+            <button onclick="exportDailyPDF()" class="glass-pill px-3 py-2 min-h-[40px] text-xs font-extrabold active:scale-95">📄 Eksport PDF</button>
+          </div>
+        </div>
+
+        <!-- Mobile Quick Filter: Semua vs Ada Stok -->
+        <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-400/20">
+          <div class="flex gap-1.5">
+            <button id="btnFilterAll" onclick="setProductViewFilter('ALL')" class="px-3 py-1.5 rounded-xl text-[11px] font-extrabold nav-active">Semua Produk</button>
+            <button id="btnFilterActive" onclick="setProductViewFilter('STOCKED')" class="glass-pill px-3 py-1.5 text-[11px] font-extrabold">Ada Stok Sahaja</button>
+          </div>
+          <span id="stockedCounter" class="text-[11px] font-bold subtext">0 aktif</span>
         </div>
       </div>
 
       <!-- Product Input Grid -->
-      <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4"></div>
 
       <!-- Cash Audit & Submit Panel -->
-      <div class="glass-3d p-5 md:p-6">
-        <h2 class="text-base font-extrabold mb-4 flex items-center gap-2">💰 Penutupan & Audit Tunai Harian</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <div class="glass-pill p-3.5">
-            <div class="text-[11px] font-bold uppercase subtext">Jumlah Unit Terjual</div>
-            <div id="sumUnit" class="text-2xl font-extrabold mt-0.5">0</div>
+      <div id="panelAuditTunai" class="glass-3d p-4 md:p-6 scroll-mt-32">
+        <h2 class="text-sm md:text-base font-extrabold mb-3.5 flex items-center gap-2">💰 Penutupan & Audit Tunai Harian</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4 items-stretch">
+          <div class="glass-pill p-3">
+            <div class="text-[10px] font-extrabold uppercase subtext">Unit Terjual</div>
+            <div id="sumUnit" class="text-xl md:text-2xl font-extrabold mt-0.5">0</div>
           </div>
-          <div class="glass-pill p-3.5">
-            <div class="text-[11px] font-bold uppercase subtext">Jualan Dijangka (Sistem)</div>
-            <div id="sumExpected" class="text-2xl font-extrabold text-sky-600 mt-0.5">RM 0.00</div>
+          <div class="glass-pill p-3">
+            <div class="text-[10px] font-extrabold uppercase subtext">Jualan Dijangka</div>
+            <div id="sumExpected" class="text-xl md:text-2xl font-extrabold text-sky-600 mt-0.5">RM 0.00</div>
           </div>
-          <div>
-            <label class="block text-[11px] font-bold uppercase subtext mb-1">Tunai Sebenar Dikutip (RM)</label>
-            <input id="inputRealSales" type="number" step="0.10" min="0" placeholder="0.00" oninput="recalcTotals()"
-              class="w-full glass-pill px-4 py-3 text-xl font-extrabold text-emerald-600 outline-none focus:ring-2 focus:ring-emerald-400" />
+          <div class="col-span-2 md:col-span-1">
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Tunai Sebenar Dikutip (RM)</label>
+            <input id="inputRealSales" type="number" inputmode="decimal" step="0.10" min="0" placeholder="0.00" oninput="recalcTotals()"
+              class="w-full glass-pill px-3.5 py-2.5 min-h-[48px] font-extrabold text-emerald-600 outline-none focus:ring-2 focus:ring-emerald-400" />
           </div>
-          <div id="varianceBox" class="glass-pill p-3.5 border-2 border-emerald-400/50">
-            <div class="text-[11px] font-bold uppercase subtext">Audit Plus / Minus</div>
-            <div id="sumVariance" class="text-2xl font-extrabold text-emerald-600 mt-0.5">RM 0.00</div>
-            <div id="varianceLabel" class="text-[11px] font-bold text-emerald-600">SEIMBANG ✓</div>
+          <div id="varianceBox" class="col-span-2 md:col-span-1 glass-pill p-3 border-2 border-emerald-400/50">
+            <div class="text-[10px] font-extrabold uppercase subtext">Audit Plus / Minus</div>
+            <div class="flex items-baseline justify-between md:block">
+              <div id="sumVariance" class="text-xl md:text-2xl font-extrabold text-emerald-600 mt-0.5">RM 0.00</div>
+              <div id="varianceLabel" class="text-[11px] font-extrabold text-emerald-600">SEIMBANG ✓</div>
+            </div>
           </div>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        <div class="mt-3.5 grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
           <div class="md:col-span-2">
-            <label class="block text-[11px] font-bold uppercase subtext mb-1">Catatan / Nota Hari Ini (Pilihan)</label>
-            <input id="inputCatatan" type="text" placeholder="Contoh: Hari Sukan Sekolah / Cuaca hujan petang..."
-              class="w-full glass-pill px-4 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-sky-400" />
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Catatan / Nota Hari Ini (Pilihan)</label>
+            <input id="inputCatatan" type="text" placeholder="Contoh: Hari Sukan Sekolah / Hujan petang..."
+              class="w-full glass-pill px-3.5 py-2.5 min-h-[44px] font-medium outline-none focus:ring-2 focus:ring-sky-400" />
           </div>
-          <button id="btnSaveSales" onclick="saveDailyRecord()" class="btn-3d w-full py-3.5 px-6 bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-sm tracking-wide">
-            💾 SIMPAN REKOD KE GOOGLE SHEET
+          <button id="btnSaveSales" onclick="saveDailyRecord()" class="btn-3d w-full py-3.5 px-5 min-h-[50px] bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-sm tracking-wide">
+            💾 SIMPAN KE GOOGLE SHEET
           </button>
         </div>
       </div>
     </section>
 
     <!-- ==================== TAB 2: DASHBOARD ANALITIK ==================== -->
-    <section id="tab-dashboard" class="tab-section hidden space-y-5">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <h2 class="text-lg font-extrabold">📊 Dashboard Analitik Keusahawanan</h2>
-        <select id="filterYear" onchange="renderDashboard()" class="glass-pill px-4 py-2 text-xs font-bold outline-none">
+    <section id="tab-dashboard" class="tab-section hidden space-y-4">
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="text-base md:text-lg font-extrabold">📊 Dashboard Analitik</h2>
+        <select id="filterYear" onchange="renderDashboard()" class="glass-pill px-3 py-1.5 min-h-[38px] font-bold outline-none">
           <option value="ALL">Semua Tahun</option>
         </select>
       </div>
 
       <!-- KPI Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="glass-3d glass-3d-hover p-4">
-          <div class="text-[11px] font-bold uppercase subtext">Jualan Sebenar</div>
-          <div id="kpiReal" class="text-xl md:text-2xl font-extrabold text-indigo-600 mt-1">RM 0.00</div>
-          <div id="kpiAvg" class="text-[11px] subtext mt-1">Purata RM 0.00 / hari</div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-4">
+        <div class="glass-3d p-3.5 md:p-4">
+          <div class="text-[10px] font-extrabold uppercase subtext">Jualan Sebenar</div>
+          <div id="kpiReal" class="text-lg md:text-2xl font-extrabold text-indigo-600 mt-1">RM 0.00</div>
+          <div id="kpiAvg" class="text-[10px] md:text-[11px] subtext mt-1">Purata RM 0.00/hari</div>
         </div>
-        <div class="glass-3d glass-3d-hover p-4">
-          <div class="text-[11px] font-bold uppercase subtext">Jualan Dijangka</div>
-          <div id="kpiExpected" class="text-xl md:text-2xl font-extrabold text-sky-600 mt-1">RM 0.00</div>
-          <div id="kpiUnits" class="text-[11px] subtext mt-1">0 unit terjual</div>
+        <div class="glass-3d p-3.5 md:p-4">
+          <div class="text-[10px] font-extrabold uppercase subtext">Jualan Dijangka</div>
+          <div id="kpiExpected" class="text-lg md:text-2xl font-extrabold text-sky-600 mt-1">RM 0.00</div>
+          <div id="kpiUnits" class="text-[10px] md:text-[11px] subtext mt-1">0 unit terjual</div>
         </div>
-        <div class="glass-3d glass-3d-hover p-4">
-          <div class="text-[11px] font-bold uppercase subtext">Varians Tunai (+/-)</div>
-          <div id="kpiVar" class="text-xl md:text-2xl font-extrabold mt-1">RM 0.00</div>
-          <div class="text-[11px] subtext mt-1">Audit ketepatan tunai</div>
+        <div class="glass-3d p-3.5 md:p-4">
+          <div class="text-[10px] font-extrabold uppercase subtext">Varians (+/-)</div>
+          <div id="kpiVar" class="text-lg md:text-2xl font-extrabold mt-1">RM 0.00</div>
+          <div class="text-[10px] md:text-[11px] subtext mt-1">Audit ketepatan</div>
         </div>
-        <div class="glass-3d glass-3d-hover p-4">
-          <div class="text-[11px] font-bold uppercase subtext">Hari Operasi</div>
-          <div id="kpiDays" class="text-xl md:text-2xl font-extrabold text-teal-600 mt-1">0 Hari</div>
-          <div id="kpiBestDay" class="text-[11px] subtext mt-1">Tertinggi: -</div>
+        <div class="glass-3d p-3.5 md:p-4">
+          <div class="text-[10px] font-extrabold uppercase subtext">Hari Operasi</div>
+          <div id="kpiDays" class="text-lg md:text-2xl font-extrabold text-teal-600 mt-1">0 Hari</div>
+          <div id="kpiBestDay" class="text-[10px] md:text-[11px] subtext mt-1 truncate">Tertinggi: -</div>
         </div>
       </div>
 
       <!-- Charts -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div class="glass-3d p-5 lg:col-span-2">
-          <h3 class="text-sm font-extrabold mb-3">📈 Trend Jualan Bulanan (RM)</h3>
-          <div class="h-64"><canvas id="chartMonthly"></canvas></div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-3.5 md:gap-4">
+        <div class="glass-3d p-4 md:p-5 lg:col-span-2">
+          <h3 class="text-xs md:text-sm font-extrabold mb-3">📈 Trend Jualan Bulanan (RM)</h3>
+          <div class="h-56 md:h-64"><canvas id="chartMonthly"></canvas></div>
         </div>
-        <div class="glass-3d p-5">
-          <h3 class="text-sm font-extrabold mb-3">🏆 Prestasi Kategori Produk</h3>
-          <div class="h-64"><canvas id="chartCategory"></canvas></div>
+        <div class="glass-3d p-4 md:p-5">
+          <h3 class="text-xs md:text-sm font-extrabold mb-3">🏆 Prestasi Kategori Produk</h3>
+          <div class="h-56 md:h-64"><canvas id="chartCategory"></canvas></div>
         </div>
       </div>
     </section>
 
     <!-- ==================== TAB 3: SEJARAH & AUDIT ==================== -->
-    <section id="tab-sejarah" class="tab-section hidden space-y-4">
-      <div class="glass-3d p-4 flex flex-col md:flex-row gap-3 items-center justify-between">
-        <h2 class="text-base font-extrabold">🗂️ Rekod Jualan & Audit Harian</h2>
-        <div class="flex flex-wrap gap-2 w-full md:w-auto">
-          <input id="searchHistory" type="text" placeholder="Cari tarikh, bulan atau catatan..." oninput="renderHistory()"
-            class="glass-pill px-3.5 py-2 text-xs font-semibold flex-1 md:w-64 outline-none" />
-          <select id="filterAudit" onchange="renderHistory()" class="glass-pill px-3 py-2 text-xs font-bold outline-none">
+    <section id="tab-sejarah" class="tab-section hidden space-y-3.5">
+      <div class="glass-3d p-3.5 md:p-4 space-y-2.5 md:space-y-0 md:flex md:items-center md:justify-between gap-3">
+        <h2 class="text-sm md:text-base font-extrabold">🗂️ Sejarah & Audit Harian</h2>
+        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+          <input id="searchHistory" type="text" placeholder="Cari tarikh, bulan..." oninput="renderHistory()"
+            class="glass-pill px-3.5 py-2 min-h-[42px] font-semibold flex-1 md:w-60 outline-none" />
+          <select id="filterAudit" onchange="renderHistory()" class="glass-pill px-3 py-2 min-h-[42px] font-bold outline-none">
             <option value="ALL">Semua Status</option>
             <option value="SEIMBANG">Seimbang</option>
             <option value="LEBIHAN">Lebihan (+)</option>
@@ -266,50 +321,46 @@
       <div id="historyList" class="space-y-2.5"></div>
     </section>
 
-    <!-- ==================== TAB 4: KATALOG & TETAPAN ==================== -->
-    <section id="tab-tetapan" class="tab-section hidden space-y-5">
-      <!-- Google Apps Script Connection -->
-      <div class="glass-3d p-5 space-y-3">
-        <h2 class="text-base font-extrabold">🔗 Sambungan Google Sheets (Web App URL)</h2>
-        <p class="text-xs subtext">Tampal pautan <b>Web App URL</b> daripada Google Apps Script (<code>Code.gs</code>) untuk menyambungkan aplikasi ini secara langsung ke Google Sheet anda.</p>
-        <div class="flex flex-col md:flex-row gap-2.5">
-          <input id="inputGasUrl" type="url" placeholder="https://script.google.com/macros/s/AKfycbwnhSYi1_mfaVbUQwY-MFFi8UVDAuz8GPTAPRlcQ5zs7DGS2dBWPGfjIIn066KlqAuB/exec"
-            class="flex-1 glass-pill px-4 py-2.5 text-xs font-semibold outline-none focus:ring-2 focus:ring-sky-400" />
-          <button onclick="saveGasUrl()" class="btn-3d px-5 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-xs">Simpan & Uji</button>
-        </div>
-      </div>
-
-      <!-- Product Catalog Manager -->
-      <div class="glass-3d p-5 space-y-4">
+    <!-- ==================== TAB 4: KATALOG PRODUK ==================== -->
+    <section id="tab-tetapan" class="tab-section hidden space-y-4">
+      <div class="glass-3d p-4 md:p-5 space-y-3.5">
         <div class="flex items-center justify-between">
-          <h2 class="text-base font-extrabold">🛍️ Pengurusan Katalog Produk</h2>
-          <span class="text-[11px] subtext font-semibold">PIN Lalai: 1234</span>
+          <h2 class="text-sm md:text-base font-extrabold">🛍️ Pengurusan Katalog Produk</h2>
+          <span class="text-[11px] subtext font-bold">PIN: 1234</span>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-2.5">
-          <input id="catKod" type="text" placeholder="Kod (cth: PRD-13)" class="glass-pill px-3 py-2 text-xs font-bold outline-none" />
-          <input id="catNama" type="text" placeholder="Nama Kategori" class="glass-pill px-3 py-2 text-xs font-bold outline-none md:col-span-2" />
-          <input id="catHarga" type="number" step="0.10" placeholder="Harga (RM)" class="glass-pill px-3 py-2 text-xs font-bold outline-none" />
-          <div class="flex gap-1.5">
-            <input id="catIkon" type="text" value="🍩" class="glass-pill w-14 text-center py-2 text-sm outline-none" />
-            <button onclick="addOrUpdateProduct()" class="btn-3d flex-1 bg-emerald-500 text-white text-xs px-3 py-2">+ Simpan</button>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5">
+          <input id="catKod" type="text" placeholder="Kod (cth: PRD-13)" class="glass-pill px-3 py-2.5 min-h-[44px] font-bold outline-none" />
+          <input id="catNama" type="text" placeholder="Nama Kategori Produk" class="glass-pill px-3 py-2.5 min-h-[44px] font-bold outline-none md:col-span-2" />
+          <input id="catHarga" type="number" inputmode="decimal" step="0.10" placeholder="Harga (RM)" class="glass-pill px-3 py-2.5 min-h-[44px] font-bold outline-none" />
+          <div class="flex gap-2">
+            <input id="catIkon" type="text" value="🍩" class="glass-pill w-14 text-center py-2.5 min-h-[44px] outline-none" />
+            <button onclick="addOrUpdateProduct()" class="btn-3d flex-1 bg-emerald-500 text-white text-xs px-3 py-2.5 min-h-[44px]">+ Simpan</button>
           </div>
         </div>
-        <div id="catalogManagerList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
+        <div id="catalogManagerList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
       </div>
     </section>
 
   </main>
 
-  <!-- MOBILE BOTTOM NAV -->
-  <nav class="md:hidden fixed bottom-3 left-3 right-3 z-40 glass-3d px-2 py-2 flex justify-around items-center">
-    <button onclick="switchTab('rekod')" data-tab="rekod" class="tab-btn flex-1 py-2 rounded-xl text-[11px] font-extrabold text-center">📝<br>Rekod</button>
-    <button onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn flex-1 py-2 rounded-xl text-[11px] font-extrabold text-center">📊<br>Analitik</button>
-    <button onclick="switchTab('sejarah')" data-tab="sejarah" class="tab-btn flex-1 py-2 rounded-xl text-[11px] font-extrabold text-center">🗂️<br>Sejarah</button>
-    <button onclick="switchTab('tetapan')" data-tab="tetapan" class="tab-btn flex-1 py-2 rounded-xl text-[11px] font-extrabold text-center">⚙️<br>Tetapan</button>
+  <!-- MOBILE BOTTOM NAV (Thumb-Friendly + Safe Area) -->
+  <nav class="md:hidden fixed left-2.5 right-2.5 z-40 mobile-bottom-nav glass-3d px-1.5 py-1.5 flex justify-around items-center gap-1">
+    <button onclick="switchTab('rekod')" data-tab="rekod" class="tab-btn flex-1 py-2 min-h-[52px] rounded-2xl text-[11px] font-extrabold flex flex-col items-center justify-center leading-tight">
+      <span class="text-base">📝</span><span>Rekod</span>
+    </button>
+    <button onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn flex-1 py-2 min-h-[52px] rounded-2xl text-[11px] font-extrabold flex flex-col items-center justify-center leading-tight">
+      <span class="text-base">📊</span><span>Analitik</span>
+    </button>
+    <button onclick="switchTab('sejarah')" data-tab="sejarah" class="tab-btn flex-1 py-2 min-h-[52px] rounded-2xl text-[11px] font-extrabold flex flex-col items-center justify-center leading-tight">
+      <span class="text-base">🗂️</span><span>Sejarah</span>
+    </button>
+    <button onclick="switchTab('tetapan')" data-tab="tetapan" class="tab-btn flex-1 py-2 min-h-[52px] rounded-2xl text-[11px] font-extrabold flex flex-col items-center justify-center leading-tight">
+      <span class="text-base">🛍️</span><span>Katalog</span>
+    </button>
   </nav>
 
-  <!-- TOAST -->
-  <div id="toast" class="fixed top-20 right-4 z-50 hidden glass-3d px-4 py-3 text-xs font-bold shadow-xl"></div>
+  <!-- TOAST (Centered Top for Phone Visibility) -->
+  <div id="toast" class="fixed top-16 left-3 right-3 md:left-auto md:right-4 md:max-w-sm z-50 hidden glass-3d px-4 py-3 text-xs font-extrabold text-center md:text-left shadow-xl"></div>
 
 <script>
 const DEFAULT_CATALOG = [
@@ -328,13 +379,14 @@ const DEFAULT_CATALOG = [
 ];
 
 let state = {
-  gasUrl: localStorage.getItem("kh_gas_url") || "",
+  gasUrl: GAS_WEBAPP_URL,
   brandName: "KH PACKAGING — KEUSAHAWANAN PRO",
   catalog: JSON.parse(localStorage.getItem("kh_catalog") || "null") || DEFAULT_CATALOG,
   dailyList: JSON.parse(localStorage.getItem("kh_daily_list") || "[]"),
   categoryStats: JSON.parse(localStorage.getItem("kh_cat_stats") || "[]"),
   localDetails: JSON.parse(localStorage.getItem("kh_local_details") || "{}"),
-  formItems: {}
+  formItems: {},
+  productFilter: "ALL"
 };
 
 let chartMonthlyInst = null;
@@ -343,10 +395,11 @@ let chartCategoryInst = null;
 function showToast(msg, type = "info") {
   const el = document.getElementById("toast");
   el.textContent = msg;
-  el.className = "fixed top-20 right-4 z-50 glass-3d px-4 py-3 text-xs font-bold shadow-xl " +
+  el.className = "fixed top-16 left-3 right-3 md:left-auto md:right-4 md:max-w-sm z-50 glass-3d px-4 py-3 text-xs font-extrabold text-center md:text-left shadow-xl " +
     (type === "error" ? "text-rose-600 border-rose-400" : type === "success" ? "text-emerald-600 border-emerald-400" : "text-sky-700");
   el.classList.remove("hidden");
-  setTimeout(() => el.classList.add("hidden"), 3400);
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => el.classList.add("hidden"), 3200);
 }
 
 function toggleTheme() {
@@ -363,9 +416,24 @@ function switchTab(tabId) {
   document.querySelectorAll(".tab-btn").forEach(b => {
     b.classList.toggle("nav-active", b.dataset.tab === tabId);
   });
+  window.scrollTo({ top: 0, behavior: "instant" });
   if (tabId === "dashboard") renderDashboard();
   if (tabId === "sejarah") renderHistory();
   if (tabId === "tetapan") renderCatalogManager();
+}
+
+function setProductViewFilter(mode) {
+  state.productFilter = mode;
+  const bAll = document.getElementById("btnFilterAll");
+  const bAct = document.getElementById("btnFilterActive");
+  if (mode === "ALL") {
+    bAll.className = "px-3 py-1.5 rounded-xl text-[11px] font-extrabold nav-active";
+    bAct.className = "glass-pill px-3 py-1.5 text-[11px] font-extrabold";
+  } else {
+    bAll.className = "glass-pill px-3 py-1.5 text-[11px] font-extrabold";
+    bAct.className = "px-3 py-1.5 rounded-xl text-[11px] font-extrabold nav-active";
+  }
+  renderProductGrid();
 }
 
 function initFormState() {
@@ -378,51 +446,69 @@ function initFormState() {
 function renderProductGrid() {
   const grid = document.getElementById("productGrid");
   const active = state.catalog.filter(c => c.status === "AKTIF");
-  grid.innerHTML = active.map((c, idx) => {
+  let stockedCount = 0;
+
+  const filtered = active.filter(c => {
+    const it = state.formItems[c.kategori] || { stokAwal: 0, stokTambah: 0 };
+    const hasStock = ((Number(it.stokAwal) || 0) + (Number(it.stokTambah) || 0)) > 0;
+    if (hasStock) stockedCount++;
+    return state.productFilter === "ALL" || hasStock;
+  });
+
+  document.getElementById("stockedCounter").textContent = `${stockedCount} / ${active.length} ada stok`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="col-span-full glass-3d p-6 text-center text-xs font-bold subtext">Belum ada produk dimasukkan stok. Tekan <b>Semua Produk</b> untuk mula mengisi.</div>`;
+    recalcTotals();
+    return;
+  }
+
+  grid.innerHTML = filtered.map((c, idx) => {
     const it = state.formItems[c.kategori] || { stokAwal: 0, stokTambah: 0, bakiStok: 0, harga: c.harga };
     const totalStok = (Number(it.stokAwal) || 0) + (Number(it.stokTambah) || 0);
     const terjual = Math.max(0, totalStok - (Number(it.bakiStok) || 0));
     const subRm = terjual * c.harga;
     const safeKey = encodeURIComponent(c.kategori);
+    const highlightBorder = totalStok > 0 ? "ring-2 ring-sky-400/50" : "";
     return `
-      <div class="glass-3d glass-3d-hover p-4 flex flex-col justify-between gap-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2.5">
-            <span class="text-2xl">${c.ikon || "📦"}</span>
-            <div>
-              <div class="font-extrabold text-sm leading-tight">${c.kategori}</div>
-              <div class="text-xs font-bold text-sky-600">RM ${c.harga.toFixed(2)} / unit</div>
+      <div class="glass-3d ${highlightBorder} p-3.5 md:p-4 flex flex-col justify-between gap-2.5">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-2xl shrink-0">${c.ikon || "📦"}</span>
+            <div class="min-w-0">
+              <div class="font-extrabold text-sm leading-tight truncate">${c.kategori}</div>
+              <div class="text-[11px] font-bold text-sky-600">RM ${c.harga.toFixed(2)} / unit</div>
             </div>
           </div>
-          <div class="text-right">
-            <div class="text-[10px] font-bold uppercase subtext">Jualan</div>
+          <div class="text-right shrink-0">
+            <div class="text-[9px] font-extrabold uppercase subtext">Jualan</div>
             <div id="rm_${idx}" class="text-sm font-extrabold text-indigo-600">RM ${subRm.toFixed(2)}</div>
           </div>
         </div>
 
         <div class="grid grid-cols-3 gap-2">
           <div>
-            <label class="block text-[10px] font-bold subtext mb-1">Stok Awal</label>
-            <input type="number" min="0" value="${it.stokAwal || ''}" placeholder="0"
+            <label class="block text-[10px] font-extrabold subtext mb-1 text-center">Stok Awal</label>
+            <input type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="${it.stokAwal || ''}" placeholder="0"
               oninput="updateItemField('${safeKey}', 'stokAwal', this.value, ${idx})"
-              class="w-full glass-pill px-2.5 py-2 text-sm font-extrabold text-center outline-none focus:ring-2 focus:ring-sky-400" />
+              class="w-full glass-pill px-2 py-2.5 min-h-[44px] font-extrabold text-center outline-none focus:ring-2 focus:ring-sky-400" />
           </div>
           <div>
-            <label class="block text-[10px] font-bold subtext mb-1">+ Tambah</label>
-            <input id="tambah_${idx}" type="number" min="0" value="${it.stokTambah || ''}" placeholder="0"
+            <label class="block text-[10px] font-extrabold subtext mb-1 text-center">+ Tambah</label>
+            <input id="tambah_${idx}" type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="${it.stokTambah || ''}" placeholder="0"
               oninput="updateItemField('${safeKey}', 'stokTambah', this.value, ${idx})"
-              class="w-full glass-pill px-2.5 py-2 text-sm font-extrabold text-center text-sky-600 outline-none focus:ring-2 focus:ring-sky-400" />
+              class="w-full glass-pill px-2 py-2.5 min-h-[44px] font-extrabold text-center text-sky-600 outline-none focus:ring-2 focus:ring-sky-400" />
           </div>
           <div>
-            <label class="block text-[10px] font-bold subtext mb-1">Baki Akhir</label>
-            <input type="number" min="0" value="${it.bakiStok || ''}" placeholder="0"
+            <label class="block text-[10px] font-extrabold subtext mb-1 text-center">Baki Akhir</label>
+            <input type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="${it.bakiStok || ''}" placeholder="0"
               oninput="updateItemField('${safeKey}', 'bakiStok', this.value, ${idx})"
-              class="w-full glass-pill px-2.5 py-2 text-sm font-extrabold text-center text-amber-600 outline-none focus:ring-2 focus:ring-amber-400" />
+              class="w-full glass-pill px-2 py-2.5 min-h-[44px] font-extrabold text-center text-amber-600 outline-none focus:ring-2 focus:ring-amber-400" />
           </div>
         </div>
 
-        <div class="flex items-center justify-between pt-1 border-t border-slate-400/20">
-          <div class="flex gap-1">
+        <div class="flex items-center justify-between pt-1.5 border-t border-slate-400/20">
+          <div class="flex gap-1.5">
             <button type="button" onclick="quickAddStock('${safeKey}', 10, ${idx})" class="btn-chip">+10</button>
             <button type="button" onclick="quickAddStock('${safeKey}', 20, ${idx})" class="btn-chip">+20</button>
             <button type="button" onclick="quickAddStock('${safeKey}', 50, ${idx})" class="btn-chip">+50</button>
@@ -441,8 +527,10 @@ function updateItemField(safeKey, field, val, idx) {
   state.formItems[key][field] = Math.max(0, Number(val) || 0);
   const it = state.formItems[key];
   const terjual = Math.max(0, (it.stokAwal + it.stokTambah) - it.bakiStok);
-  document.getElementById("sold_" + idx).textContent = terjual;
-  document.getElementById("rm_" + idx).textContent = "RM " + (terjual * it.harga).toFixed(2);
+  const sEl = document.getElementById("sold_" + idx);
+  const rEl = document.getElementById("rm_" + idx);
+  if (sEl) sEl.textContent = terjual;
+  if (rEl) rEl.textContent = "RM " + (terjual * it.harga).toFixed(2);
   recalcTotals();
 }
 
@@ -458,39 +546,47 @@ function quickAddStock(safeKey, delta, idx) {
 function recalcTotals() {
   let totalUnit = 0;
   let totalExpected = 0;
+  let stockedCount = 0;
+  const activeCount = state.catalog.filter(c => c.status === "AKTIF").length;
+
   Object.values(state.formItems).forEach(it => {
     const tot = (Number(it.stokAwal) || 0) + (Number(it.stokTambah) || 0);
     if (tot > 0) {
+      stockedCount++;
       const terjual = Math.max(0, tot - (Number(it.bakiStok) || 0));
       totalUnit += terjual;
       totalExpected += terjual * it.harga;
     }
   });
+
+  document.getElementById("stockedCounter").textContent = `${stockedCount} / ${activeCount} ada stok`;
   const realSales = Number(document.getElementById("inputRealSales").value) || 0;
   const variance = realSales - totalExpected;
 
   document.getElementById("sumUnit").textContent = totalUnit.toLocaleString("ms-MY");
   document.getElementById("sumExpected").textContent = "RM " + totalExpected.toFixed(2);
+  document.getElementById("miniUnit").textContent = totalUnit.toLocaleString("ms-MY");
+  document.getElementById("miniExpected").textContent = "RM " + totalExpected.toFixed(2);
   document.getElementById("sumVariance").textContent = (variance >= 0 ? "+RM " : "-RM ") + Math.abs(variance).toFixed(2);
 
   const box = document.getElementById("varianceBox");
   const vVal = document.getElementById("sumVariance");
   const vLbl = document.getElementById("varianceLabel");
   if (Math.abs(variance) < 0.005) {
-    box.className = "glass-pill p-3.5 border-2 border-emerald-400/60";
-    vVal.className = "text-2xl font-extrabold text-emerald-600 mt-0.5";
-    vLbl.className = "text-[11px] font-bold text-emerald-600";
+    box.className = "col-span-2 md:col-span-1 glass-pill p-3 border-2 border-emerald-400/60";
+    vVal.className = "text-xl md:text-2xl font-extrabold text-emerald-600 mt-0.5";
+    vLbl.className = "text-[11px] font-extrabold text-emerald-600";
     vLbl.textContent = "SEIMBANG ✓";
   } else if (variance > 0) {
-    box.className = "glass-pill p-3.5 border-2 border-sky-400/60";
-    vVal.className = "text-2xl font-extrabold text-sky-600 mt-0.5";
-    vLbl.className = "text-[11px] font-bold text-sky-600";
-    vLbl.textContent = "LEBIHAN TUNAI (+)";
+    box.className = "col-span-2 md:col-span-1 glass-pill p-3 border-2 border-sky-400/60";
+    vVal.className = "text-xl md:text-2xl font-extrabold text-sky-600 mt-0.5";
+    vLbl.className = "text-[11px] font-extrabold text-sky-600";
+    vLbl.textContent = "LEBIHAN (+)";
   } else {
-    box.className = "glass-pill p-3.5 border-2 border-rose-400/60";
-    vVal.className = "text-2xl font-extrabold text-rose-600 mt-0.5";
-    vLbl.className = "text-[11px] font-bold text-rose-600";
-    vLbl.textContent = "KURANGAN TUNAI (-)";
+    box.className = "col-span-2 md:col-span-1 glass-pill p-3 border-2 border-rose-400/60";
+    vVal.className = "text-xl md:text-2xl font-extrabold text-rose-600 mt-0.5";
+    vLbl.className = "text-[11px] font-extrabold text-rose-600";
+    vLbl.textContent = "KURANGAN (-)";
   }
 }
 
@@ -498,7 +594,7 @@ function resetForm() {
   initFormState();
   document.getElementById("inputRealSales").value = "";
   document.getElementById("inputCatatan").value = "";
-  document.getElementById("dateStatusPill").textContent = "✨ Rekod Baharu";
+  document.getElementById("dateStatusPill").textContent = "✨ Baharu";
   renderProductGrid();
 }
 
@@ -533,11 +629,11 @@ async function loadDateIfExists(forcedDate) {
     });
     document.getElementById("inputRealSales").value = found.summary ? found.summary.jualanSebenar : "";
     document.getElementById("inputCatatan").value = found.summary ? (found.summary.catatan || "") : "";
-    document.getElementById("dateStatusPill").textContent = "✏️ Mengemas Kini Rekod Sedia Ada";
+    document.getElementById("dateStatusPill").textContent = "✏️ Kemas Kini";
   } else {
     document.getElementById("inputRealSales").value = "";
     document.getElementById("inputCatatan").value = "";
-    document.getElementById("dateStatusPill").textContent = "✨ Rekod Baharu";
+    document.getElementById("dateStatusPill").textContent = "✨ Baharu";
   }
   renderProductGrid();
 }
@@ -574,12 +670,8 @@ async function saveDailyRecord() {
   btn.disabled = true;
   btn.textContent = "⏳ MENYIMPAN REKOD...";
 
-  // Save locally first
   const varians = Number((jualanSebenar - totalExpected).toFixed(2));
   const statusAudit = Math.abs(varians) < 0.005 ? "SEIMBANG" : (varians > 0 ? "LEBIHAN (+)" : "KURANGAN (-)");
-  const mNames = ["JANUARI","FEBRUARI","MAC","APRIL","MEI","JUN","JULAI","OGOS","SEPTEMBER","OKTOBER","NOVEMBER","DISEMBER"];
-  const dNames = ["Ahad","Isnin","Selasa","Rabu","Khamis","Jumaat","Sabtu"];
-  const dObj = new Date(tarikh + "T00:00:00");
 
   state.localDetails[tarikh] = {
     tarikh,
@@ -588,65 +680,25 @@ async function saveDailyRecord() {
   };
   localStorage.setItem("kh_local_details", JSON.stringify(state.localDetails));
 
-  if (state.gasUrl) {
-    try {
-      const res = await fetch(state.gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "saveDailySales", tarikh, jualanSebenar, catatan, items })
-      });
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.error || "Ralat Google Sheet");
-      showToast("✅ Rekod berjaya disimpan ke Google Sheet!", "success");
-      await syncFromCloud(true);
-    } catch (err) {
-      showToast("⚠️ Gagal ke Cloud (Disimpan di peranti): " + err.message, "error");
-    }
-  } else {
-    // Update local dailyList
-    state.dailyList = state.dailyList.filter(d => d.tarikh !== tarikh);
-    state.dailyList.unshift({
-      id: "HR-" + tarikh.replace(/-/g, ""),
-      tarikh,
-      bulan: mNames[dObj.getMonth()] + " " + dObj.getFullYear(),
-      tahun: dObj.getFullYear(),
-      hari: dNames[dObj.getDay()],
-      bilItem: items.length,
-      jumlahUnit: totalUnit,
-      jualanDijangka: Number(totalExpected.toFixed(2)),
-      jualanSebenar,
-      varians,
-      status: statusAudit,
-      catatan
+  try {
+    const res = await fetch(state.gasUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "saveDailySales", tarikh, jualanSebenar, catatan, items })
     });
-    localStorage.setItem("kh_daily_list", JSON.stringify(state.dailyList));
-    rebuildLocalCatStats();
-    showToast("✅ Disimpan secara luar talian (Pasang URL Google Sheet di Tetapan).", "success");
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || "Ralat Google Sheet");
+    showToast("✅ Rekod berjaya disimpan ke Google Sheet!", "success");
+    await syncFromCloud(true);
+  } catch (err) {
+    showToast("⚠️ Gagal ke Cloud (Disimpan di telefon): " + err.message, "error");
   }
 
   btn.disabled = false;
-  btn.textContent = "💾 SIMPAN REKOD KE GOOGLE SHEET";
-}
-
-function rebuildLocalCatStats() {
-  const map = {};
-  Object.values(state.localDetails).forEach(det => {
-    (det.items || []).forEach(it => {
-      if (!map[it.kategori]) map[it.kategori] = { kategori: it.kategori, unit: 0, jualan: 0, rekod: 0 };
-      map[it.kategori].unit += it.unitTerjual;
-      map[it.kategori].jualan += it.jualanDijangka;
-      map[it.kategori].rekod += 1;
-    });
-  });
-  state.categoryStats = Object.values(map).sort((a, b) => b.jualan - a.jualan);
-  localStorage.setItem("kh_cat_stats", JSON.stringify(state.categoryStats));
+  btn.textContent = "💾 SIMPAN KE GOOGLE SHEET";
 }
 
 async function syncFromCloud(silent = false) {
-  if (!state.gasUrl) {
-    if (!silent) showToast("Sila masukkan URL Web App Google Script di menu Tetapan dahulu.", "info");
-    return;
-  }
   try {
     const res = await fetch(`${state.gasUrl}?action=getBootstrap`);
     const json = await res.json();
@@ -674,11 +726,11 @@ async function syncFromCloud(silent = false) {
 function updateConnBadge(connected) {
   const b = document.getElementById("connBadge");
   if (connected) {
-    b.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 font-semibold";
+    b.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 text-[10px] md:text-xs font-bold";
     b.textContent = "● Disambung ke Google Sheet";
   } else {
-    b.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 font-semibold";
-    b.textContent = "● Mod Luar Talian / Demo";
+    b.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 text-[10px] md:text-xs font-bold";
+    b.textContent = "● Mod Luar Talian";
   }
 }
 
@@ -703,16 +755,15 @@ function renderDashboard() {
   const best    = list.reduce((m, x) => (!m || x.jualanSebenar > m.jualanSebenar) ? x : m, null);
 
   document.getElementById("kpiReal").textContent = "RM " + sumReal.toLocaleString("ms-MY", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  document.getElementById("kpiAvg").textContent  = "Purata RM " + avgDay.toFixed(2) + " / hari";
+  document.getElementById("kpiAvg").textContent  = "Purata RM " + avgDay.toFixed(2) + "/hari";
   document.getElementById("kpiExpected").textContent = "RM " + sumExp.toLocaleString("ms-MY", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   document.getElementById("kpiUnits").textContent = sumUnit.toLocaleString("ms-MY") + " unit terjual";
   const kVar = document.getElementById("kpiVar");
   kVar.textContent = (sumVar >= 0 ? "+RM " : "-RM ") + Math.abs(sumVar).toFixed(2);
-  kVar.className = "text-xl md:text-2xl font-extrabold mt-1 " + (sumVar < 0 ? "text-rose-600" : "text-emerald-600");
+  kVar.className = "text-lg md:text-2xl font-extrabold mt-1 " + (sumVar < 0 ? "text-rose-600" : "text-emerald-600");
   document.getElementById("kpiDays").textContent = list.length + " Hari";
-  document.getElementById("kpiBestDay").textContent = best ? `Tertinggi: RM ${best.jualanSebenar.toFixed(2)} (${best.tarikh})` : "Tertinggi: -";
+  document.getElementById("kpiBestDay").textContent = best ? `Tertinggi: RM ${best.jualanSebenar.toFixed(2)}` : "Tertinggi: -";
 
-  // Monthly grouping
   const mMap = {};
   list.slice().reverse().forEach(d => {
     const key = d.bulan || d.tarikh.substring(0, 7);
@@ -731,21 +782,20 @@ function renderDashboard() {
     data: {
       labels: mLabels,
       datasets: [
-        { label: "Jualan Sebenar (RM)", data: mReal, backgroundColor: "rgba(79, 70, 229, 0.82)", borderRadius: 8 },
-        { label: "Dijangka (RM)", data: mExp, backgroundColor: "rgba(14, 165, 233, 0.45)", borderRadius: 8 }
+        { label: "Sebenar (RM)", data: mReal, backgroundColor: "rgba(79, 70, 229, 0.82)", borderRadius: 6 },
+        { label: "Dijangka (RM)", data: mExp, backgroundColor: "rgba(14, 165, 233, 0.45)", borderRadius: 6 }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: txtColor, font: { weight: "bold", size: 11 } } } },
+      plugins: { legend: { labels: { color: txtColor, font: { weight: "bold", size: 10 } } } },
       scales: {
-        x: { ticks: { color: txtColor, font: { size: 10 } }, grid: { display: false } },
-        y: { ticks: { color: txtColor }, grid: { color: "rgba(148,163,184,0.18)" } }
+        x: { ticks: { color: txtColor, font: { size: 9 } }, grid: { display: false } },
+        y: { ticks: { color: txtColor, font: { size: 10 } }, grid: { color: "rgba(148,163,184,0.18)" } }
       }
     }
   });
 
-  // Category chart
   const topCats = state.categoryStats.slice(0, 7);
   if (chartCategoryInst) chartCategoryInst.destroy();
   chartCategoryInst = new Chart(document.getElementById("chartCategory"), {
@@ -759,7 +809,7 @@ function renderDashboard() {
       }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false, cutout: "62%",
+      responsive: true, maintainAspectRatio: false, cutout: "60%",
       plugins: { legend: { position: "bottom", labels: { color: txtColor, boxWidth: 10, font: { size: 10 } } } }
     }
   });
@@ -783,31 +833,32 @@ function renderHistory() {
   container.innerHTML = rows.slice(0, 80).map(d => {
     const v = Number(d.varians) || 0;
     const badge = Math.abs(v) < 0.005
-      ? `<span class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-emerald-500/15 text-emerald-600">SEIMBANG</span>`
+      ? `<span class="px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-emerald-500/15 text-emerald-600">SEIMBANG</span>`
       : v > 0
-      ? `<span class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-sky-500/15 text-sky-600">LEBIHAN +RM${v.toFixed(2)}</span>`
-      : `<span class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-rose-500/15 text-rose-600">KURANGAN -RM${Math.abs(v).toFixed(2)}</span>`;
+      ? `<span class="px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-sky-500/15 text-sky-600">+RM${v.toFixed(2)}</span>`
+      : `<span class="px-2 py-0.5 rounded-lg text-[10px] font-extrabold bg-rose-500/15 text-rose-600">-RM${Math.abs(v).toFixed(2)}</span>`;
     return `
-      <div class="glass-3d p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <span class="font-extrabold text-sm">${d.tarikh}</span>
-            <span class="text-xs subtext font-semibold">(${d.hari || ""})</span>
-            ${badge}
+      <div class="glass-3d p-3.5 md:p-4 flex flex-col gap-2.5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-extrabold text-sm">${d.tarikh}</span>
+              <span class="text-[11px] subtext font-semibold">(${d.hari || ""})</span>
+              ${badge}
+            </div>
+            <div class="text-[11px] subtext mt-1">
+              Dijangka: <b>RM ${Number(d.jualanDijangka).toFixed(2)}</b> • Unit: <b>${d.jumlahUnit}</b>
+              ${d.catatan ? `<div class="mt-0.5">📝 ${d.catatan}</div>` : ""}
+            </div>
           </div>
-          <div class="text-xs subtext mt-1">
-            Dijangka: <b>RM ${Number(d.jualanDijangka).toFixed(2)}</b> • Unit: <b>${d.jumlahUnit}</b> ${d.catatan ? `• 📝 ${d.catatan}` : ""}
+          <div class="text-right shrink-0">
+            <div class="text-[9px] uppercase font-extrabold subtext">Tunai</div>
+            <div class="text-base md:text-lg font-extrabold text-indigo-600">RM ${Number(d.jualanSebenar).toFixed(2)}</div>
           </div>
         </div>
-        <div class="flex items-center justify-between md:justify-end gap-3">
-          <div class="text-right">
-            <div class="text-[10px] uppercase font-bold subtext">Tunai Sebenar</div>
-            <div class="text-lg font-extrabold text-indigo-600">RM ${Number(d.jualanSebenar).toFixed(2)}</div>
-          </div>
-          <div class="flex gap-1.5">
-            <button onclick="editDay('${d.tarikh}')" class="glass-pill px-3 py-1.5 text-xs font-bold hover:bg-sky-500/15">✏️ Sunting</button>
-            <button onclick="deleteDay('${d.tarikh}')" class="glass-pill px-3 py-1.5 text-xs font-bold text-rose-600 hover:bg-rose-500/15">🗑️</button>
-          </div>
+        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-400/20">
+          <button onclick="editDay('${d.tarikh}')" class="glass-pill py-2 min-h-[38px] text-xs font-extrabold active:scale-95">✏️ Sunting</button>
+          <button onclick="deleteDay('${d.tarikh}')" class="glass-pill py-2 min-h-[38px] text-xs font-extrabold text-rose-600 active:scale-95">🗑️ Padam</button>
         </div>
       </div>
     `;
@@ -822,55 +873,32 @@ function editDay(tarikh) {
 async function deleteDay(tarikh) {
   const pin = prompt(`Masukkan PIN Admin untuk memadam rekod tarikh ${tarikh}:`);
   if (!pin) return;
-  if (state.gasUrl) {
-    try {
-      const res = await fetch(state.gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "deleteDailyRecord", tarikh, pin })
-      });
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.error);
-      showToast("🗑️ Rekod dipadam dari Google Sheet.", "success");
-      await syncFromCloud(true);
-      renderHistory();
-    } catch (err) { showToast("❌ " + err.message, "error"); }
-  } else {
-    if (pin !== "1234") return showToast("PIN Admin salah!", "error");
-    state.dailyList = state.dailyList.filter(d => d.tarikh !== tarikh);
-    delete state.localDetails[tarikh];
-    localStorage.setItem("kh_daily_list", JSON.stringify(state.dailyList));
-    localStorage.setItem("kh_local_details", JSON.stringify(state.localDetails));
-    rebuildLocalCatStats();
+  try {
+    const res = await fetch(state.gasUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "deleteDailyRecord", tarikh, pin })
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+    showToast("🗑️ Rekod dipadam dari Google Sheet.", "success");
+    await syncFromCloud(true);
     renderHistory();
-    showToast("🗑️ Rekod luar talian dipadam.", "success");
-  }
-}
-
-function saveGasUrl() {
-  const url = document.getElementById("inputGasUrl").value.trim();
-  state.gasUrl = url;
-  localStorage.setItem("kh_gas_url", url);
-  if (!url) {
-    updateConnBadge(false);
-    return showToast("URL dikosongkan. Aplikasi dalam Mod Luar Talian.", "info");
-  }
-  syncFromCloud(false);
+  } catch (err) { showToast("❌ " + err.message, "error"); }
 }
 
 function renderCatalogManager() {
-  document.getElementById("inputGasUrl").value = state.gasUrl;
   const wrap = document.getElementById("catalogManagerList");
   wrap.innerHTML = state.catalog.map(c => `
     <div class="glass-pill p-3 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2">
-        <span class="text-xl">${c.ikon}</span>
-        <div>
-          <div class="text-xs font-extrabold">${c.kategori}</div>
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="text-xl shrink-0">${c.ikon}</span>
+        <div class="min-w-0">
+          <div class="text-xs font-extrabold truncate">${c.kategori}</div>
           <div class="text-[11px] subtext">${c.kod} • <b>RM ${Number(c.harga).toFixed(2)}</b></div>
         </div>
       </div>
-      <button onclick="removeProduct('${c.kod}')" class="text-rose-500 text-xs font-bold px-2 py-1 hover:bg-rose-500/10 rounded-lg">Padam</button>
+      <button onclick="removeProduct('${c.kod}')" class="text-rose-500 text-xs font-extrabold px-2.5 py-1.5 min-h-[34px] rounded-xl bg-rose-500/10 active:scale-95 shrink-0">Padam</button>
     </div>
   `).join("");
 }
@@ -882,24 +910,19 @@ async function addOrUpdateProduct() {
   const ikon = document.getElementById("catIkon").value.trim() || "📦";
   if (!kategori || harga <= 0) return showToast("Isi nama produk dan harga yang sah.", "error");
 
-  if (state.gasUrl) {
-    const pin = prompt("Masukkan PIN Admin (Lalai: 1234):");
-    if (!pin) return;
-    try {
-      const res = await fetch(state.gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "saveProduct", kod, kategori, harga, ikon, status: "AKTIF", pin })
-      });
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.error);
-      state.catalog = json.data.catalog;
-    } catch (err) { return showToast("❌ " + err.message, "error"); }
-  } else {
-    const idx = state.catalog.findIndex(x => x.kod === kod);
-    if (idx >= 0) state.catalog[idx] = { kod, kategori, harga, ikon, status: "AKTIF" };
-    else state.catalog.push({ kod, kategori, harga, ikon, status: "AKTIF" });
-  }
+  const pin = prompt("Masukkan PIN Admin (Lalai: 1234):");
+  if (!pin) return;
+  try {
+    const res = await fetch(state.gasUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "saveProduct", kod, kategori, harga, ikon, status: "AKTIF", pin })
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+    state.catalog = json.data.catalog;
+  } catch (err) { return showToast("❌ " + err.message, "error"); }
+
   localStorage.setItem("kh_catalog", JSON.stringify(state.catalog));
   document.getElementById("catKod").value = "";
   document.getElementById("catNama").value = "";
@@ -911,19 +934,18 @@ async function addOrUpdateProduct() {
 }
 
 async function removeProduct(kod) {
-  if (state.gasUrl) {
-    const pin = prompt("Masukkan PIN Admin untuk padam produk:");
-    if (!pin) return;
-    try {
-      const res = await fetch(state.gasUrl, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "deleteProduct", kod, pin })
-      });
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.error);
-    } catch (err) { return showToast("❌ " + err.message, "error"); }
-  }
+  const pin = prompt("Masukkan PIN Admin untuk padam produk:");
+  if (!pin) return;
+  try {
+    const res = await fetch(state.gasUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "deleteProduct", kod, pin })
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+  } catch (err) { return showToast("❌ " + err.message, "error"); }
+
   state.catalog = state.catalog.filter(c => c.kod !== kod);
   localStorage.setItem("kh_catalog", JSON.stringify(state.catalog));
   initFormState();
@@ -982,6 +1004,7 @@ function exportDailyPDF() {
 
 // Bootstrap App
 window.addEventListener("DOMContentLoaded", () => {
+  localStorage.removeItem("kh_gas_url");
   if (localStorage.getItem("kh_theme") === "dark") {
     document.body.classList.add("dark-glass");
     document.getElementById("themeBtn").textContent = "☀️";
@@ -991,9 +1014,7 @@ window.addEventListener("DOMContentLoaded", () => {
   initFormState();
   renderProductGrid();
   switchTab("rekod");
-  if (state.gasUrl) {
-    syncFromCloud(true);
-  }
+  syncFromCloud(true);
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(() => {});
   }
