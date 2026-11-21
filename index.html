@@ -2,12 +2,12 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzGVOP31F-L_tlloU-J2fReaxKsBvhO95FhSbZeZ3rrJeMl9ulSYpKBKzqoCjTaaghK/exec";</script>
+  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwnhSYi1_mfaVbUQwY-MFFi8UVDAuz8GPTAPRlcQ5zs7DGS2dBWPGfjIIn066KlqAuB/exec";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#8B5CF6" />
-  <title>KH Keusahawanan Pro — Sistem Jualan &amp; Audit Stok 3D Futuristik</title>
+  <title>KH Keusahawanan Pro — Sistem POS &amp; Jualan 3D Futuristik</title>
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -241,6 +241,36 @@
       .tab-in-3d { animation: none !important; }
     }
 
+
+    /* ===== MOD POS v8 — Square / Shopify gaya sekolah ===== */
+    .pos-switch { position: relative; width: 56px; height: 32px; appearance: none; background: #CBD5E1; border-radius: 999px; outline: none; cursor: pointer; transition: background 0.2s ease; flex-shrink: 0; }
+    .pos-switch:checked { background: linear-gradient(90deg, #10B981, #06B6D4); }
+    .pos-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 999px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: left 0.2s ease; }
+    .pos-switch:checked::after { left: 27px; }
+    .pos-product-btn { min-height: 88px; text-align: left; cursor: pointer; }
+    .pos-product-btn:active { transform: scale(0.97) translateZ(6px); }
+    .pos-pay-btn { min-height: 56px; border-radius: 14px; font-weight: 800; }
+    .pos-pay-btn.active { background: linear-gradient(135deg, #F59E0B, #EC4899 55%, #8B5CF6) !important; color: #fff !important; border-color: transparent !important; }
+    .receipt-paper { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: #fff; color: #111; border: 1px dashed #94A3B8; border-radius: 8px; }
+    .receipt-58 { width: 100%; max-width: 240px; font-size: 12px; }
+    .receipt-80 { width: 100%; max-width: 320px; font-size: 13px; }
+    .receipt-paper .r-center { text-align: center; }
+    .receipt-paper .r-row { display: flex; justify-content: space-between; gap: 8px; }
+    .receipt-paper hr { border: none; border-top: 1px dashed #94A3B8; margin: 8px 0; }
+    body.fast-mode .orb, body.fast-mode #fxParticles, body.fast-mode .fx-grid { display: none !important; }
+    body.fast-mode * { animation-duration: 0.01s !important; animation-iteration-count: 1 !important; transition-duration: 0.05s !important; }
+    body.pos-off [data-tab="pos"] { display: none !important; }
+    #posReceiptPrint { display: none; }
+    @media print {
+      body * { visibility: hidden !important; }
+      #posReceiptPrint, #posReceiptPrint * { visibility: visible !important; }
+      #posReceiptPrint { display: block !important; position: absolute; inset: 0 auto auto 0; width: 100%; background: #fff; color: #000; padding: 0; margin: 0; }
+      #posReceiptPrint .receipt-paper { border: none; max-width: none; width: 100%; }
+    }
+    @media (max-width: 640px) {
+      .pos-product-btn { min-height: 96px; }
+    }
+
   </style>
 </head>
 <body>
@@ -283,6 +313,7 @@
       <!-- Desktop Nav -->
       <nav class="hidden md:flex items-center gap-1.5">
         <button onclick="switchTab('rekod')" data-tab="rekod" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">📝 Rekod Harian</button>
+        <button onclick="switchTab('pos')" data-tab="pos" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">🛒 POS</button>
         <button onclick="switchTab('gaji')" data-tab="gaji" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">👷 Gaji Pekerja</button>
         <button onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">📊 Dashboard</button>
         <button onclick="switchTab('sejarah')" data-tab="sejarah" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition">🗂️ Sejarah & Audit</button>
@@ -290,6 +321,7 @@
       </nav>
 
       <div class="flex items-center gap-1.5 shrink-0">
+        <button onclick="togglePosMode()" id="posModeBtn" title="Hidup atau mati Mod POS" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🛒 POS: ON</button>
         <button onclick="syncFromCloud()" title="Segerak Google Sheet" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🔄<span class="hidden sm:inline ml-1">Segerak</span></button>
         <button onclick="toggleTheme()" id="themeBtn" title="Tukar Tema Glass" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🌙</button>
       </div>
@@ -559,6 +591,126 @@
         </div>
         <div id="catalogManagerList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
       </div>
+
+      <div class="glass-3d p-4 md:p-5 space-y-3.5">
+        <h2 class="text-sm md:text-base font-extrabold">🛒 Tetapan Mod POS &amp; Peranti</h2>
+        <p class="text-[11px] subtext">Suis ini menghidupkan atau mematikan kaunter POS. Mod Laju mematikan kesan 3D dan zarah supaya lancar di telefon lama, tablet, Windows dan Mac.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label class="glass-pill p-3 flex items-center justify-between gap-2 font-bold text-sm">Mod POS <input id="posEnabled" type="checkbox" checked onchange="savePosSettings()" class="pos-switch" /></label>
+          <label class="glass-pill p-3 flex items-center justify-between gap-2 font-bold text-sm">Mod Laju <input id="posFastMode" type="checkbox" onchange="savePosSettings()" class="pos-switch" /></label>
+          <label class="glass-pill p-3 flex items-center justify-between gap-2 font-bold text-sm">Mod Latihan <input id="posTraining" type="checkbox" onchange="savePosSettings()" class="pos-switch" /></label>
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Jenis Pencetak</label>
+            <select id="posPrinterType" onchange="savePosSettings()" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none">
+              <option value="SISTEM">Sistem / Cetak Biasa</option>
+              <option value="BLUETOOTH">Bluetooth (Terma)</option>
+              <option value="USB">USB</option>
+              <option value="RANGKAIAN">Rangkaian / Wi-Fi</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Saiz Kertas Resit</label>
+            <select id="posPaperSize" onchange="savePosSettings(); renderReceiptPreview();" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none">
+              <option value="80">80mm — kaunter</option>
+              <option value="58">58mm — mudah alih</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">PIN Guru (Diskaun &gt; 10%)</label>
+            <input id="posPinGuru" type="text" value="1234" onchange="savePosSettings()" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none" />
+          </div>
+        </div>
+        <button onclick="savePosSettings(); showToast('Tetapan POS disimpan', 'success')" class="btn-3d w-full py-3 min-h-[56px] bg-gradient-to-r from-amber-500 via-pink-500 to-violet-600 text-white text-sm">SIMPAN TETAPAN POS</button>
+      </div>
+
+      <div class="glass-3d p-4 md:p-5 space-y-3.5">
+        <h2 class="text-sm md:text-base font-extrabold">🧾 Tetapan Resit — Ubah Suai Header</h2>
+        <p class="text-[11px] subtext">Tulis apa sahaja yang awak nak di bahagian atas resit. Pratonton di sebelah kanan berubah serta-merta. Tiada data pelanggan disimpan.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+          <div class="space-y-2.5">
+            <div><label class="block text-[10px] font-extrabold uppercase subtext mb-1">Nama Kedai (Header Baris 1)</label><input id="resitNama" type="text" oninput="savePosSettings(); renderReceiptPreview();" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none" /></div>
+            <div><label class="block text-[10px] font-extrabold uppercase subtext mb-1">Header Baris 2 (boleh banyak baris)</label><textarea id="resitHeader2" rows="2" oninput="savePosSettings(); renderReceiptPreview();" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none"></textarea></div>
+            <div><label class="block text-[10px] font-extrabold uppercase subtext mb-1">Alamat</label><input id="resitAlamat" type="text" oninput="savePosSettings(); renderReceiptPreview();" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none" /></div>
+            <div><label class="block text-[10px] font-extrabold uppercase subtext mb-1">Telefon</label><input id="resitTelefon" type="text" oninput="savePosSettings(); renderReceiptPreview();" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none" /></div>
+            <div><label class="block text-[10px] font-extrabold uppercase subtext mb-1">Logo Teks</label><input id="resitLogoTeks" type="text" oninput="savePosSettings(); renderReceiptPreview();" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none" /></div>
+            <div><label class="block text-[10px] font-extrabold uppercase subtext mb-1">Mesej Kaki Resit</label><textarea id="resitFooter" rows="2" oninput="savePosSettings(); renderReceiptPreview();" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none"></textarea></div>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="glass-pill p-2.5 flex items-center justify-between gap-1 text-xs font-bold">Alamat <input id="resitTunjukAlamat" type="checkbox" checked onchange="savePosSettings(); renderReceiptPreview();" class="pos-switch" style="width:44px;height:26px" /></label>
+              <label class="glass-pill p-2.5 flex items-center justify-between gap-1 text-xs font-bold">Telefon <input id="resitTunjukTelefon" type="checkbox" checked onchange="savePosSettings(); renderReceiptPreview();" class="pos-switch" style="width:44px;height:26px" /></label>
+              <label class="glass-pill p-2.5 flex items-center justify-between gap-1 text-xs font-bold">QR <input id="resitTunjukQR" type="checkbox" checked onchange="savePosSettings(); renderReceiptPreview();" class="pos-switch" style="width:44px;height:26px" /></label>
+            </div>
+            <div><label class="block text-[10px] font-extrabold uppercase subtext mb-1">Teks QR Maklum Balas</label><input id="resitQrTeks" type="text" oninput="savePosSettings(); renderReceiptPreview();" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none" /></div>
+          </div>
+          <div>
+            <div class="text-[10px] font-extrabold uppercase subtext mb-1">Pratonton Resit Langsung</div>
+            <div id="receiptPreview" class="receipt-paper receipt-80 p-3 mx-auto"></div>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+              <button onclick="printReceiptPreview()" class="glass-pill py-2.5 min-h-[52px] text-xs font-extrabold">🖨️ Cetak Contoh</button>
+              <button onclick="resetReceiptSettings()" class="glass-pill py-2.5 min-h-[52px] text-xs font-extrabold">Pulihkan Lalai</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB POS ==================== -->
+    <section id="tab-pos" class="tab-section hidden space-y-3.5 md:space-y-4">
+      <div class="glass-3d p-3.5 md:p-4 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-base md:text-lg font-extrabold">🛒 Kaunter POS Pantas</h2>
+          <p class="text-[11px] subtext">Ketik produk untuk masuk bakul. Gaya Square dan Shopify POS, untuk telefon, tablet, Windows dan Mac.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="posOfflineBadge" class="px-2.5 py-1.5 rounded-full bg-emerald-500/15 text-emerald-700 text-[11px] font-extrabold">● Dalam talian</span>
+          <span id="posTrainingBadge" class="hidden px-2.5 py-1.5 rounded-full bg-amber-500/20 text-amber-700 text-[11px] font-extrabold">MOD LATIHAN</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-3.5 md:gap-4 items-start">
+        <div class="lg:col-span-3 space-y-3">
+          <input id="posSearch" type="text" placeholder="Cari produk... (tahan salah eja pun boleh)" oninput="renderPosGrid()" class="w-full glass-pill px-3.5 py-2.5 min-h-[56px] font-bold outline-none" />
+          <div id="posGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+        </div>
+
+        <div class="lg:col-span-2 glass-3d p-4 md:p-5 space-y-3 lg:sticky lg:top-24">
+          <h3 class="text-sm font-extrabold flex items-center justify-between">🧾 Bakul <span id="posCartCount" class="text-xs subtext font-bold">0 item</span></h3>
+          <div id="posCartList" class="space-y-2 max-h-64 overflow-y-auto"></div>
+          <div class="space-y-1.5 pt-2 border-t border-slate-400/20 text-sm font-bold">
+            <div class="flex justify-between"><span class="subtext">Subtotal</span><span id="posSubtotal">RM 0.00</span></div>
+            <div class="flex justify-between items-center"><span class="subtext">Diskaun (%)</span><input id="posDiscount" type="number" min="0" max="100" value="0" oninput="renderPosCart()" class="glass-pill w-20 px-2 py-1.5 min-h-[48px] text-center font-extrabold outline-none" /></div>
+            <div class="flex justify-between items-center"><span class="subtext">Cukai (%)</span><input id="posTax" type="number" min="0" max="20" step="0.5" value="0" oninput="renderPosCart()" class="glass-pill w-20 px-2 py-1.5 min-h-[48px] text-center font-extrabold outline-none" /></div>
+            <div class="flex justify-between text-lg font-extrabold"><span>JUMLAH</span><span id="posTotal" class="text-pink-600">RM 0.00</span></div>
+          </div>
+          <div>
+            <div class="text-[10px] font-extrabold uppercase subtext mb-1">Kaedah Bayaran — tiada nombor kad disimpan</div>
+            <div class="grid grid-cols-4 gap-1.5">
+              <button type="button" onclick="setPosPayMethod('TUNAI')" data-pay="TUNAI" class="pos-pay-btn glass-pill py-2 min-h-[56px] text-xs font-extrabold active">💵 Tunai</button>
+              <button type="button" onclick="setPosPayMethod('KAD')" data-pay="KAD" class="pos-pay-btn glass-pill py-2 min-h-[56px] text-xs font-extrabold">💳 Kad</button>
+              <button type="button" onclick="setPosPayMethod('QR')" data-pay="QR" class="pos-pay-btn glass-pill py-2 min-h-[56px] text-xs font-extrabold">📱 QR</button>
+              <button type="button" onclick="setPosPayMethod('TAP')" data-pay="TAP" class="pos-pay-btn glass-pill py-2 min-h-[56px] text-xs font-extrabold">📶 Tap</button>
+            </div>
+            <p id="posPayHint" class="text-[11px] subtext mt-1.5">Kad, QR dan Tap direkod sebagai kaedah sahaja. Bayaran dibuat pada terminal bank berasingan.</p>
+          </div>
+          <div id="posCashBox">
+            <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Tunai Diterima (RM)</label>
+            <input id="posCash" type="number" inputmode="decimal" step="0.10" min="0" placeholder="0.00" oninput="renderPosCart()" class="w-full glass-pill px-3.5 py-2.5 min-h-[56px] font-extrabold text-emerald-600 outline-none" />
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <button type="button" onclick="setPosCash(1)" class="btn-chip">RM 1</button>
+              <button type="button" onclick="setPosCash(5)" class="btn-chip">RM 5</button>
+              <button type="button" onclick="setPosCash(10)" class="btn-chip">RM 10</button>
+              <button type="button" onclick="setPosCash(20)" class="btn-chip">RM 20</button>
+              <button type="button" onclick="setPosCashExact()" class="btn-chip">Jumlah Tepat</button>
+            </div>
+            <div class="flex justify-between mt-2 text-sm font-extrabold"><span>Baki</span><span id="posChange" class="text-emerald-600">RM 0.00</span></div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="clearPosCart()" class="glass-pill py-3 min-h-[56px] text-sm font-extrabold">Kosongkan</button>
+            <button id="btnPosPay" onclick="checkoutPos()" class="btn-3d py-3 min-h-[60px] bg-gradient-to-r from-amber-500 via-pink-500 to-violet-600 text-white text-sm">BAYAR &amp; RESIT</button>
+          </div>
+          <button onclick="syncPosQueue()" class="w-full glass-pill py-2.5 min-h-[52px] text-xs font-extrabold">🔄 Segerak Jualan POS Yang Belum Dihantar</button>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -568,7 +720,10 @@
     <button onclick="switchTab('rekod')" data-tab="rekod" class="tab-btn flex-1 py-2 min-h-[68px] rounded-2xl text-[12px] font-extrabold flex flex-col items-center justify-center leading-tight">
       <span class="text-[22px] leading-none">📝</span><span>Rekod</span>
     </button>
-    <button onclick="switchTab('gaji')" data-tab="gaji" class="tab-btn flex-1 py-2 min-h-[68px] rounded-2xl text-[12px] font-extrabold flex flex-col items-center justify-center leading-tight">
+    <button onclick="switchTab('pos')" data-tab="pos" class="tab-btn flex-1 py-2 min-h-[68px] rounded-2xl text-[11px] font-extrabold flex flex-col items-center justify-center leading-tight">
+      <span class="text-[22px] leading-none">🛒</span><span>POS</span>
+    </button>
+    <button onclick="switchTab('gaji')" data-tab="gaji" class="tab-btn flex-1 py-2 min-h-[68px] rounded-2xl text-[11px] font-extrabold flex flex-col items-center justify-center leading-tight">
       <span class="text-[22px] leading-none">👷</span><span>Gaji</span>
     </button>
     <button onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-btn flex-1 py-2 min-h-[68px] rounded-2xl text-[12px] font-extrabold flex flex-col items-center justify-center leading-tight">
@@ -581,6 +736,23 @@
       <span class="text-[22px] leading-none">🛍️</span><span>Katalog</span>
     </button>
   </nav>
+
+
+  <!-- MODAL RESIT POS -->
+  <div id="posReceiptModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3" style="background: rgba(15,23,42,0.65)">
+    <div class="glass-3d w-full max-w-md max-h-[92vh] overflow-y-auto p-4 space-y-3">
+      <div class="flex items-center justify-between"><h3 class="text-sm font-extrabold">🧾 Resit Jualan</h3><button onclick="closeReceiptModal()" class="glass-pill px-3 py-2 min-h-[48px] font-extrabold">✕</button></div>
+      <div id="posReceiptPreview" class="receipt-paper receipt-80 p-3 mx-auto"></div>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="printReceipt()" class="btn-3d py-3 min-h-[56px] bg-gradient-to-r from-amber-500 via-pink-500 to-violet-600 text-white text-sm">🖨️ CETAK</button>
+        <button onclick="shareReceipt()" class="glass-pill py-3 min-h-[56px] text-sm font-extrabold">Kongsi Resit</button>
+        <button onclick="downloadReceiptPDF()" class="glass-pill py-3 min-h-[56px] text-sm font-extrabold">📄 Muat Turun PDF</button>
+        <button onclick="recordPosToSheet()" class="glass-pill py-3 min-h-[56px] text-sm font-extrabold">☁️ Rekod ke Sheet</button>
+      </div>
+      <p class="text-[11px] subtext text-center">Kad, QR dan Tap direkod sebagai kaedah sahaja. Tiada nombor kad disimpan.</p>
+    </div>
+  </div>
+  <div id="posReceiptPrint"></div>
 
   <!-- TOAST (Centered Top for Phone Visibility) -->
   <div id="toast" class="fixed top-16 left-3 right-3 md:left-auto md:right-4 md:max-w-sm z-50 hidden glass-3d px-4 py-3 text-xs font-extrabold text-center md:text-left shadow-xl"></div>
@@ -650,6 +822,7 @@ function switchTab(tabId) {
   if (tabId === "dashboard") renderDashboard();
   if (tabId === "sejarah") renderHistory();
   if (tabId === "tetapan") renderCatalogManager();
+  if (tabId === "pos") { if (typeof renderPosGrid === "function") renderPosGrid(); if (typeof renderPosCart === "function") renderPosCart(); if (typeof updatePosOfflineBadge === "function") updatePosOfflineBadge(); }
 }
 
 function setProductViewFilter(mode) {
@@ -1610,6 +1783,345 @@ window.addEventListener("DOMContentLoaded", () => {
     if (b && navigator.vibrate) navigator.vibrate(8);
   });
 })();
+</script>
+
+
+<script>
+/* ===== POS v8 — Square / Shopify gaya sekolah, tanpa data peribadi ===== */
+var posSettings = {};
+var posCart = {};
+var posPayMethod = "TUNAI";
+var posLastReceipt = null;
+function posDefaultSettings() {
+  return {
+    enabled: true, fastMode: false, training: false,
+    printerType: "SISTEM", paperSize: "80", pinGuru: "1234",
+    nama: "KH PACKAGING", header2: "KEUSAHAWANAN PRO\nSistem Jualan & Audit Stok",
+    alamat: "Koperasi Sekolah", telefon: "", logoTeks: "KH",
+    footer: "Terima kasih kerana menyokong\nKeusahawanan Pelajar!",
+    tunjukAlamat: true, tunjukTelefon: true, tunjukQR: true,
+    qrTeks: "Imbas untuk maklum balas"
+  };
+}
+function loadPosSettings() {
+  try { posSettings = Object.assign(posDefaultSettings(), JSON.parse(localStorage.getItem("kh_pos_settings") || "{}")); }
+  catch (e) { posSettings = posDefaultSettings(); }
+  if (state && state.brandName && !localStorage.getItem("kh_pos_settings")) posSettings.nama = state.brandName;
+  var map = { posEnabled: "enabled", posFastMode: "fastMode", posTraining: "training", posPrinterType: "printerType", posPaperSize: "paperSize", posPinGuru: "pinGuru", resitNama: "nama", resitHeader2: "header2", resitAlamat: "alamat", resitTelefon: "telefon", resitLogoTeks: "logoTeks", resitFooter: "footer", resitTunjukAlamat: "tunjukAlamat", resitTunjukTelefon: "tunjukTelefon", resitTunjukQR: "tunjukQR", resitQrTeks: "qrTeks" };
+  Object.keys(map).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var v = posSettings[map[id]];
+    if (el.type === "checkbox") el.checked = !!v; else el.value = (v == null ? "" : v);
+  });
+  applyPosMode();
+  renderReceiptPreview();
+}
+function savePosSettings() {
+  var map = { posEnabled: "enabled", posFastMode: "fastMode", posTraining: "training", posPrinterType: "printerType", posPaperSize: "paperSize", posPinGuru: "pinGuru", resitNama: "nama", resitHeader2: "header2", resitAlamat: "alamat", resitTelefon: "telefon", resitLogoTeks: "logoTeks", resitFooter: "footer", resitTunjukAlamat: "tunjukAlamat", resitTunjukTelefon: "tunjukTelefon", resitTunjukQR: "tunjukQR", resitQrTeks: "qrTeks" };
+  Object.keys(map).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    posSettings[map[id]] = el.type === "checkbox" ? el.checked : el.value;
+  });
+  localStorage.setItem("kh_pos_settings", JSON.stringify(posSettings));
+  applyPosMode();
+  try {
+    if (navigator.onLine && state && state.gasUrl) {
+      fetch(state.gasUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "savePosSettings", settings: {
+        POS_MOD: posSettings.enabled ? "ON" : "OFF",
+        POS_MOD_LAJU: posSettings.fastMode ? "ON" : "OFF",
+        POS_MOD_LATIHAN: posSettings.training ? "ON" : "OFF",
+        POS_PIN_GURU: String(posSettings.pinGuru || "1234"),
+        POS_JENIS_PENCETAK: posSettings.printerType,
+        POS_SAIZ_KERTAS: String(posSettings.paperSize),
+        POS_RESIT_NAMA: posSettings.nama, POS_RESIT_HEADER2: posSettings.header2,
+        POS_RESIT_ALAMAT: posSettings.alamat, POS_RESIT_TELEFON: posSettings.telefon,
+        POS_RESIT_LOGO: posSettings.logoTeks, POS_RESIT_FOOTER: posSettings.footer,
+        POS_RESIT_QR_TEKS: posSettings.qrTeks
+      } }) }).catch(function () {});
+    }
+  } catch (e) {}
+}
+function applyPosMode() {
+  document.body.classList.toggle("pos-off", !posSettings.enabled);
+  document.body.classList.toggle("fast-mode", !!posSettings.fastMode);
+  var btn = document.getElementById("posModeBtn");
+  if (btn) btn.textContent = posSettings.enabled ? "🛒 POS: ON" : "🛒 POS: OFF";
+  var badge = document.getElementById("posTrainingBadge");
+  if (badge) badge.classList.toggle("hidden", !posSettings.training);
+}
+function togglePosMode() {
+  posSettings.enabled = !posSettings.enabled;
+  localStorage.setItem("kh_pos_settings", JSON.stringify(posSettings));
+  loadPosSettings();
+  if (!posSettings.enabled && document.getElementById("tab-pos") && !document.getElementById("tab-pos").classList.contains("hidden")) switchTab("rekod");
+  showToast(posSettings.enabled ? "Mod POS dihidupkan" : "Mod POS dimatikan", "success");
+}
+function resetReceiptSettings() {
+  posSettings = posDefaultSettings();
+  localStorage.setItem("kh_pos_settings", JSON.stringify(posSettings));
+  loadPosSettings();
+  showToast("Tetapan resit dipulihkan", "success");
+}
+function posMoney(n) { return "RM " + (Number(n) || 0).toFixed(2); }
+function renderPosGrid() {
+  var grid = document.getElementById("posGrid");
+  if (!grid) return;
+  var q = (document.getElementById("posSearch") ? document.getElementById("posSearch").value : "").toLowerCase();
+  var list = (state.catalog || []).filter(function (c) { return c.status === "AKTIF" && (!q || c.kategori.toLowerCase().indexOf(q) !== -1); });
+  if (!list.length) { grid.innerHTML = '<div class="col-span-full glass-3d p-6 text-center text-xs font-bold subtext">Tiada produk dijumpai. Semak ejaan atau tambah produk dalam Katalog.</div>'; return; }
+  grid.innerHTML = list.map(function (c) {
+    var qty = posCart[c.kategori] || 0;
+    return '<button type="button" onclick="addToPosCart(\'' + encodeURIComponent(c.kategori) + '\')" class="pos-product-btn glass-3d tilt-card p-3 flex flex-col justify-between gap-1 text-left">'
+      + '<span class="text-2xl tilt-pop">' + (c.ikon || "📦") + '</span>'
+      + '<span class="font-extrabold text-[13px] leading-tight">' + c.kategori + '</span>'
+      + '<span class="flex items-center justify-between"><span class="font-extrabold text-pink-600 text-sm">RM ' + Number(c.harga).toFixed(2) + '</span>' + (qty ? '<span class="px-2 py-0.5 rounded-full bg-pink-500 text-white text-[11px] font-extrabold">× ' + qty + '</span>' : '') + '</span></button>';
+  }).join("");
+}
+function addToPosCart(safeKey) {
+  var key = decodeURIComponent(safeKey);
+  posCart[key] = (posCart[key] || 0) + 1;
+  renderPosGrid(); renderPosCart();
+  if (navigator.vibrate) navigator.vibrate(8);
+}
+function posChangeQty(safeKey, delta) {
+  var key = decodeURIComponent(safeKey);
+  posCart[key] = Math.max(0, (posCart[key] || 0) + delta);
+  if (!posCart[key]) delete posCart[key];
+  renderPosGrid(); renderPosCart();
+}
+function clearPosCart() { posCart = {}; renderPosGrid(); renderPosCart(); }
+function posTotals() {
+  var sub = 0, count = 0;
+  Object.keys(posCart).forEach(function (k) {
+    var c = (state.catalog || []).find(function (x) { return x.kategori === k; });
+    if (!c) return;
+    sub += posCart[k] * Number(c.harga); count += posCart[k];
+  });
+  var discPct = Math.max(0, Math.min(100, Number(document.getElementById("posDiscount") ? document.getElementById("posDiscount").value : 0) || 0));
+  var taxPct = Math.max(0, Math.min(20, Number(document.getElementById("posTax") ? document.getElementById("posTax").value : 0) || 0));
+  var disc = sub * discPct / 100;
+  var tax = (sub - disc) * taxPct / 100;
+  var total = Math.max(0, sub - disc + tax);
+  return { sub: sub, disc: disc, tax: tax, total: total, count: count, discPct: discPct, taxPct: taxPct };
+}
+function renderPosCart() {
+  var listEl = document.getElementById("posCartList");
+  if (!listEl) return;
+  var keys = Object.keys(posCart);
+  document.getElementById("posCartCount").textContent = posTotals().count + " item";
+  if (!keys.length) { listEl.innerHTML = '<div class="text-xs subtext font-bold text-center py-3">Bakul kosong. Ketik produk di sebelah kiri.</div>'; }
+  else {
+    listEl.innerHTML = keys.map(function (k) {
+      var c = (state.catalog || []).find(function (x) { return x.kategori === k; });
+      if (!c) return "";
+      var amt = posCart[k] * Number(c.harga);
+      return '<div class="glass-pill p-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="font-extrabold text-xs truncate">' + c.kategori + '</div><div class="text-[11px] subtext font-bold">RM ' + Number(c.harga).toFixed(2) + ' × ' + posCart[k] + ' = RM ' + amt.toFixed(2) + '</div></div><div class="flex items-center gap-1 shrink-0"><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', -1)" class="btn-chip" style="min-width:44px;min-height:44px">−</button><span class="font-extrabold w-6 text-center">' + posCart[k] + '</span><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', 1)" class="btn-chip" style="min-width:44px;min-height:44px">+</button></div></div>';
+    }).join("");
+  }
+  var tt = posTotals();
+  document.getElementById("posSubtotal").textContent = posMoney(tt.sub);
+  document.getElementById("posTotal").textContent = posMoney(tt.total);
+  var cash = Number(document.getElementById("posCash") ? document.getElementById("posCash").value : 0) || 0;
+  var changeEl = document.getElementById("posChange");
+  if (changeEl) changeEl.textContent = posMoney(Math.max(0, cash - tt.total));
+  var btn = document.getElementById("btnPosPay");
+  if (btn) btn.disabled = tt.count === 0;
+}
+function setPosPayMethod(m) {
+  posPayMethod = m;
+  document.querySelectorAll("[data-pay]").forEach(function (b) { b.classList.toggle("active", b.dataset.pay === m); });
+  var box = document.getElementById("posCashBox");
+  if (box) box.style.display = m === "TUNAI" ? "" : "none";
+  var hint = document.getElementById("posPayHint");
+  if (hint) hint.textContent = m === "TUNAI" ? "Kira baki automatik seperti Square. Masukkan tunai diterima." : (m === "QR" ? "Papar QR kedai dan sahkan bayaran secara manual. Tiada nombor akaun disimpan." : "Bayaran dibuat pada terminal bank berasingan. PWA hanya merekod kaedah dan jumlah.");
+  renderPosCart();
+}
+function setPosCash(v) { var el = document.getElementById("posCash"); if (el) { el.value = v; renderPosCart(); } }
+function setPosCashExact() { var el = document.getElementById("posCash"); if (el) { el.value = posTotals().total.toFixed(2); renderPosCart(); } }
+function escHtml(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function buildReceiptHTML(r) {
+  var s = posSettings;
+  var lines = [];
+  lines.push('<div class="r-center"><div style="font-size:20px;font-weight:800">' + escHtml(s.logoTeks || "KH") + '</div>');
+  lines.push('<div style="font-weight:800;font-size:14px">' + escHtml(s.nama || "") + '</div>');
+  (s.header2 || "").split("\n").forEach(function (l) { if (l.trim()) lines.push('<div>' + escHtml(l) + '</div>'); });
+  if (s.tunjukAlamat && s.alamat) lines.push('<div>' + escHtml(s.alamat) + '</div>');
+  if (s.tunjukTelefon && s.telefon) lines.push('<div>Tel: ' + escHtml(s.telefon) + '</div>');
+  lines.push('</div><hr>');
+  lines.push('<div class="r-row"><span>No. Resit</span><b>' + escHtml(r.id) + '</b></div>');
+  lines.push('<div class="r-row"><span>Tarikh</span><span>' + escHtml(r.tarikh) + ' ' + escHtml(r.masa) + '</span></div>');
+  lines.push('<div class="r-row"><span>Kaedah</span><span>' + escHtml(r.kaedah) + '</span></div>');
+  if (r.training) lines.push('<div class="r-center" style="font-weight:800">*** MOD LATIHAN — TIDAK DIREKOD ***</div>');
+  lines.push('<hr>');
+  r.items.forEach(function (it) {
+    lines.push('<div class="r-row"><span>' + escHtml(it.kategori) + ' × ' + it.qty + '</span><span>RM ' + Number(it.amt).toFixed(2) + '</span></div>');
+    lines.push('<div style="font-size:11px;opacity:0.7">RM ' + Number(it.harga).toFixed(2) + ' / unit</div>');
+  });
+  lines.push('<hr>');
+  lines.push('<div class="r-row"><span>Subtotal</span><span>RM ' + Number(r.sub).toFixed(2) + '</span></div>');
+  if (r.disc > 0) lines.push('<div class="r-row"><span>Diskaun (' + r.discPct + '%)</span><span>-RM ' + Number(r.disc).toFixed(2) + '</span></div>');
+  if (r.tax > 0) lines.push('<div class="r-row"><span>Cukai (' + r.taxPct + '%)</span><span>RM ' + Number(r.tax).toFixed(2) + '</span></div>');
+  lines.push('<div class="r-row" style="font-size:16px;font-weight:800"><span>JUMLAH</span><span>RM ' + Number(r.total).toFixed(2) + '</span></div>');
+  if (r.kaedah === "TUNAI") {
+    lines.push('<div class="r-row"><span>Tunai</span><span>RM ' + Number(r.cash).toFixed(2) + '</span></div>');
+    lines.push('<div class="r-row" style="font-weight:800"><span>Baki</span><span>RM ' + Number(r.change).toFixed(2) + '</span></div>');
+  }
+  lines.push('<hr>');
+  (s.footer || "").split("\n").forEach(function (l) { if (l.trim()) lines.push('<div class="r-center">' + escHtml(l) + '</div>'); });
+  if (s.tunjukQR) lines.push('<div class="r-center" style="margin-top:8px;border:1px dashed #94A3B8;padding:8px">QR: ' + escHtml(s.qrTeks || "Maklum balas") + '</div>');
+  return lines.join("");
+}
+function renderReceiptPreview() {
+  var el = document.getElementById("receiptPreview");
+  if (!el) return;
+  el.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto";
+  var sample = { id: "R0001", tarikh: new Date().toISOString().slice(0, 10), masa: "10:00", kaedah: "TUNAI", training: false, items: [{ kategori: "KACANG/BISKUT", qty: 2, harga: 1.00, amt: 2.00 }, { kategori: "AISKRIM", qty: 1, harga: 1.00, amt: 1.00 }], sub: 3.00, disc: 0, discPct: 0, tax: 0, taxPct: 0, total: 3.00, cash: 5.00, change: 2.00 };
+  el.innerHTML = buildReceiptHTML(sample);
+  var pv = document.getElementById("posReceiptPreview");
+  if (pv && posLastReceipt) { pv.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto"; pv.innerHTML = buildReceiptHTML(posLastReceipt); }
+}
+function updatePosOfflineBadge() {
+  var el = document.getElementById("posOfflineBadge");
+  if (!el) return;
+  var q = [];
+  try { q = JSON.parse(localStorage.getItem("kh_pos_offline_queue") || "[]"); } catch (e) {}
+  if (!navigator.onLine) { el.textContent = "● Luar talian — " + q.length + " belum sync"; el.className = "px-2.5 py-1.5 rounded-full bg-amber-500/20 text-amber-700 text-[11px] font-extrabold"; }
+  else if (q.length) { el.textContent = "● Dalam talian — " + q.length + " belum sync"; el.className = "px-2.5 py-1.5 rounded-full bg-amber-500/20 text-amber-700 text-[11px] font-extrabold"; }
+  else { el.textContent = "● Dalam talian"; el.className = "px-2.5 py-1.5 rounded-full bg-emerald-500/15 text-emerald-700 text-[11px] font-extrabold"; }
+}
+function checkoutPos() {
+  var tt = posTotals();
+  if (!tt.count) return showToast("Bakul kosong. Ketik produk dahulu.", "error");
+  if (tt.discPct > 10) {
+    var pin = window.prompt("Diskaun melebihi 10%. Masukkan PIN Guru:");
+    if (pin !== String(posSettings.pinGuru || "1234")) return showToast("PIN Guru tidak sah. Diskaun dibatalkan.", "error");
+  }
+  var cash = 0;
+  if (posPayMethod === "TUNAI") {
+    cash = Number(document.getElementById("posCash") ? document.getElementById("posCash").value : 0) || 0;
+    if (cash < tt.total) return showToast("Tunai tidak cukup. Baki masih kurang.", "error");
+  } else {
+    cash = tt.total;
+  }
+  var now = new Date();
+  var id = "R" + String(now.getTime()).slice(-6);
+  var items = Object.keys(posCart).map(function (k) {
+    var c = (state.catalog || []).find(function (x) { return x.kategori === k; });
+    return { kategori: k, qty: posCart[k], harga: c ? Number(c.harga) : 0, amt: posCart[k] * (c ? Number(c.harga) : 0) };
+  });
+  posLastReceipt = { id: id, tarikh: now.toISOString().slice(0, 10), masa: now.toTimeString().slice(0, 5), kaedah: posPayMethod, training: !!posSettings.training, items: items, sub: tt.sub, disc: tt.disc, discPct: tt.discPct, tax: tt.tax, taxPct: tt.taxPct, total: tt.total, cash: cash, change: posPayMethod === "TUNAI" ? Math.max(0, cash - tt.total) : 0 };
+  try {
+    var all = JSON.parse(localStorage.getItem("kh_pos_receipts") || "[]");
+    all.unshift(posLastReceipt); localStorage.setItem("kh_pos_receipts", JSON.stringify(all.slice(0, 100)));
+    if (!posSettings.training) {
+      var q = JSON.parse(localStorage.getItem("kh_pos_offline_queue") || "[]");
+      q.push(posLastReceipt); localStorage.setItem("kh_pos_offline_queue", JSON.stringify(q));
+    }
+  } catch (e) {}
+  var pv = document.getElementById("posReceiptPreview");
+  if (pv) { pv.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto"; pv.innerHTML = buildReceiptHTML(posLastReceipt); }
+  var modal = document.getElementById("posReceiptModal");
+  if (modal) { modal.classList.remove("hidden"); modal.classList.add("flex"); }
+  updatePosOfflineBadge();
+  clearPosCart();
+  showToast(posSettings.training ? "Resit latihan siap. Tidak direkod." : "Bayaran berjaya. Resit " + id + " siap.", "success");
+  if (navigator.onLine && !posSettings.training) syncPosQueue();
+}
+function closeReceiptModal() { var m = document.getElementById("posReceiptModal"); if (m) { m.classList.add("hidden"); m.classList.remove("flex"); } }
+function printReceipt() {
+  var pr = document.getElementById("posReceiptPrint");
+  if (pr && posLastReceipt) pr.innerHTML = '<div class="receipt-paper">' + buildReceiptHTML(posLastReceipt) + '</div>';
+  if (posSettings.printerType === "BLUETOOTH") { printViaBluetooth(); return; }
+  window.print();
+}
+function printReceiptPreview() {
+  var pr = document.getElementById("posReceiptPrint");
+  var sample = { id: "R0001", tarikh: new Date().toISOString().slice(0, 10), masa: "10:00", kaedah: "TUNAI", training: false, items: [{ kategori: "KACANG/BISKUT", qty: 2, harga: 1.00, amt: 2.00 }], sub: 2.00, disc: 0, discPct: 0, tax: 0, taxPct: 0, total: 2.00, cash: 5.00, change: 3.00 };
+  if (pr) pr.innerHTML = '<div class="receipt-paper">' + buildReceiptHTML(sample) + '</div>';
+  window.print();
+}
+async function printViaBluetooth() {
+  try {
+    if (!navigator.bluetooth) throw new Error("Bluetooth tidak disokong pada peranti ini");
+    showToast("Pilih pencetak Bluetooth terma...", "info");
+    var device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ["000018f0-0000-1000-8000-00805f9b34fb"] });
+    showToast("Pencetak dijumpai: " + device.name + ". Cetak sistem akan digunakan sebagai sandaran.", "success");
+    window.print();
+  } catch (e) {
+    showToast("Bluetooth tidak dapat digunakan (" + e.message + "). Guna Cetak Sistem.", "error");
+    window.print();
+  }
+}
+function shareReceipt() {
+  if (!posLastReceipt) return;
+  var text = document.getElementById("posReceiptPreview") ? document.getElementById("posReceiptPreview").innerText : "";
+  if (navigator.share) navigator.share({ title: "Resit " + posLastReceipt.id, text: text }).catch(function () {});
+  else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(function () { showToast("Resit disalin", "success"); }); }
+  else showToast("Kongsi tidak disokong di peranti ini", "error");
+}
+function downloadReceiptPDF() {
+  if (!posLastReceipt) return;
+  try {
+    var doc = new window.jspdf.jsPDF({ unit: "mm", format: [posSettings.paperSize === "58" ? 58 : 80, 200] });
+    var text = document.getElementById("posReceiptPreview") ? document.getElementById("posReceiptPreview").innerText : "";
+    var lines = doc.splitTextToSize(text, posSettings.paperSize === "58" ? 50 : 72);
+    doc.setFont("courier", "normal"); doc.setFontSize(9);
+    doc.text(lines, 4, 10);
+    doc.save("Resit-" + posLastReceipt.id + ".pdf");
+  } catch (e) { window.print(); }
+}
+async function recordPosToSheet() {
+  if (!posLastReceipt) return showToast("Tiada resit untuk direkod.", "error");
+  if (posLastReceipt.training) return showToast("Mod latihan tidak direkod ke Sheet.", "error");
+  var tarikh = posLastReceipt.tarikh;
+  var items = posLastReceipt.items.map(function (it) { return { kategori: it.kategori, stokAwal: it.qty, stokTambah: 0, bakiStok: 0, hargaSeunit: it.harga, unitTerjual: it.qty, jualanDijangka: Number(it.amt.toFixed(2)) }; });
+  try {
+    var res = await fetch(state.gasUrl + "?action=getDailyDetail&tarikh=" + encodeURIComponent(tarikh));
+    var json = await res.json();
+    if (json.ok && json.data && json.data.items) {
+      json.data.items.forEach(function (ex) {
+        var f = items.find(function (x) { return x.kategori === ex.kategori; });
+        var sold = Math.max(0, (Number(ex.stokAwal) || 0) + (Number(ex.stokTambah) || 0) - (Number(ex.bakiStok) || 0));
+        if (f) { f.stokAwal = sold + f.stokAwal; f.unitTerjual = f.stokAwal; f.jualanDijangka = Number((f.stokAwal * f.hargaSeunit).toFixed(2)); }
+        else items.push({ kategori: ex.kategori, stokAwal: sold, stokTambah: 0, bakiStok: 0, hargaSeunit: ex.hargaSeunit, unitTerjual: sold, jualanDijangka: Number((sold * ex.hargaSeunit).toFixed(2)) });
+      });
+    }
+  } catch (e) {}
+  var totalExpected = items.reduce(function (a, x) { return a + x.jualanDijangka; }, 0);
+  try {
+    var r2 = await fetch(state.gasUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "saveDailySales", tarikh: tarikh, jualanSebenar: Number(totalExpected.toFixed(2)), catatan: "POS " + posLastReceipt.id, items: items }) });
+    var j2 = await r2.json();
+    if (!j2.ok) throw new Error(j2.error || "Ralat Sheet");
+    showToast("Resit direkod ke Google Sheet", "success");
+    await syncFromCloud(true);
+  } catch (e) {
+    showToast("Gagal ke Cloud, resit disimpan di telefon: " + e.message, "error");
+  }
+}
+async function syncPosQueue() {
+  var q = [];
+  try { q = JSON.parse(localStorage.getItem("kh_pos_offline_queue") || "[]"); } catch (e) {}
+  if (!q.length || !navigator.onLine) { updatePosOfflineBadge(); return; }
+  showToast("Menyegerak " + q.length + " jualan POS...", "info");
+  for (var i = 0; i < q.length; i++) {
+    var r = q[i];
+    var items = r.items.map(function (it) { return { kategori: it.kategori, stokAwal: it.qty, stokTambah: 0, bakiStok: 0, hargaSeunit: it.harga, unitTerjual: it.qty, jualanDijangka: Number(it.amt.toFixed(2)) }; });
+    try {
+      var res = await fetch(state.gasUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "savePosSale", tarikh: r.tarikh, jualanSebenar: Number(r.total.toFixed(2)), catatan: "POS " + r.id + " (" + r.kaedah + ")", items: items }) });
+      var j = await res.json();
+      if (j.ok) { q.splice(i, 1); i--; }
+    } catch (e) {}
+  }
+  localStorage.setItem("kh_pos_offline_queue", JSON.stringify(q));
+  updatePosOfflineBadge();
+  if (!q.length) showToast("Semua jualan POS sudah disegerak", "success");
+}
+window.addEventListener("online", function () { updatePosOfflineBadge(); syncPosQueue(); });
+window.addEventListener("offline", function () { updatePosOfflineBadge(); });
+document.addEventListener("DOMContentLoaded", function () { loadPosSettings(); setPosPayMethod("TUNAI"); updatePosOfflineBadge(); });
+setTimeout(function () { try { loadPosSettings(); setPosPayMethod("TUNAI"); updatePosOfflineBadge(); } catch (e) {} }, 600);
 </script>
 
 </body>

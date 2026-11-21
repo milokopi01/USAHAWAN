@@ -54,6 +54,8 @@ function doPost(e) {
     if (action === "saveProduct") return jsonResponse({ ok: true, data: saveProduct(payload) });
     if (action === "deleteProduct") return jsonResponse({ ok: true, data: deleteProduct(payload) });
     if (action === "saveGaji") return jsonResponse({ ok: true, data: saveGaji(payload) });
+    if (action === "savePosSettings") return jsonResponse({ ok: true, data: savePosSettings(payload) });
+    if (action === "savePosSale") return jsonResponse({ ok: true, data: savePosSale(payload) });
     if (action === "deleteGaji") return jsonResponse({ ok: true, data: deleteGaji(payload) });
 
     return jsonResponse({ ok: false, error: "Tindakan POST tidak dikenali: " + action });
@@ -89,7 +91,20 @@ function getSettings() {
     NAMA_PERNIAGAAN: "KH PACKAGING — KEUSAHAWANAN PRO",
     MATA_WANG: "RM",
     HAD_AMARAN_VARIANS: "5.00",
-    PIN_ADMIN: "1234"
+    PIN_ADMIN: "1234",
+    POS_MOD: "ON",
+    POS_MOD_LAJU: "OFF",
+    POS_MOD_LATIHAN: "OFF",
+    POS_PIN_GURU: "1234",
+    POS_JENIS_PENCETAK: "SISTEM",
+    POS_SAIZ_KERTAS: "80",
+    POS_RESIT_NAMA: "KH PACKAGING",
+    POS_RESIT_HEADER2: "KEUSAHAWANAN PRO",
+    POS_RESIT_ALAMAT: "Koperasi Sekolah",
+    POS_RESIT_TELEFON: "",
+    POS_RESIT_LOGO: "KH",
+    POS_RESIT_FOOTER: "Terima kasih kerana menyokong Keusahawanan Pelajar!",
+    POS_RESIT_QR_TEKS: "Imbas untuk maklum balas"
   };
   if (!sh) return res;
   const rows = sh.getDataRange().getValues();
@@ -261,6 +276,62 @@ function getDailyDetail(tarikh) {
   }
 
   return { tarikh: tarikh, summary: summary, items: items };
+}
+
+
+function savePosSettings(payload) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(SHEET_SET);
+  if (!sh) {
+    sh = ss.insertSheet(SHEET_SET);
+    sh.appendRow(["Kunci", "Nilai"]);
+  }
+  const settings = payload.settings || {};
+  const allowed = ["POS_MOD","POS_MOD_LAJU","POS_MOD_LATIHAN","POS_PIN_GURU","POS_JENIS_PENCETAK","POS_SAIZ_KERTAS","POS_RESIT_NAMA","POS_RESIT_HEADER2","POS_RESIT_ALAMAT","POS_RESIT_TELEFON","POS_RESIT_LOGO","POS_RESIT_FOOTER","POS_RESIT_QR_TEKS"];
+  const rows = sh.getDataRange().getValues();
+  const rowByKey = {};
+  for (let i = 1; i < rows.length; i++) {
+    const k = String(rows[i][0] || "").trim();
+    if (k) rowByKey[k] = i + 1;
+  }
+  let saved = 0;
+  allowed.forEach(function (k) {
+    if (settings[k] === undefined) return;
+    const v = String(settings[k]);
+    if (rowByKey[k]) sh.getRange(rowByKey[k], 2).setValue(v);
+    else { sh.appendRow([k, v]); rowByKey[k] = sh.getLastRow(); }
+    saved++;
+  });
+  SpreadsheetApp.flush();
+  return { saved: true, count: saved };
+}
+
+function savePosSale(payload) {
+  // Gabung jualan POS hari ini dengan rekod harian sedia ada, supaya tidak memadam rekod Rekod Harian.
+  const tarikh = String(payload.tarikh || "").trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(tarikh)) throw new Error("Format tarikh tidak sah (YYYY-MM-DD).");
+  const incoming = Array.isArray(payload.items) ? payload.items : [];
+  if (incoming.length === 0) throw new Error("Tiada item POS untuk direkod.");
+  const merged = {};
+  try {
+    const existing = getDailyDetail(tarikh);
+    if (existing && existing.items) {
+      existing.items.forEach(function (ex) {
+        const sold = Math.max(0, (Number(ex.stokAwal) || 0) + (Number(ex.stokTambah) || 0) - (Number(ex.bakiStok) || 0));
+        if (sold > 0) merged[String(ex.kategori || "").toUpperCase()] = { kategori: String(ex.kategori || "").toUpperCase(), stokAwal: sold, stokTambah: 0, bakiStok: 0, hargaSeunit: Number(ex.hargaSeunit) || 0, unitTerjual: sold, jualanDijangka: Number((sold * (Number(ex.hargaSeunit) || 0)).toFixed(2)) };
+      });
+    }
+  } catch (e) { /* tiada rekod lama: teruskan */ }
+  incoming.forEach(function (it) {
+    const key = String(it.kategori || "").toUpperCase();
+    const qty = Number(it.unitTerjual || it.stokAwal || 0);
+    const harga = Number(it.hargaSeunit) || 0;
+    if (!merged[key]) merged[key] = { kategori: key, stokAwal: qty, stokTambah: 0, bakiStok: 0, hargaSeunit: harga, unitTerjual: qty, jualanDijangka: Number((qty * harga).toFixed(2)) };
+    else { merged[key].stokAwal += qty; merged[key].unitTerjual = merged[key].stokAwal; merged[key].jualanDijangka = Number((merged[key].stokAwal * merged[key].hargaSeunit).toFixed(2)); }
+  });
+  const items = Object.keys(merged).map(function (k) { return merged[k]; });
+  const totalExpected = items.reduce(function (a, x) { return a + x.jualanDijangka; }, 0);
+  return saveDailySales({ tarikh: tarikh, jualanSebenar: Number(totalExpected.toFixed(2)), catatan: String(payload.catatan || "POS"), items: items });
 }
 
 function saveDailySales(payload) {

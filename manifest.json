@@ -1,6 +1,6 @@
 {
-  "name": "KH Keusahawanan Pro — Sistem Jualan & Audit Stok 3D Futuristik",
-  "short_name": "KH Jualan Pro",
+  "name": "KH Keusahawanan Pro — Sistem POS & Jualan 3D Futuristik",
+  "short_name": "KH POS Pro",
   "description": "Aplikasi PWA 3D futuristik dengan skrin mula 3D, kad condong sebenar, carta 3D, panel neon dan mod gelap neon untuk rekod stok, jualan harian, audit tunai, gaji pekerja dan analitik, disambung ke Google Sheets.",
   "start_url": "./index.html",
   "display": "standalone",
