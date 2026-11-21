@@ -2,12 +2,12 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzfndp5CwRNhHRYKrn2ZyEqMpYhM5cyL9qlYMnTZ1cbgz9NzXrIEpqDWlTT5XWegjbg/exec";</script>
+  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwnhSYi1_mfaVbUQwY-MFFi8UVDAuz8GPTAPRlcQ5zs7DGS2dBWPGfjIIn066KlqAuB/exec";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#8B5CF6" />
-  <title>KH Keusahawanan Pro — Sistem POS v8.3 Tajam 3D</title>
+  <title>KH Keusahawanan Pro — Sistem POS v8.4</title>
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -414,7 +414,7 @@
       </nav>
 
       <div class="flex items-center gap-1.5 shrink-0">
-        <button onclick="togglePosMode()" id="posModeBtn" title="Hidup atau mati Mod POS" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🛒 POS: ON</button>
+        <button onclick="togglePosMode()" id="posModeBtn" title="Tekan untuk buka Kaunter POS" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🛒 POS: ON — Buka</button>
         <button onclick="syncFromCloud()" title="Segerak Google Sheet" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🔄<span class="hidden sm:inline ml-1">Segerak</span></button>
         <button onclick="toggleTheme()" id="themeBtn" title="Tukar Tema Glass" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🌙</button>
       </div>
@@ -1996,16 +1996,20 @@ function applyPosMode() {
   document.body.classList.toggle("pos-off", !posSettings.enabled);
   document.body.classList.toggle("fast-mode", !!posSettings.fastMode);
   var btn = document.getElementById("posModeBtn");
-  if (btn) btn.textContent = posSettings.enabled ? "🛒 POS: ON" : "🛒 POS: OFF";
+  if (btn) btn.textContent = posSettings.enabled ? "🛒 POS: ON — Buka" : "🛒 POS: OFF — Buka";
   var badge = document.getElementById("posTrainingBadge");
   if (badge) badge.classList.toggle("hidden", !posSettings.training);
 }
 function togglePosMode() {
-  posSettings.enabled = !posSettings.enabled;
-  localStorage.setItem("kh_pos_settings", JSON.stringify(posSettings));
-  loadPosSettings();
-  if (!posSettings.enabled && document.getElementById("tab-pos") && !document.getElementById("tab-pos").classList.contains("hidden")) switchTab("rekod");
-  showToast(posSettings.enabled ? "Mod POS dihidupkan" : "Mod POS dimatikan", "success");
+  var wasOff = !posSettings.enabled;
+  if (wasOff) {
+    posSettings.enabled = true;
+    localStorage.setItem("kh_pos_settings", JSON.stringify(posSettings));
+    loadPosSettings();
+    showToast("Mod POS dihidupkan — Kaunter POS dibuka", "success");
+  }
+  // Tekan ON terus papar Kaunter POS (pintu Cashier akan muncul dahulu jika sesi belum bermula).
+  switchTab("pos");
 }
 function resetReceiptSettings() {
   posSettings = posDefaultSettings();
