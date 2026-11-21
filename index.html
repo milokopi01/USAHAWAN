@@ -2,12 +2,12 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzfndp5CwRNhHRYKrn2ZyEqMpYhM5cyL9qlYMnTZ1cbgz9NzXrIEpqDWlTT5XWegjbg/exec";</script>
+  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwnhSYi1_mfaVbUQwY-MFFi8UVDAuz8GPTAPRlcQ5zs7DGS2dBWPGfjIIn066KlqAuB/exec";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#8B5CF6" />
-  <title>KH Keusahawanan Pro — Sistem POS v8.2 &amp; Jualan 3D Futuristik</title>
+  <title>KH Keusahawanan Pro — Sistem POS v8.3 Tajam 3D</title>
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -285,6 +285,84 @@
       #posCashierName { font-size: 18px; min-height: 60px; }
       #tab-pos .glass-3d { border-radius: 20px; }
     }
+
+
+    /* ===== v8.3 TAJAM — betulkan pudar / kabur, kekalkan timbul 3D ===== */
+    /* Punca pudar: kad lutsinar 82% + backdrop-filter blur 22px + orb blur 70px
+       di belakang kad. Penyelesaian: kad jadi pepejal, buang blur dari kad,
+       3D dibuat dengan bayang berlapis dan sempadan bawah, bukan dengan kabur. */
+    :root {
+      --glass-bg: #FFFFFF;
+      --glass-border: #E2E8F0;
+      --glass-shadow: 0 10px 24px -8px rgba(30, 27, 75, 0.28), 0 2px 6px rgba(30, 27, 75, 0.10), inset 0 2px 0 #FFFFFF, inset 0 -3px 0 rgba(124, 58, 237, 0.08);
+      --text-main: #14113A;
+      --text-sub: #475569;
+      --input-bg: #FFFFFF;
+    }
+    body.dark-glass {
+      --glass-bg: #1E1B4B;
+      --glass-border: #4C1D95;
+      --glass-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.70), 0 2px 6px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      --text-main: #FFFFFF;
+      --text-sub: #E9D5FF;
+      --input-bg: #0F172A;
+    }
+    .glass-3d {
+      background: #FFFFFF !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border: 1.5px solid #E2E8F0 !important;
+      box-shadow: 0 10px 24px -8px rgba(30, 27, 75, 0.28), 0 2px 6px rgba(30, 27, 75, 0.10), inset 0 2px 0 #FFFFFF, inset 0 -3px 0 rgba(124, 58, 237, 0.08) !important;
+    }
+    body.dark-glass .glass-3d {
+      background: #1E1B4B !important;
+      border-color: #4C1D95 !important;
+      box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.70), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+    }
+    .glass-pill {
+      background: #FFFFFF !important;
+      border: 2px solid #CBD5E1 !important;
+      box-shadow: 0 2px 0 #CBD5E1, inset 0 1px 0 #FFFFFF !important;
+      color: #14113A !important;
+    }
+    body.dark-glass .glass-pill { background: #0F172A !important; border-color: #475569 !important; color: #FFFFFF !important; box-shadow: 0 2px 0 #334155 !important; }
+    input::placeholder, textarea::placeholder { color: #64748B !important; opacity: 1 !important; }
+    .subtext { color: #475569 !important; }
+    body.dark-glass .subtext { color: #E9D5FF !important; }
+    /* Latar hidup dimalapkan supaya tidak menembusi kad */
+    .orb { opacity: 0.30 !important; filter: blur(48px) !important; }
+    .fx-grid { opacity: 0.16 !important; }
+    .fx-particle { filter: none !important; opacity: 0.45 !important; box-shadow: none !important; }
+    /* Butang timbul 3D tanpa kabur: sempadan bawah pejal + bayang berlapis */
+    .btn-3d {
+      border: 1px solid rgba(0, 0, 0, 0.08) !important;
+      border-bottom: 4px solid rgba(124, 58, 237, 0.50) !important;
+      box-shadow: 0 5px 0 rgba(124, 58, 237, 0.45), 0 12px 20px -8px rgba(236, 72, 153, 0.35) !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.20) !important;
+      -webkit-font-smoothing: antialiased;
+    }
+    .btn-3d::after { filter: none !important; background: rgba(124, 58, 237, 0.20) !important; height: 8px !important; bottom: -6px !important; }
+    .btn-3d:active { transform: translateY(4px) scale(0.98); box-shadow: 0 1px 0 rgba(124, 58, 237, 0.45), 0 6px 12px -6px rgba(236, 72, 153, 0.30) !important; }
+    .btn-chip {
+      background: #FFFFFF !important;
+      color: #92400E !important;
+      border: 2px solid #F59E0B !important;
+      box-shadow: 0 3px 0 #F59E0B !important;
+    }
+    body.dark-glass .btn-chip { background: #451A03 !important; color: #FDE68A !important; border-color: #F59E0B !important; }
+    .nav-active {
+      border-bottom: 3px solid rgba(0, 0, 0, 0.22) !important;
+      box-shadow: 0 4px 0 rgba(124, 58, 237, 0.45), 0 10px 18px -6px rgba(236, 72, 153, 0.55) !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.20) !important;
+    }
+    /* Hentikan animasi kepala yang menyebabkan teks berkedip / kabur */
+    header .glass-3d { animation: none !important; transform: none !important; }
+    .tilt-card { will-change: auto !important; }
+    .tilt-card .tilt-pop, .tilt-card .tilt-pop-soft { transform: translateZ(0) !important; }
+    .chart-3d canvas { filter: none !important; transform: none !important; }
+    .kpi-neon::after { background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.10), transparent 68%) !important; }
+    #panelAuditTunai { border: 1.5px solid #E2E8F0 !important; }
+    * { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
   </style>
 </head>
