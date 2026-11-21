@@ -2,12 +2,12 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzGVOP31F-L_tlloU-J2fReaxKsBvhO95FhSbZeZ3rrJeMl9ulSYpKBKzqoCjTaaghK/exec";</script>
+  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwnhSYi1_mfaVbUQwY-MFFi8UVDAuz8GPTAPRlcQ5zs7DGS2dBWPGfjIIn066KlqAuB/exec";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#8B5CF6" />
-  <title>KH Keusahawanan Pro — Sistem Jualan &amp; Audit Stok 3D Ceria</title>
+  <title>KH Keusahawanan Pro — Sistem Jualan &amp; Audit Stok 3D Futuristik</title>
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -148,9 +148,113 @@
     .mobile-bottom-nav {
       bottom: calc(10px + env(safe-area-inset-bottom));
     }
+
+    /* ===== FUTURISTIK 3D SEBENAR ===== */
+    main, header { perspective: 1200px; }
+    .fx-grid {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: 0.35;
+      background-image: linear-gradient(rgba(139,92,246,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(236,72,153,0.14) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 78%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 78%);
+    }
+    #fxParticles { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+    .fx-particle { position: absolute; border-radius: 9999px; opacity: 0.75; filter: blur(0.5px); animation: fxFloat linear infinite; box-shadow: 0 0 12px currentColor; }
+    @keyframes fxFloat {
+      0% { transform: translate3d(0,0,0) scale(1); opacity: 0.15; }
+      25% { opacity: 0.85; }
+      50% { transform: translate3d(14px,-46px,20px) scale(1.25); opacity: 0.6; }
+      100% { transform: translate3d(-10px,-110px,0) scale(0.8); opacity: 0.1; }
+    }
+    /* Skrin mula 3D */
+    #splash {
+      position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      background: linear-gradient(135deg, #1E1B4B, #7C3AED 45%, #DB2777 78%, #F59E0B);
+      color: #fff; transition: opacity 0.55s ease, visibility 0.55s ease;
+    }
+    #splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    .splash-logo {
+      width: 104px; height: 104px; border-radius: 28px; display: flex; align-items: center; justify-content: center;
+      font-size: 38px; font-weight: 800; letter-spacing: -1px;
+      background: rgba(255,255,255,0.16); border: 2px solid rgba(255,255,255,0.55);
+      backdrop-filter: blur(18px); box-shadow: 0 24px 48px -12px rgba(0,0,0,0.55), inset 0 2px 4px rgba(255,255,255,0.7);
+      animation: splashFloat 2.2s ease-in-out infinite alternate; transform-style: preserve-3d;
+    }
+    @keyframes splashFloat { from { transform: perspective(700px) rotateX(8deg) rotateY(-14deg) translateY(0); } to { transform: perspective(700px) rotateX(-8deg) rotateY(14deg) translateY(-12px); } }
+    .splash-bar { width: 180px; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.28); overflow: hidden; }
+    .splash-bar i { display: block; height: 100%; width: 40%; border-radius: 999px; background: linear-gradient(90deg, #FDE68A, #F472B6, #A78BFA); animation: splashLoad 1.2s ease-in-out infinite alternate; }
+    @keyframes splashLoad { from { transform: translateX(-10px); width: 34%; } to { transform: translateX(110px); width: 52%; } }
+    /* Kad condong 3D sebenar */
+    .tilt-card { transform-style: preserve-3d; will-change: transform; transition: transform 0.18s ease, box-shadow 0.18s ease; }
+    .tilt-card .tilt-pop { transform: translateZ(34px); display: inline-block; }
+    .tilt-card .tilt-pop-soft { transform: translateZ(18px); }
+    /* Peralihan tab 3D */
+    .tab-in-3d { animation: tabIn3d 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; transform-origin: top center; }
+    @keyframes tabIn3d {
+      from { opacity: 0; transform: perspective(1000px) rotateX(10deg) translateY(18px) translateZ(-40px) scale(0.98); }
+      to { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateY(0) translateZ(0) scale(1); }
+    }
+    /* Butang timbul berlapis */
+    .btn-3d { transform-style: preserve-3d; }
+    .btn-3d::before {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0) 42%);
+    }
+    .btn-3d::after {
+      content: ""; position: absolute; left: 10px; right: 10px; bottom: -7px; height: 12px; border-radius: 999px; z-index: -1;
+      background: rgba(124, 58, 237, 0.35); filter: blur(7px);
+    }
+    /* Panel kawalan neon untuk KPI dan audit tunai */
+    .kpi-neon { position: relative; overflow: hidden; }
+    .kpi-neon::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #F59E0B, #EC4899, #8B5CF6, #06B6D4);
+    }
+    .kpi-neon::after {
+      content: ""; position: absolute; inset: auto -30% -42% -30%; height: 58%;
+      background: radial-gradient(ellipse at center, rgba(139,92,246,0.22), transparent 68%); pointer-events: none;
+    }
+    #panelAuditTunai { position: relative; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.95); }
+    #panelAuditTunai::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, #10B981, #06B6D4, #8B5CF6, #EC4899, #F59E0B);
+    }
+    #connBadge { box-shadow: 0 0 0 1px rgba(255,255,255,0.6), 0 0 14px rgba(245,158,11,0.45); }
+    /* Carta 3D */
+    .chart-3d { transform-style: preserve-3d; perspective: 900px; }
+    .chart-3d canvas { filter: drop-shadow(0 14px 18px rgba(124,58,237,0.28)) drop-shadow(0 4px 8px rgba(236,72,153,0.22)); transform: translateZ(18px); }
+    /* Kepala terapung dan nav dok 3D */
+    header .glass-3d { transform-style: preserve-3d; animation: headerFloat 5s ease-in-out infinite alternate; }
+    @keyframes headerFloat { from { transform: translateY(0) translateZ(0); } to { transform: translateY(-2px) translateZ(12px); } }
+    .mobile-bottom-nav { transform-style: preserve-3d; box-shadow: 0 -8px 30px -12px rgba(124,58,237,0.45), 0 18px 36px -16px rgba(236,72,153,0.4), inset 0 2px 3px rgba(255,255,255,0.9); }
+    .mobile-bottom-nav .nav-active { transform: translateY(-6px) translateZ(18px) scale(1.04); }
+    /* Mod neon gelap — lebih futuristik */
+    body.dark-glass { --glass-border: rgba(167,139,250,0.45); }
+    body.dark-glass .glass-3d {
+      box-shadow: 0 18px 40px -14px rgba(0,0,0,0.7), 0 0 0 1px rgba(139,92,246,0.22), 0 0 28px -6px rgba(236,72,153,0.35), inset 0 2px 4px rgba(255,255,255,0.16);
+    }
+    body.dark-glass .nav-active { box-shadow: 0 0 22px rgba(236,72,153,0.65), 0 8px 18px -4px rgba(139,92,246,0.6); }
+    body.dark-glass .btn-3d { box-shadow: 0 6px 0 rgba(0,0,0,0.45), 0 0 24px rgba(236,72,153,0.45); }
+    body.dark-glass .fx-grid { opacity: 0.55; }
+    @media (prefers-reduced-motion: reduce) {
+      .orb, .fx-particle, .splash-logo, header .glass-3d { animation: none !important; }
+      .tab-in-3d { animation: none !important; }
+    }
+
   </style>
 </head>
 <body>
+  <div id="splash" role="status" aria-label="Memuatkan aplikasi">
+    <div class="splash-logo">KH</div>
+    <div style="text-align:center">
+      <div style="font-weight:800; letter-spacing:0.14em; font-size:15px">KH KEUSAHAWANAN PRO</div>
+      <div style="font-size:12px; opacity:0.9; margin-top:4px">Sistem Jualan &amp; Audit Stok 3D</div>
+    </div>
+    <div class="splash-bar"><i></i></div>
+    <div style="font-size:11px; opacity:0.85">Memuatkan paparan 3D...</div>
+  </div>
+  <div class="fx-grid" aria-hidden="true"></div>
+  <div id="fxParticles" aria-hidden="true"></div>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
@@ -383,7 +487,7 @@
 
       <!-- KPI Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-4">
-        <div class="glass-3d p-3.5 md:p-4">
+        <div class="glass-3d kpi-neon p-3.5 md:p-4">
           <div class="text-[10px] font-extrabold uppercase subtext">Jualan Sebenar</div>
           <div id="kpiReal" class="text-lg md:text-2xl font-extrabold text-violet-700 mt-1">RM 0.00</div>
           <div id="kpiAvg" class="text-[10px] md:text-[11px] subtext mt-1">Purata RM 0.00/hari</div>
@@ -407,11 +511,11 @@
 
       <!-- Charts -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-3.5 md:gap-4">
-        <div class="glass-3d p-4 md:p-5 lg:col-span-2">
+        <div class="glass-3d chart-3d p-4 md:p-5 lg:col-span-2">
           <h3 class="text-xs md:text-sm font-extrabold mb-3">📈 Trend Jualan Bulanan (RM)</h3>
           <div class="h-56 md:h-64"><canvas id="chartMonthly"></canvas></div>
         </div>
-        <div class="glass-3d p-4 md:p-5">
+        <div class="glass-3d chart-3d p-4 md:p-5">
           <h3 class="text-xs md:text-sm font-extrabold mb-3">🏆 Prestasi Kategori Produk</h3>
           <div class="h-56 md:h-64"><canvas id="chartCategory"></canvas></div>
         </div>
@@ -1401,5 +1505,112 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+
+<script>
+(function () {
+  // Skrin mula 3D — hilang selepas muat
+  function hideSplash() {
+    var s = document.getElementById("splash");
+    if (s) s.classList.add("hide");
+    setTimeout(function () { if (s && s.parentNode) s.parentNode.removeChild(s); }, 700);
+  }
+  window.addEventListener("load", function () { setTimeout(hideSplash, 900); });
+  setTimeout(hideSplash, 2600);
+
+  // Zarah cahaya terapung
+  try {
+    var box = document.getElementById("fxParticles");
+    var colors = ["#F472B6", "#A78BFA", "#FACC15", "#2DD4BF", "#38BDF8", "#FB923C"];
+    if (box) {
+      for (var i = 0; i < 26; i++) {
+        var d = document.createElement("span");
+        d.className = "fx-particle";
+        var size = 4 + Math.random() * 7;
+        d.style.width = size + "px";
+        d.style.height = size + "px";
+        d.style.left = Math.random() * 100 + "%";
+        d.style.top = (30 + Math.random() * 70) + "%";
+        d.style.background = colors[i % colors.length];
+        d.style.color = colors[i % colors.length];
+        d.style.animationDuration = (9 + Math.random() * 10) + "s";
+        d.style.animationDelay = (-Math.random() * 12) + "s";
+        box.appendChild(d);
+      }
+    }
+  } catch (e) {}
+
+  // Condong 3D sebenar pada kad produk — ikut jari / tetikus
+  function attachTilt(card) {
+    if (!card || card._tiltBound) return;
+    card._tiltBound = true;
+    card.classList.add("tilt-card");
+    card.addEventListener("pointermove", function (ev) {
+      var r = card.getBoundingClientRect();
+      var px = (ev.clientX - r.left) / Math.max(1, r.width) - 0.5;
+      var py = (ev.clientY - r.top) / Math.max(1, r.height) - 0.5;
+      card.style.transform = "perspective(900px) rotateX(" + (-py * 10).toFixed(2) + "deg) rotateY(" + (px * 12).toFixed(2) + "deg) translateZ(8px)";
+      card.style.boxShadow = (-px * 14).toFixed(0) + "px " + (18 + Math.abs(py) * 10).toFixed(0) + "px 30px -10px rgba(124,58,237,0.35), 0 0 0 1px rgba(255,255,255,0.7)";
+    });
+    card.addEventListener("pointerleave", function () {
+      card.style.transform = "";
+      card.style.boxShadow = "";
+    });
+  }
+  function bindProductTilt() {
+    var grid = document.getElementById("productGrid");
+    if (!grid) return;
+    grid.querySelectorAll(".glass-3d").forEach(attachTilt);
+    // Ikon produk timbul ke depan
+    grid.querySelectorAll(".glass-3d > div:first-child span.text-2xl").forEach(function (el) { el.classList.add("tilt-pop"); });
+  }
+  // Pasang semula selepas grid dilukis semula
+  var _obs = new MutationObserver(function () { bindProductTilt(); });
+  var _grid = document.getElementById("productGrid");
+  if (_grid) _obs.observe(_grid, { childList: true, subtree: false });
+  bindProductTilt();
+  setTimeout(bindProductTilt, 800);
+  setTimeout(bindProductTilt, 2000);
+
+  // Condong lembut pada kad carta Dashboard
+  document.querySelectorAll(".chart-3d").forEach(attachTilt);
+
+  // Gyroskop telefon — kepala dan bebola bergerak sedikit ikut condongan telefon
+  try {
+    window.addEventListener("deviceorientation", function (ev) {
+      if (ev.gamma == null) return;
+      var header = document.querySelector("header .glass-3d");
+      if (header) header.style.transform = "perspective(900px) rotateY(" + (ev.gamma * 0.18).toFixed(2) + "deg) rotateX(" + (-(ev.beta || 0) * 0.06).toFixed(2) + "deg)";
+    }, { passive: true });
+  } catch (e) {}
+
+  // Peralihan tab 3D — bungkus fungsi asal tanpa ubah logiknya
+  try {
+    var _origSwitch = window.switchTab;
+    if (typeof _origSwitch === "function") {
+      window.switchTab = function (tabId) {
+        _origSwitch(tabId);
+        var sec = document.getElementById("tab-" + tabId);
+        if (sec) { sec.classList.remove("tab-in-3d"); void sec.offsetWidth; sec.classList.add("tab-in-3d"); }
+        if (tabId === "dashboard") setTimeout(function () { document.querySelectorAll(".chart-3d").forEach(attachTilt); }, 80);
+        if (tabId === "rekod") setTimeout(bindProductTilt, 80);
+      };
+    }
+    var _origTheme = window.toggleTheme;
+    if (typeof _origTheme === "function") {
+      window.toggleTheme = function () {
+        _origTheme();
+        if (navigator.vibrate) navigator.vibrate(8);
+      };
+    }
+  } catch (e) {}
+
+  // Getaran halus bila tekan butang utama
+  document.addEventListener("click", function (ev) {
+    var b = ev.target && ev.target.closest ? ev.target.closest(".btn-3d") : null;
+    if (b && navigator.vibrate) navigator.vibrate(8);
+  });
+})();
+</script>
+
 </body>
 </html>

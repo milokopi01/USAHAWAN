@@ -1,12 +1,12 @@
 {
-  "name": "KH Keusahawanan Pro — Sistem Jualan & Audit Stok 3D Ceria",
+  "name": "KH Keusahawanan Pro — Sistem Jualan & Audit Stok 3D Futuristik",
   "short_name": "KH Jualan Pro",
-  "description": "Aplikasi PWA 3D berkaca yang ceria untuk rekod stok, jualan harian, audit tunai, gaji pekerja dan analitik keusahawanan, disambung ke Google Sheets. Mesra jari besar di telefon.",
+  "description": "Aplikasi PWA 3D futuristik dengan skrin mula 3D, kad condong sebenar, carta 3D, panel neon dan mod gelap neon untuk rekod stok, jualan harian, audit tunai, gaji pekerja dan analitik, disambung ke Google Sheets.",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#FDF2F8",
-  "theme_color": "#8B5CF6",
+  "background_color": "#1E1B4B",
+  "theme_color": "#7C3AED",
   "lang": "ms-MY",
   "icons": [
     {
