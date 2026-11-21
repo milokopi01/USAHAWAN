@@ -2,12 +2,12 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz1hcWNzyCu6WBoa5Y76rxJZAJWPhUhIuoZ_ULi_6T7Ozgkq7_kot4CqP6w5noVIKat/exec";</script>
+  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwnhSYi1_mfaVbUQwY-MFFi8UVDAuz8GPTAPRlcQ5zs7DGS2dBWPGfjIIn066KlqAuB/exec";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#8B5CF6" />
-  <title>KH Keusahawanan Pro — Sistem POS v8.1 &amp; Jualan 3D Futuristik</title>
+  <title>KH Keusahawanan Pro — Sistem POS v8.2 &amp; Jualan 3D Futuristik</title>
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -269,6 +269,21 @@
     }
     @media (max-width: 640px) {
       .pos-product-btn { min-height: 96px; }
+    }
+
+
+    /* ===== POS v8.2 — mesra telefon pintar + cashier ===== */
+    .pos-cashier-gate { border: 2px solid #F59E0B; }
+    .pos-cashier-name { font-size: 18px; }
+    @media (max-width: 768px) {
+      #tab-pos .pos-product-btn { min-height: 104px; }
+      #tab-pos .pos-product-btn .font-extrabold { font-size: 14px; }
+      #btnPosPay { min-height: 64px !important; font-size: 16px !important; }
+      #tab-pos .pos-pay-btn { min-height: 60px; font-size: 13px; }
+      #tab-pos input, #tab-pos select { font-size: 16px; }
+      #posCartList { max-height: 38vh; }
+      #posCashierName { font-size: 18px; min-height: 60px; }
+      #tab-pos .glass-3d { border-radius: 20px; }
     }
 
   </style>
@@ -691,6 +706,37 @@
         </div>
       </div>
 
+
+      <div id="posCashierBar" class="hidden glass-3d p-3.5 md:p-4 flex flex-wrap items-center justify-between gap-2">
+        <div class="min-w-0">
+          <div class="text-[10px] font-extrabold uppercase subtext">Juruwang Bertugas</div>
+          <div id="posCashierCurrent" class="font-extrabold text-base md:text-lg truncate">—</div>
+          <div id="posSessionSummary" class="text-[11px] subtext font-bold">Sesi belum bermula</div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="changePosCashier()" class="glass-pill px-3 py-2.5 min-h-[56px] text-xs font-extrabold">Tukar Cashier</button>
+          <button onclick="endPosCashierSession()" class="glass-pill px-3 py-2.5 min-h-[56px] text-xs font-extrabold">Tamat Sesi</button>
+        </div>
+      </div>
+
+      <div id="posCashierGate" class="glass-3d pos-cashier-gate p-5 md:p-6 space-y-3.5">
+        <h3 class="text-base md:text-lg font-extrabold">🔐 Sebelum Guna POS — Sahkan Nama Cashier</h3>
+        <p class="text-sm font-bold">Kaunter POS tidak boleh digunakan selagi nama cashier belum dimasukkan dan disahkan betul.</p>
+        <p class="text-xs subtext font-bold">Nama ini akan dicetak pada setiap resit dan direkod ke Google Sheet. Cashier yang bertugas bertanggungjawab atas sebarang ketirisan atau ralat jual beli dalam sesi ini.</p>
+        <div>
+          <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Nama Cashier (pilih dari senarai pekerja atau taip)</label>
+          <input id="posCashierName" list="posCashierList" type="text" placeholder="Contoh: AIMAN" autocomplete="off" oninput="validateCashierGate()" class="pos-cashier-name w-full glass-pill px-3.5 py-2.5 min-h-[60px] font-extrabold outline-none" />
+          <datalist id="posCashierList"></datalist>
+          <div id="posCashierWarn" class="hidden mt-1.5 text-xs font-extrabold text-amber-600">⚠️ Nama ini tiada dalam senarai pekerja. Semak ejaan betul-betul sebelum sahkan.</div>
+        </div>
+        <label class="glass-pill p-3.5 flex items-start gap-2.5 font-bold text-sm cursor-pointer">
+          <input id="posCashierConfirm" type="checkbox" onchange="validateCashierGate()" class="mt-1 shrink-0" style="width:24px;height:24px" />
+          <span>Saya mengesahkan nama di atas adalah betul. Saya bertanggungjawab atas sebarang ketirisan atau ralat jual beli dalam sesi ini.</span>
+        </label>
+        <button id="btnStartPosSession" onclick="startPosCashierSession()" disabled class="btn-3d w-full py-3.5 min-h-[64px] bg-gradient-to-r from-amber-500 via-pink-500 to-violet-600 text-white text-base disabled:opacity-40">MULA SESI POS</button>
+      </div>
+
+      <div id="posCounterWrap" class="hidden">
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-3.5 md:gap-4 items-start">
         <div class="lg:col-span-3 space-y-3">
           <input id="posSearch" type="text" placeholder="Cari produk... (tahan salah eja pun boleh)" oninput="renderPosGrid()" class="w-full glass-pill px-3.5 py-2.5 min-h-[56px] font-bold outline-none" />
@@ -734,6 +780,7 @@
           </div>
           <button onclick="syncPosQueue()" class="w-full glass-pill py-2.5 min-h-[52px] text-xs font-extrabold">🔄 Segerak Jualan POS Yang Belum Dihantar</button>
         </div>
+      </div>
       </div>
     </section>
 
@@ -846,7 +893,7 @@ function switchTab(tabId) {
   if (tabId === "dashboard") renderDashboard();
   if (tabId === "sejarah") renderHistory();
   if (tabId === "tetapan") { renderCatalogManager(); if (typeof checkPosDevices === "function") checkPosDevices(); }
-  if (tabId === "pos") { if (typeof renderPosGrid === "function") renderPosGrid(); if (typeof renderPosCart === "function") renderPosCart(); if (typeof updatePosOfflineBadge === "function") updatePosOfflineBadge(); }
+  if (tabId === "pos") { if (typeof populateCashierList === "function") populateCashierList(); if (typeof applyCashierGate === "function") applyCashierGate(); if (typeof renderPosGrid === "function") renderPosGrid(); if (typeof renderPosCart === "function") renderPosCart(); if (typeof updatePosOfflineBadge === "function") updatePosOfflineBadge(); if (typeof updatePosSessionSummary === "function") updatePosSessionSummary(); }
 }
 
 function setProductViewFilter(mode) {
@@ -1977,6 +2024,7 @@ function buildReceiptHTML(r) {
   lines.push('<div class="r-row"><span>No. Resit</span><b>' + escHtml(r.id) + '</b></div>');
   lines.push('<div class="r-row"><span>Tarikh</span><span>' + escHtml(r.tarikh) + ' ' + escHtml(r.masa) + '</span></div>');
   lines.push('<div class="r-row"><span>Kaedah</span><span>' + escHtml(r.kaedah) + '</span></div>');
+  lines.push('<div class="r-row"><span>Juruwang</span><b>' + escHtml(r.cashier || (posCashier ? posCashier.nama : '-')) + '</b></div>');
   if (r.training) lines.push('<div class="r-center" style="font-weight:800">*** MOD LATIHAN — TIDAK DIREKOD ***</div>');
   lines.push('<hr>');
   r.items.forEach(function (it) {
@@ -2001,7 +2049,7 @@ function renderReceiptPreview() {
   var el = document.getElementById("receiptPreview");
   if (!el) return;
   el.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto";
-  var sample = { id: "R0001", tarikh: new Date().toISOString().slice(0, 10), masa: "10:00", kaedah: "TUNAI", training: false, items: [{ kategori: "KACANG/BISKUT", qty: 2, harga: 1.00, amt: 2.00 }, { kategori: "AISKRIM", qty: 1, harga: 1.00, amt: 1.00 }], sub: 3.00, disc: 0, discPct: 0, tax: 0, taxPct: 0, total: 3.00, cash: 5.00, change: 2.00 };
+  var sample = { id: "R0001", tarikh: new Date().toISOString().slice(0, 10), masa: "10:00", kaedah: "TUNAI", cashier: "CONTOH", training: false, items: [{ kategori: "KACANG/BISKUT", qty: 2, harga: 1.00, amt: 2.00 }, { kategori: "AISKRIM", qty: 1, harga: 1.00, amt: 1.00 }], sub: 3.00, disc: 0, discPct: 0, tax: 0, taxPct: 0, total: 3.00, cash: 5.00, change: 2.00 };
   el.innerHTML = buildReceiptHTML(sample);
   var pv = document.getElementById("posReceiptPreview");
   if (pv && posLastReceipt) { pv.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto"; pv.innerHTML = buildReceiptHTML(posLastReceipt); }
@@ -2016,6 +2064,7 @@ function updatePosOfflineBadge() {
   else { el.textContent = "● Dalam talian"; el.className = "px-2.5 py-1.5 rounded-full bg-emerald-500/15 text-emerald-700 text-[11px] font-extrabold"; }
 }
 function checkoutPos() {
+  if (!posCashier || !posCashier.nama) { applyCashierGate(); showToast("Masukkan dan sahkan nama cashier dahulu sebelum guna POS.", "error"); return; }
   var tt = posTotals();
   if (!tt.count) return showToast("Bakul kosong. Ketik produk dahulu.", "error");
   if (tt.discPct > 10) {
@@ -2035,7 +2084,7 @@ function checkoutPos() {
     var c = (state.catalog || []).find(function (x) { return x.kategori === k; });
     return { kategori: k, qty: posCart[k], harga: c ? Number(c.harga) : 0, amt: posCart[k] * (c ? Number(c.harga) : 0) };
   });
-  posLastReceipt = { id: id, tarikh: now.toISOString().slice(0, 10), masa: now.toTimeString().slice(0, 5), kaedah: posPayMethod, training: !!posSettings.training, items: items, sub: tt.sub, disc: tt.disc, discPct: tt.discPct, tax: tt.tax, taxPct: tt.taxPct, total: tt.total, cash: cash, change: posPayMethod === "TUNAI" ? Math.max(0, cash - tt.total) : 0 };
+  posLastReceipt = { id: id, tarikh: now.toISOString().slice(0, 10), masa: now.toTimeString().slice(0, 5), kaedah: posPayMethod, cashier: posCashier.nama, training: !!posSettings.training, items: items, sub: tt.sub, disc: tt.disc, discPct: tt.discPct, tax: tt.tax, taxPct: tt.taxPct, total: tt.total, cash: cash, change: posPayMethod === "TUNAI" ? Math.max(0, cash - tt.total) : 0 };
   try {
     var all = JSON.parse(localStorage.getItem("kh_pos_receipts") || "[]");
     all.unshift(posLastReceipt); localStorage.setItem("kh_pos_receipts", JSON.stringify(all.slice(0, 100)));
@@ -2050,6 +2099,8 @@ function checkoutPos() {
   if (modal) { modal.classList.remove("hidden"); modal.classList.add("flex"); }
   updatePosOfflineBadge();
   clearPosCart();
+  logPosAudit("JUALAN", id + " " + posPayMethod + " RM " + tt.total.toFixed(2) + " oleh " + posCashier.nama);
+  updatePosSessionSummary();
   showToast(posSettings.training ? "Resit latihan siap. Tidak direkod." : "Bayaran berjaya. Resit " + id + " siap.", "success");
   if (navigator.onLine && !posSettings.training) syncPosQueue();
 }
@@ -2115,7 +2166,7 @@ async function recordPosToSheet() {
   } catch (e) {}
   var totalExpected = items.reduce(function (a, x) { return a + x.jualanDijangka; }, 0);
   try {
-    var r2 = await fetch(state.gasUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "saveDailySales", tarikh: tarikh, jualanSebenar: Number(totalExpected.toFixed(2)), catatan: "POS " + posLastReceipt.id, items: items }) });
+    var r2 = await fetch(state.gasUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "saveDailySales", tarikh: tarikh, jualanSebenar: Number(totalExpected.toFixed(2)), catatan: "POS " + posLastReceipt.id + (posLastReceipt.cashier ? " - Juruwang: " + posLastReceipt.cashier : ""), items: items }) });
     var j2 = await r2.json();
     if (!j2.ok) throw new Error(j2.error || "Ralat Sheet");
     showToast("Resit direkod ke Google Sheet", "success");
@@ -2133,7 +2184,7 @@ async function syncPosQueue() {
     var r = q[i];
     var items = r.items.map(function (it) { return { kategori: it.kategori, stokAwal: it.qty, stokTambah: 0, bakiStok: 0, hargaSeunit: it.harga, unitTerjual: it.qty, jualanDijangka: Number(it.amt.toFixed(2)) }; });
     try {
-      var res = await fetch(state.gasUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "savePosSale", tarikh: r.tarikh, jualanSebenar: Number(r.total.toFixed(2)), catatan: "POS " + r.id + " (" + r.kaedah + ")", items: items }) });
+      var res = await fetch(state.gasUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "savePosSale", tarikh: r.tarikh, jualanSebenar: Number(r.total.toFixed(2)), juruwang: r.cashier || "", catatan: "POS " + r.id + " (" + r.kaedah + ")" + (r.cashier ? " - Juruwang: " + r.cashier : ""), items: items }) });
       var j = await res.json();
       if (j.ok) { q.splice(i, 1); i--; }
     } catch (e) {}
@@ -2270,10 +2321,112 @@ async function testPosBluetooth(safeId) {
     printReceiptPreview();
   }
 }
+
+var posCashier = null;
+function loadPosCashier() {
+  try {
+    var s = JSON.parse(localStorage.getItem("kh_pos_cashier") || "null");
+    var today = new Date().toISOString().slice(0, 10);
+    if (s && s.nama && s.tarikh === today) posCashier = s; else posCashier = null;
+  } catch (e) { posCashier = null; }
+  applyCashierGate();
+}
+function populateCashierList() {
+  var dl = document.getElementById("posCashierList");
+  if (!dl) return;
+  var names = [];
+  try { names = (state && state.staffNames) ? state.staffNames.slice() : []; } catch (e) {}
+  if (!names.length && typeof DEFAULT_STAFF_NAMES !== "undefined") names = DEFAULT_STAFF_NAMES.slice();
+  dl.innerHTML = names.map(function (n) { return "<option value=\"" + n + "\">"; }).join("");
+}
+function applyCashierGate() {
+  var gate = document.getElementById("posCashierGate");
+  var wrap = document.getElementById("posCounterWrap");
+  var bar = document.getElementById("posCashierBar");
+  var cur = document.getElementById("posCashierCurrent");
+  if (!gate || !wrap) return;
+  if (posCashier && posCashier.nama) {
+    gate.classList.add("hidden");
+    wrap.classList.remove("hidden");
+    if (bar) { bar.classList.remove("hidden"); bar.classList.add("flex"); }
+    if (cur) cur.textContent = posCashier.nama + "  •  mula " + (posCashier.mula || "");
+  } else {
+    gate.classList.remove("hidden");
+    wrap.classList.add("hidden");
+    if (bar) { bar.classList.add("hidden"); bar.classList.remove("flex"); }
+  }
+  validateCashierGate();
+  updatePosSessionSummary();
+}
+function validateCashierGate() {
+  var nameEl = document.getElementById("posCashierName");
+  var chk = document.getElementById("posCashierConfirm");
+  var btn = document.getElementById("btnStartPosSession");
+  var warn = document.getElementById("posCashierWarn");
+  if (!nameEl || !chk || !btn) return;
+  var nama = nameEl.value.trim().toUpperCase();
+  var names = [];
+  try { names = (state && state.staffNames) ? state.staffNames : []; } catch (e) {}
+  var inList = names.indexOf(nama) !== -1;
+  if (warn) warn.classList.toggle("hidden", !nama || inList);
+  btn.disabled = !(nama.length >= 2 && chk.checked);
+}
+function logPosAudit(aksi, detail) {
+  try {
+    var log = JSON.parse(localStorage.getItem("kh_pos_audit") || "[]");
+    log.unshift({ masa: new Date().toISOString(), cashier: posCashier ? posCashier.nama : "", aksi: aksi, detail: detail || "" });
+    localStorage.setItem("kh_pos_audit", JSON.stringify(log.slice(0, 200)));
+  } catch (e) {}
+}
+function startPosCashierSession() {
+  var nameEl = document.getElementById("posCashierName");
+  var chk = document.getElementById("posCashierConfirm");
+  if (!nameEl || !chk) return;
+  var nama = nameEl.value.trim().toUpperCase();
+  if (nama.length < 2) return showToast("Masukkan nama cashier dahulu.", "error");
+  if (!chk.checked) return showToast("Sahkan kotak tanggungjawab dahulu.", "error");
+  var now = new Date();
+  posCashier = { nama: nama, tarikh: now.toISOString().slice(0, 10), mula: now.toLocaleTimeString("ms-MY", { hour: "2-digit", minute: "2-digit" }) };
+  localStorage.setItem("kh_pos_cashier", JSON.stringify(posCashier));
+  logPosAudit("MULA_SESI", "Cashier " + nama + " mula bertugas");
+  showToast("Sesi POS dimulakan — Juruwang: " + nama, "success");
+  applyCashierGate();
+}
+function changePosCashier() {
+  if (!window.confirm("Tukar cashier akan menamatkan sesi semasa. Teruskan?")) return;
+  endPosCashierSession(true);
+  var el = document.getElementById("posCashierName");
+  if (el) { el.value = ""; el.focus(); }
+  var chk = document.getElementById("posCashierConfirm");
+  if (chk) chk.checked = false;
+  applyCashierGate();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function endPosCashierSession(silent) {
+  if (!posCashier) return;
+  var s = updatePosSessionSummary();
+  logPosAudit("TAMAT_SESI", "Cashier " + posCashier.nama + " tamat. " + (s ? (s.count + " resit, " + s.total.toFixed(2)) : ""));
+  if (!silent) showToast("Sesi " + posCashier.nama + " ditamatkan. " + (s ? (s.count + " resit, RM " + s.total.toFixed(2)) : ""), "success");
+  posCashier = null;
+  localStorage.removeItem("kh_pos_cashier");
+  clearPosCart();
+  applyCashierGate();
+}
+function updatePosSessionSummary() {
+  var el = document.getElementById("posSessionSummary");
+  if (!posCashier) { if (el) el.textContent = "Sesi belum bermula"; return null; }
+  var today = new Date().toISOString().slice(0, 10);
+  var all = [];
+  try { all = JSON.parse(localStorage.getItem("kh_pos_receipts") || "[]"); } catch (e) {}
+  var mine = all.filter(function (r) { return r.tarikh === today && r.cashier === posCashier.nama; });
+  var total = mine.reduce(function (a, r) { return a + (Number(r.total) || 0); }, 0);
+  if (el) el.textContent = "Sesi hari ini: " + mine.length + " resit • RM " + total.toFixed(2) + " • Mula " + (posCashier.mula || "");
+  return { count: mine.length, total: total };
+}
 window.addEventListener("online", function () { updatePosOfflineBadge(); syncPosQueue(); });
 window.addEventListener("offline", function () { updatePosOfflineBadge(); });
-document.addEventListener("DOMContentLoaded", function () { loadPosSettings(); setPosPayMethod("TUNAI"); updatePosOfflineBadge(); });
-setTimeout(function () { try { loadPosSettings(); setPosPayMethod("TUNAI"); updatePosOfflineBadge(); } catch (e) {} }, 600);
+document.addEventListener("DOMContentLoaded", function () { loadPosSettings(); loadPosCashier(); populateCashierList(); setPosPayMethod("TUNAI"); updatePosOfflineBadge(); });
+setTimeout(function () { try { loadPosSettings(); loadPosCashier(); populateCashierList(); setPosPayMethod("TUNAI"); updatePosOfflineBadge(); } catch (e) {} }, 600);
 </script>
 
 </body>

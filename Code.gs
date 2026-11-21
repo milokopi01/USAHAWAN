@@ -331,7 +331,9 @@ function savePosSale(payload) {
   });
   const items = Object.keys(merged).map(function (k) { return merged[k]; });
   const totalExpected = items.reduce(function (a, x) { return a + x.jualanDijangka; }, 0);
-  return saveDailySales({ tarikh: tarikh, jualanSebenar: Number(totalExpected.toFixed(2)), catatan: String(payload.catatan || "POS"), items: items });
+  let catatanPos = String(payload.catatan || "POS");
+  if (payload.juruwang) catatanPos += " - Juruwang: " + String(payload.juruwang).toUpperCase();
+  return saveDailySales({ tarikh: tarikh, jualanSebenar: Number(totalExpected.toFixed(2)), catatan: catatanPos, items: items });
 }
 
 function saveDailySales(payload) {
