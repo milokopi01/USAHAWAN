@@ -2,12 +2,12 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz1hcWNzyCu6WBoa5Y76rxJZAJWPhUhIuoZ_ULi_6T7Ozgkq7_kot4CqP6w5noVIKat/exec";</script>
+  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwnhSYi1_mfaVbUQwY-MFFi8UVDAuz8GPTAPRlcQ5zs7DGS2dBWPGfjIIn066KlqAuB/exec";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#8B5CF6" />
-  <title>KH Keusahawanan Pro — Sistem POS &amp; Jualan 3D Futuristik</title>
+  <title>KH Keusahawanan Pro — Sistem POS v8.1 &amp; Jualan 3D Futuristik</title>
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -623,6 +623,29 @@
         <button onclick="savePosSettings(); showToast('Tetapan POS disimpan', 'success')" class="btn-3d w-full py-3 min-h-[56px] bg-gradient-to-r from-amber-500 via-pink-500 to-violet-600 text-white text-sm">SIMPAN TETAPAN POS</button>
       </div>
 
+
+      <div class="glass-3d p-4 md:p-5 space-y-3.5">
+        <h2 class="text-sm md:text-base font-extrabold">🔍 Semak Peranti Disambungkan</h2>
+        <p class="text-[11px] subtext">Senarai ini dibaca terus dari penyemak imbas: peranti Bluetooth, USB, Serial dan HID yang sudah dipair dengan aplikasi ini. Pencetak Rangkaian atau Wi-Fi tidak muncul di sini — semak dalam dialog Cetak Sistem.</p>
+        <div id="posDeviceSupport" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-extrabold">
+          <div class="glass-pill p-2.5">Bluetooth<br><span class="subtext">Menyemak...</span></div>
+          <div class="glass-pill p-2.5">USB<br><span class="subtext">Menyemak...</span></div>
+          <div class="glass-pill p-2.5">Serial<br><span class="subtext">Menyemak...</span></div>
+          <div class="glass-pill p-2.5">HID<br><span class="subtext">Menyemak...</span></div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="checkPosDevices()" class="btn-3d py-3 px-4 min-h-[56px] bg-gradient-to-r from-amber-500 via-pink-500 to-violet-600 text-white text-sm">🔍 SEMAK PERANTI SEKARANG</button>
+          <button onclick="pairBluetoothPrinter()" class="glass-pill py-3 px-4 min-h-[56px] text-xs font-extrabold">📶 Pair Bluetooth</button>
+          <button onclick="pairUsbDevice()" class="glass-pill py-3 px-4 min-h-[56px] text-xs font-extrabold">🔌 Pilih USB</button>
+          <button onclick="pairSerialDevice()" class="glass-pill py-3 px-4 min-h-[56px] text-xs font-extrabold">🔢 Pilih Serial</button>
+        </div>
+        <div id="posDeviceList" class="space-y-2">
+          <div class="glass-pill p-3 text-xs font-bold subtext text-center">Tekan SEMAK PERANTI SEKARANG untuk melihat peranti yang sudah dipair.</div>
+        </div>
+        <div class="flex justify-between text-[11px] subtext font-bold"><span id="posDeviceLastCheck">Belum disemak</span><span id="posDeviceCount">0 peranti</span></div>
+        <p class="text-[11px] subtext">Nota jujur: Safari di iPhone tidak menyokong Web Bluetooth, WebUSB dan Web Serial. Di iPhone, pencetak Bluetooth terma tidak boleh disemak atau disambung terus dari PWA — guna Cetak Sistem, AirPrint, atau aplikasi pencetak itu sendiri. Di Chrome Android, Windows dan Mac, semakan ini berfungsi.</p>
+      </div>
+
       <div class="glass-3d p-4 md:p-5 space-y-3.5">
         <h2 class="text-sm md:text-base font-extrabold">🧾 Tetapan Resit — Ubah Suai Header</h2>
         <p class="text-[11px] subtext">Tulis apa sahaja yang awak nak di bahagian atas resit. Pratonton di sebelah kanan berubah serta-merta. Tiada data pelanggan disimpan.</p>
@@ -663,6 +686,7 @@
         </div>
         <div class="flex items-center gap-2">
           <span id="posOfflineBadge" class="px-2.5 py-1.5 rounded-full bg-emerald-500/15 text-emerald-700 text-[11px] font-extrabold">● Dalam talian</span>
+          <span id="posDeviceStatus" class="px-2.5 py-1.5 rounded-full bg-slate-500/15 text-slate-600 text-[11px] font-extrabold">Peranti: belum disemak</span>
           <span id="posTrainingBadge" class="hidden px-2.5 py-1.5 rounded-full bg-amber-500/20 text-amber-700 text-[11px] font-extrabold">MOD LATIHAN</span>
         </div>
       </div>
@@ -821,7 +845,7 @@ function switchTab(tabId) {
   if (tabId === "gaji") renderGajiTab();
   if (tabId === "dashboard") renderDashboard();
   if (tabId === "sejarah") renderHistory();
-  if (tabId === "tetapan") renderCatalogManager();
+  if (tabId === "tetapan") { renderCatalogManager(); if (typeof checkPosDevices === "function") checkPosDevices(); }
   if (tabId === "pos") { if (typeof renderPosGrid === "function") renderPosGrid(); if (typeof renderPosCart === "function") renderPosCart(); if (typeof updatePosOfflineBadge === "function") updatePosOfflineBadge(); }
 }
 
@@ -2117,6 +2141,134 @@ async function syncPosQueue() {
   localStorage.setItem("kh_pos_offline_queue", JSON.stringify(q));
   updatePosOfflineBadge();
   if (!q.length) showToast("Semua jualan POS sudah disegerak", "success");
+}
+
+async function checkPosDevices() {
+  var listEl = document.getElementById("posDeviceList");
+  var supportEl = document.getElementById("posDeviceSupport");
+  var devices = [];
+  var support = {
+    Bluetooth: !!(navigator.bluetooth),
+    USB: !!(navigator.usb),
+    Serial: !!(navigator.serial),
+    HID: !!(navigator.hid)
+  };
+  if (supportEl) {
+    supportEl.innerHTML = Object.keys(support).map(function (k) {
+      return '<div class="glass-pill p-2.5">' + k + '<br><span class="' + (support[k] ? 'text-emerald-600' : 'text-rose-500') + '">' + (support[k] ? 'Disokong' : 'Tidak disokong') + '</span></div>';
+    }).join("");
+  }
+  if (listEl) listEl.innerHTML = '<div class="glass-pill p-3 text-xs font-bold subtext text-center">Menyemak peranti...</div>';
+  try {
+    if (navigator.bluetooth && navigator.bluetooth.getDevices) {
+      var bt = await navigator.bluetooth.getDevices();
+      var avail = false;
+      try { avail = await navigator.bluetooth.getAvailability(); } catch (e) {}
+      bt.forEach(function (d) { devices.push({ jenis: "Bluetooth", nama: d.name || "Peranti tanpa nama", id: d.id || "", status: (d.gatt && d.gatt.connected) ? "Disambung" : "Dipair — tidak disambung", detail: "Bluetooth " + (avail ? "dihidupkan" : "status tidak pasti") }); });
+    }
+  } catch (e) { devices.push({ jenis: "Bluetooth", nama: "Ralat baca Bluetooth", id: "", status: "Ralat", detail: String(e.message || e) }); }
+  try {
+    if (navigator.usb && navigator.usb.getDevices) {
+      var usb = await navigator.usb.getDevices();
+      usb.forEach(function (d) { devices.push({ jenis: "USB", nama: d.productName || "Peranti USB", id: String(d.vendorId || "") + ":" + String(d.productId || ""), status: d.opened ? "Disambung" : "Dipair — tidak disambung", detail: "Pengeluar: " + (d.manufacturerName || "tidak diketahui") }); });
+    }
+  } catch (e) {}
+  try {
+    if (navigator.serial && navigator.serial.getPorts) {
+      var ports = await navigator.serial.getPorts();
+      ports.forEach(function (port, i) {
+        var info = port.getInfo ? port.getInfo() : {};
+        devices.push({ jenis: "Serial", nama: "Port Serial " + (i + 1), id: String(info.usbVendorId || "") + ":" + String(info.usbProductId || ""), status: "Dipair", detail: "Vendor: " + (info.usbVendorId || "tidak diketahui") });
+      });
+    }
+  } catch (e) {}
+  try {
+    if (navigator.hid && navigator.hid.getDevices) {
+      var hid = await navigator.hid.getDevices();
+      hid.forEach(function (d) { devices.push({ jenis: "HID", nama: d.productName || "Peranti HID", id: String(d.vendorId || "") + ":" + String(d.productId || ""), status: d.opened ? "Disambung" : "Dipair — tidak disambung", detail: "Pengeluar: " + (d.productName || "tidak diketahui") }); });
+    }
+  } catch (e) {}
+  var countEl = document.getElementById("posDeviceCount");
+  var lastEl = document.getElementById("posDeviceLastCheck");
+  var statusEl = document.getElementById("posDeviceStatus");
+  var now = new Date();
+  var stamp = now.toLocaleDateString("ms-MY") + " " + now.toLocaleTimeString("ms-MY", { hour: "2-digit", minute: "2-digit" });
+  if (countEl) countEl.textContent = devices.length + " peranti";
+  if (lastEl) lastEl.textContent = "Disemak: " + stamp;
+  try { localStorage.setItem("kh_pos_devices_last", JSON.stringify({ masa: stamp, jumlah: devices.length, peranti: devices })); } catch (e) {}
+  var connected = devices.filter(function (d) { return d.status === "Disambung"; }).length;
+  if (statusEl) statusEl.textContent = devices.length ? ("Peranti: " + devices.length + " dipair, " + connected + " disambung") : "Peranti: tiada dipair";
+  if (!listEl) return devices;
+  if (!devices.length) {
+    var msg = "Tiada peranti dipair dengan aplikasi ini lagi.";
+    if (!support.Bluetooth && !support.USB && !support.Serial) msg += " Penyemak imbas ini tidak menyokong semakan peranti (contohnya Safari di iPhone). Guna Chrome di Android, Windows atau Mac, atau semak dalam Tetapan Bluetooth telefon.";
+    else msg += " Tekan Pair Bluetooth atau Pilih USB untuk pair peranti baharu, atau semak pencetak Rangkaian dalam dialog Cetak Sistem.";
+    listEl.innerHTML = '<div class="glass-pill p-4 text-xs font-bold subtext text-center">' + msg + '</div>';
+  } else {
+    listEl.innerHTML = devices.map(function (d, i) {
+      var btn = "";
+      if (d.jenis === "Bluetooth") btn = '<button onclick="connectPosBluetooth(\'' + encodeURIComponent(d.id) + '\')" class="btn-chip" style="min-height:48px">Sambung</button><button onclick="testPosBluetooth(\'' + encodeURIComponent(d.id) + '\')" class="btn-chip" style="min-height:48px">Uji Cetak</button>';
+      return '<div class="glass-pill p-3 flex items-center justify-between gap-2"><div class="min-w-0"><div class="font-extrabold text-xs truncate">' + d.nama + '</div><div class="text-[11px] subtext font-bold">' + d.jenis + ' • ' + d.status + ' • ' + d.detail + (d.id ? ' • ID: ' + d.id : '') + '</div></div><div class="flex gap-1.5 shrink-0">' + btn + '</div></div>';
+    }).join("");
+  }
+  return devices;
+}
+async function pairBluetoothPrinter() {
+  try {
+    if (!navigator.bluetooth) return showToast("Bluetooth tidak disokong pada penyemak imbas ini. Di iPhone, guna Cetak Sistem.", "error");
+    showToast("Pilih pencetak Bluetooth terma...", "info");
+    var device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ["000018f0-0000-1000-8000-00805f9b34fb"] });
+    showToast("Dipair: " + (device.name || "pencetak Bluetooth"), "success");
+    await checkPosDevices();
+  } catch (e) { showToast("Pair dibatalkan atau gagal: " + (e.message || e), "error"); }
+}
+async function pairUsbDevice() {
+  try {
+    if (!navigator.usb) return showToast("USB tidak disokong pada penyemak imbas ini.", "error");
+    var device = await navigator.usb.requestDevice({ filters: [] });
+    showToast("Dipair: " + (device.productName || "peranti USB"), "success");
+    await checkPosDevices();
+  } catch (e) { showToast("Pilih USB dibatalkan atau gagal: " + (e.message || e), "error"); }
+}
+async function pairSerialDevice() {
+  try {
+    if (!navigator.serial) return showToast("Serial tidak disokong pada penyemak imbas ini.", "error");
+    var port = await navigator.serial.requestPort();
+    showToast("Port Serial dipilih", "success");
+    await checkPosDevices();
+  } catch (e) { showToast("Pilih Serial dibatalkan atau gagal: " + (e.message || e), "error"); }
+}
+async function connectPosBluetooth(safeId) {
+  try {
+    var id = decodeURIComponent(safeId);
+    if (!navigator.bluetooth || !navigator.bluetooth.getDevices) return showToast("Bluetooth tidak disokong.", "error");
+    var list = await navigator.bluetooth.getDevices();
+    var dev = list.find(function (d) { return d.id === id; });
+    if (!dev) return showToast("Peranti tidak dijumpai dalam senarai pair.", "error");
+    if (dev.gatt && !dev.gatt.connected) await dev.gatt.connect();
+    showToast("Disambung: " + (dev.name || "pencetak Bluetooth"), "success");
+    await checkPosDevices();
+  } catch (e) { showToast("Gagal sambung: " + (e.message || e), "error"); }
+}
+async function testPosBluetooth(safeId) {
+  try {
+    var id = decodeURIComponent(safeId);
+    var list = await navigator.bluetooth.getDevices();
+    var dev = list.find(function (d) { return d.id === id; });
+    if (!dev) return showToast("Peranti tidak dijumpai.", "error");
+    if (dev.gatt && !dev.gatt.connected) await dev.gatt.connect();
+    var server = dev.gatt;
+    var service = await server.getPrimaryService("000018f0-0000-1000-8000-00805f9b34fb");
+    var chars = await service.getCharacteristics();
+    if (!chars.length) throw new Error("Tiada ciri tulis pada pencetak ini");
+    var text = "UJIAN CETAK KH POS\n" + new Date().toLocaleString("ms-MY") + "\n\n\n";
+    var data = new TextEncoder().encode(text);
+    await chars[0].writeValue(data);
+    showToast("Ujian cetak dihantar ke pencetak", "success");
+  } catch (e) {
+    showToast("Uji cetak Bluetooth gagal (" + (e.message || e) + "). Cuba Cetak Sistem.", "error");
+    printReceiptPreview();
+  }
 }
 window.addEventListener("online", function () { updatePosOfflineBadge(); syncPosQueue(); });
 window.addEventListener("offline", function () { updatePosOfflineBadge(); });
