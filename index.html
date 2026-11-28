@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#8B5CF6" />
-  <title>KH Keusahawanan Pro — Sistem POS v8.4</title>
+  <title>KH Keusahawanan Pro — Sistem POS v8.6</title>
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -364,6 +364,98 @@
     #panelAuditTunai { border: 1.5px solid #E2E8F0 !important; }
     * { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
+    /* ===== v8.5 — SEMUA BUTANG & PAPARAN JADI 3D TIMBUL ===== */
+    /* Prinsip v8.3 dikekalkan: timbul dibuat dengan sempadan bawah pejal +
+       bayang berlapis + kilau atas, BUKAN blur — supaya kekal tajam. */
+    button {
+      border: 1.5px solid rgba(30, 27, 75, 0.14);
+      border-bottom: 3px solid rgba(124, 58, 237, 0.35);
+      box-shadow: 0 3px 0 rgba(124, 58, 237, 0.20), 0 8px 16px -6px rgba(30, 27, 75, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+    }
+    button:hover { filter: brightness(1.04); }
+    button:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 rgba(124, 58, 237, 0.20), 0 4px 8px -4px rgba(30, 27, 75, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    }
+    button:disabled { transform: none !important; box-shadow: 0 2px 0 rgba(100, 116, 139, 0.35) !important; opacity: 0.45; }
+    body.dark-glass button { border-color: rgba(255, 255, 255, 0.20); border-bottom-color: rgba(0, 0, 0, 0.55); }
+    /* Butang utama 3D — paling timbul */
+    .btn-3d {
+      border-bottom: 5px solid rgba(124, 58, 237, 0.55) !important;
+      box-shadow: 0 6px 0 rgba(124, 58, 237, 0.45), 0 16px 26px -8px rgba(236, 72, 153, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.45) !important;
+    }
+    .btn-3d:active { transform: translateY(5px) scale(0.98); box-shadow: 0 1px 0 rgba(124, 58, 237, 0.45), 0 6px 12px -6px rgba(236, 72, 153, 0.35) !important; }
+    /* Kad & panel timbul — sempadan bawah pejal + bayang berlapis */
+    .glass-3d {
+      border-bottom: 3px solid #C7B8F5 !important;
+      box-shadow: 0 12px 26px -10px rgba(30, 27, 75, 0.30), 0 3px 0 rgba(124, 58, 237, 0.16), inset 0 2px 0 #FFFFFF !important;
+    }
+    body.dark-glass .glass-3d { border-bottom-color: #4C1D95 !important; box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.70), 0 3px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important; }
+    .glass-pill { border-bottom: 2px solid #CBD5E1 !important; }
+    body.dark-glass .glass-pill { border-bottom-color: #334155 !important; }
+    /* Butang tab & nav bawah — timbul, yang aktif terangkat */
+    .tab-btn { border-bottom: 3px solid transparent; box-shadow: 0 3px 0 rgba(124, 58, 237, 0.12), 0 6px 12px -6px rgba(30, 27, 75, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.7); }
+    .tab-btn:active { transform: translateY(2px); }
+    .nav-active {
+      border-bottom: 4px solid rgba(0, 0, 0, 0.28) !important;
+      box-shadow: 0 5px 0 rgba(124, 58, 237, 0.45), 0 12px 20px -6px rgba(236, 72, 153, 0.55), inset 0 2px 0 rgba(255, 255, 255, 0.35) !important;
+      transform: translateY(-2px);
+    }
+    .mobile-bottom-nav .tab-btn.nav-active { transform: translateY(-6px) translateZ(18px) scale(1.04); }
+    /* Cip pantas — timbul amber */
+    .btn-chip { border-bottom: 3px solid #D97706 !important; box-shadow: 0 3px 0 #F59E0B, 0 8px 14px -6px rgba(245, 158, 11, 0.55) !important; }
+    .btn-chip:active { transform: translateY(3px) scale(0.96); box-shadow: 0 1px 0 #F59E0B !important; }
+    /* Butang produk POS — kad timbul yang boleh ditekan */
+    .pos-product-btn {
+      border: 1.5px solid #E2E8F0 !important;
+      border-bottom: 4px solid rgba(236, 72, 153, 0.45) !important;
+      box-shadow: 0 4px 0 rgba(236, 72, 153, 0.22), 0 12px 20px -8px rgba(30, 27, 75, 0.30), inset 0 2px 0 #FFFFFF !important;
+    }
+    .pos-product-btn:active { transform: translateY(4px) scale(0.97); box-shadow: 0 1px 0 rgba(236, 72, 153, 0.22) !important; }
+    /* Butang kaedah bayar — timbul, yang aktif terangkat */
+    .pos-pay-btn { border-bottom: 3px solid rgba(124, 58, 237, 0.30) !important; box-shadow: 0 3px 0 rgba(124, 58, 237, 0.20), 0 8px 14px -6px rgba(30, 27, 75, 0.28) !important; }
+    .pos-pay-btn.active { border-bottom: 4px solid rgba(0, 0, 0, 0.30) !important; transform: translateY(-2px); box-shadow: 0 5px 0 rgba(124, 58, 237, 0.45), 0 12px 18px -6px rgba(236, 72, 153, 0.55) !important; }
+    /* Gambar produk — petak timbul */
+    .prod-thumb { object-fit: cover; border-radius: 12px; border: 2px solid #FFFFFF; box-shadow: 0 3px 0 rgba(124, 58, 237, 0.30), 0 6px 10px -4px rgba(30, 27, 75, 0.35); display: block; }
+    /* Pemilih ikon — butang kecil timbul */
+    .ikon-pick { min-width: 44px; min-height: 44px; font-size: 22px; border-radius: 12px; background: #FFFFFF; border: 1.5px solid #E2E8F0; border-bottom: 3px solid #CBD5E1; box-shadow: 0 2px 0 rgba(124, 58, 237, 0.15); padding: 4px; }
+    .ikon-pick.aktif { border-color: #EC4899; border-bottom-color: #DB2777; background: #FDF2F8; transform: translateY(-2px); box-shadow: 0 4px 0 rgba(236, 72, 153, 0.45), 0 8px 14px -6px rgba(236, 72, 153, 0.5); }
+    /* Kad pilih templat resit — timbul, yang aktif terangkat + bingkai amber */
+    .templat-card { border: 2px solid #E2E8F0; border-bottom: 4px solid #CBD5E1; border-radius: 16px; background: #FFFFFF; padding: 10px 8px; text-align: center; box-shadow: 0 4px 0 rgba(124, 58, 237, 0.15), 0 10px 16px -8px rgba(30, 27, 75, 0.30); min-height: 76px; }
+    .templat-card.aktif { border-color: #F59E0B; border-bottom-color: #D97706; background: #FFFBEB; transform: translateY(-3px); box-shadow: 0 6px 0 rgba(245, 158, 11, 0.45), 0 14px 20px -8px rgba(245, 158, 11, 0.55); }
+    body.dark-glass .templat-card { background: #0F172A; border-color: #475569; color: #FFFFFF; }
+    body.dark-glass .templat-card.aktif { background: #451A03; border-color: #F59E0B; }
+    /* Kertas resit kekal rata seperti kertas sebenar */
+    .receipt-paper { box-shadow: none !important; }
+    .receipt-templat-moden { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    .receipt-templat-ringkas { font-size: 11px; line-height: 1.35; }
+    .receipt-templat-ringkas hr { margin: 5px 0; }
+    /* Mod Laju — ratakan timbul supaya lancar di telefon lama */
+    body.fast-mode button, body.fast-mode .btn-3d, body.fast-mode .btn-chip, body.fast-mode .pos-product-btn, body.fast-mode .pos-pay-btn, body.fast-mode .templat-card { box-shadow: 0 2px 0 rgba(100, 116, 139, 0.35) !important; transform: none !important; }
+    body.fast-mode .glass-3d { box-shadow: 0 4px 10px -6px rgba(30, 27, 75, 0.25) !important; }
+
+    /* ===== v8.6 — Stepper stok satu-satu, mesra sentuh & papan kekunci ===== */
+    .stepper-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .stepper-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-sub); }
+    .stepper { display: flex; align-items: center; gap: 6px; }
+    .step-btn {
+      width: 52px; height: 52px; min-width: 52px; min-height: 52px;
+      border-radius: 14px; font-size: 24px; font-weight: 800; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+      cursor: pointer;
+    }
+    .step-btn.minus { background: #FFFFFF; color: #334155; border: 2px solid #CBD5E1; border-bottom: 3px solid #94A3B8; box-shadow: 0 3px 0 rgba(100, 116, 139, 0.35), 0 8px 14px -6px rgba(30, 27, 75, 0.25); }
+    .step-btn.plus { background: linear-gradient(135deg, #F59E0B, #EC4899 55%, #8B5CF6); color: #FFFFFF; border: 1px solid rgba(0, 0, 0, 0.08); border-bottom: 3px solid rgba(124, 58, 237, 0.55); box-shadow: 0 3px 0 rgba(124, 58, 237, 0.45), 0 8px 14px -6px rgba(236, 72, 153, 0.45); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.20); }
+    .step-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(100, 116, 139, 0.35) !important; }
+    body.dark-glass .step-btn.minus { background: #0F172A; color: #FFFFFF; border-color: #475569; }
+    .step-input { width: 78px; min-height: 52px; text-align: center; font-size: 19px; font-weight: 800; padding-left: 4px; padding-right: 4px; }
+    .step-pulse { animation: stepPulse 0.28s ease; }
+    @keyframes stepPulse { 0% { background: #FDF2F8; transform: scale(1.07); } 100% { background: #FFFFFF; transform: scale(1); } }
+    body.dark-glass .step-pulse { animation-name: stepPulseDark; }
+    @keyframes stepPulseDark { 0% { background: #4C1D95; transform: scale(1.07); } 100% { background: #0F172A; transform: scale(1); } }
+
   </style>
 </head>
 <body>
@@ -470,6 +562,8 @@
           <span id="stockedCounter" class="text-[11px] font-bold subtext">0 aktif</span>
         </div>
       </div>
+
+      <p class="text-[11px] font-bold subtext glass-3d px-3 py-2">Cara isi: ketik nombor untuk taip sendiri, atau tekan <b>−</b> / <b>+</b> untuk ubah satu-satu. Tekan lama butang <b>+</b> untuk tambah laju. Terjual dikira automatik.</p>
 
       <!-- Product Input Grid -->
       <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4"></div>
@@ -682,6 +776,25 @@
             <button onclick="addOrUpdateProduct()" class="btn-3d flex-1 bg-emerald-500 text-white text-xs px-3 py-2.5 min-h-[56px]">+ Simpan</button>
           </div>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="glass-pill p-3 space-y-2">
+            <div class="text-[10px] font-extrabold uppercase subtext">Gambar Produk Sebenar (pilihan)</div>
+            <div class="flex items-center gap-3">
+              <span id="catGambarPreview"><span class="w-16 h-16 flex items-center justify-center text-3xl">📦</span></span>
+              <div class="flex flex-col gap-2 flex-1">
+                <button type="button" onclick="document.getElementById('catGambarInput').click()" class="glass-pill px-3 py-2 min-h-[52px] text-xs font-extrabold">📷 Muat Naik Gambar</button>
+                <button type="button" onclick="clearCatGambarDraft()" class="glass-pill px-3 py-2 min-h-[48px] text-xs font-extrabold text-rose-600">🗑 Buang Gambar</button>
+              </div>
+            </div>
+            <input id="catGambarInput" type="file" accept="image/*" class="hidden" onchange="handleCatGambarFile(this)" />
+            <p class="text-[11px] subtext">Gambar dikecilkan automatik (maks 320px) dan disimpan dalam telefon ini sahaja — tidak dihantar ke Google Sheet. Kalau tiada gambar, ikon di sebelah akan dipakai.</p>
+          </div>
+          <div class="glass-pill p-3 space-y-2">
+            <div class="text-[10px] font-extrabold uppercase subtext">Pilih Ikon (kalau tiada gambar)</div>
+            <div id="catIkonGrid" class="flex flex-wrap gap-1.5"></div>
+            <p class="text-[11px] subtext">Ketik satu ikon, atau taip emoji sendiri dalam kotak ikon di atas.</p>
+          </div>
+        </div>
         <div id="catalogManagerList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
       </div>
 
@@ -714,6 +827,7 @@
           </div>
         </div>
         <button onclick="savePosSettings(); showToast('Tetapan POS disimpan', 'success')" class="btn-3d w-full py-3 min-h-[56px] bg-gradient-to-r from-amber-500 via-pink-500 to-violet-600 text-white text-sm">SIMPAN TETAPAN POS</button>
+        <p class="text-[11px] subtext">Paparan resit pula ada 3 pilihan (Klasik / Moden / Ringkas) di bahagian Tetapan Printer &amp; Resit di bawah — header &amp; footer setiap paparan boleh diubah sendiri.</p>
       </div>
 
 
@@ -740,8 +854,16 @@
       </div>
 
       <div class="glass-3d p-4 md:p-5 space-y-3.5">
-        <h2 class="text-sm md:text-base font-extrabold">🧾 Tetapan Resit — Ubah Suai Header</h2>
-        <p class="text-[11px] subtext">Tulis apa sahaja yang awak nak di bahagian atas resit. Pratonton di sebelah kanan berubah serta-merta. Tiada data pelanggan disimpan.</p>
+        <h2 class="text-sm md:text-base font-extrabold">🖨️ Tetapan Printer &amp; Resit — 3 Paparan</h2>
+        <p class="text-[11px] subtext">Pilih 1 daripada 3 paparan resit di bawah. Setiap paparan simpan header &amp; footer sendiri — tukar paparan, isi tulisannya, pratonton berubah serta-merta. Tiada data pelanggan disimpan.</p>
+        <div>
+          <div class="text-[10px] font-extrabold uppercase subtext mb-1">Paparan Resit Printer — pilih 1 daripada 3</div>
+          <div id="resitTemplatCards" class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="setResitTemplat('KLASIK')" data-templat="KLASIK" class="templat-card aktif"><div class="text-xl">🧾</div><div class="text-xs font-extrabold mt-1">1. Klasik Terma</div><div class="text-[10px] subtext font-bold">Garis putus-putus, fon mesin taip</div></button>
+            <button type="button" onclick="setResitTemplat('MODEN')" data-templat="MODEN" class="templat-card"><div class="text-xl">✨</div><div class="text-xs font-extrabold mt-1">2. Moden Kad</div><div class="text-[10px] subtext font-bold">Kepala gelap, kotak JUMLAH besar</div></button>
+            <button type="button" onclick="setResitTemplat('RINGKAS')" data-templat="RINGKAS" class="templat-card"><div class="text-xl">⚡</div><div class="text-xs font-extrabold mt-1">3. Ringkas Pantas</div><div class="text-[10px] subtext font-bold">Padat, jimat kertas, tanpa QR</div></button>
+          </div>
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
           <div class="space-y-2.5">
             <div><label class="block text-[10px] font-extrabold uppercase subtext mb-1">Nama Kedai (Header Baris 1)</label><input id="resitNama" type="text" oninput="savePosSettings(); renderReceiptPreview();" class="w-full glass-pill px-3 py-2 min-h-[56px] font-bold outline-none" /></div>
@@ -911,18 +1033,18 @@ const DEFAULT_STAFF_NAMES = ["ADIB", "AIMAN", "AIMAN BESAR", "AIMAN PUDIN", "AIS
 const DEFAULT_GAJI_SEED = [{"id": "GJ-0292", "tarikh": "2026-12-10", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0291", "tarikh": "2026-12-10", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0290", "tarikh": "2026-12-10", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0289", "tarikh": "2026-12-02", "bulan": "FEB", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0288", "tarikh": "2026-11-06", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0287", "tarikh": "2026-11-06", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0286", "tarikh": "2026-11-06", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0285", "tarikh": "2026-11-05", "bulan": "MAC", "nama": "FARID", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0284", "tarikh": "2026-11-05", "bulan": "MAC", "nama": "AISYAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0283", "tarikh": "2026-11-05", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0282", "tarikh": "2026-11-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0281", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "WAFIY", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -59.0, "catatan": ""}, {"id": "GJ-0280", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "SYARAFAT", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -4.0, "catatan": ""}, {"id": "GJ-0279", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "SHAH", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -3.0, "catatan": ""}, {"id": "GJ-0278", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "QISYA", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -31.0, "catatan": ""}, {"id": "GJ-0277", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -5.0, "catatan": ""}, {"id": "GJ-0276", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "NISHANT", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -8.0, "catatan": ""}, {"id": "GJ-0275", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -90.0, "catatan": ""}, {"id": "GJ-0274", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -7.0, "catatan": ""}, {"id": "GJ-0273", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "IZZUL", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -30.0, "catatan": ""}, {"id": "GJ-0272", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "IRDINA", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -36.0, "catatan": ""}, {"id": "GJ-0271", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -5.0, "catatan": ""}, {"id": "GJ-0270", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "IKRAM", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -127.0, "catatan": ""}, {"id": "GJ-0269", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "HAZIQ", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -15.0, "catatan": ""}, {"id": "GJ-0268", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "HAIKAL DANISH", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -16.0, "catatan": ""}, {"id": "GJ-0267", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -69.0, "catatan": ""}, {"id": "GJ-0266", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "FARID", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -3.0, "catatan": ""}, {"id": "GJ-0265", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AZIM", "jenis": "CATATAN", "jumlah": 0.0, "catatan": "SUDAH AMBIL RM13"}, {"id": "GJ-0264", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AZIM", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -5.0, "catatan": ""}, {"id": "GJ-0263", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AMIR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -5.0, "catatan": ""}, {"id": "GJ-0262", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "ALIA", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -6.0, "catatan": ""}, {"id": "GJ-0261", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AKMAL", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -64.0, "catatan": ""}, {"id": "GJ-0260", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AISYAH", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -14.0, "catatan": ""}, {"id": "GJ-0259", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -65.0, "catatan": ""}, {"id": "GJ-0258", "tarikh": "2026-10-26", "bulan": "MAC", "nama": "ADIB", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -17.0, "catatan": ""}, {"id": "GJ-0257", "tarikh": "2026-10-25", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0256", "tarikh": "2026-10-25", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0255", "tarikh": "2026-10-21", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0254", "tarikh": "2026-10-21", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0253", "tarikh": "2026-10-20", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -34.0, "catatan": ""}, {"id": "GJ-0252", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0251", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0250", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0249", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0248", "tarikh": "2026-10-19", "bulan": "MAC", "nama": "AISYAH", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0247", "tarikh": "2026-10-18", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0246", "tarikh": "2026-10-18", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0245", "tarikh": "2026-10-18", "bulan": "MAC", "nama": "HAIKAL DANISH", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0244", "tarikh": "2026-10-15", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0243", "tarikh": "2026-10-15", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0242", "tarikh": "2026-10-15", "bulan": "MAC", "nama": "HAIKAL DANISH", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0241", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "SHAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0240", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "BAYARAN / PENDAHULUAN", "jumlah": -10.0, "catatan": ""}, {"id": "GJ-0239", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0238", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0237", "tarikh": "2026-10-14", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0236", "tarikh": "2026-10-13", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0235", "tarikh": "2026-10-13", "bulan": "MAC", "nama": "HAIKAL DANISH", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0234", "tarikh": "2026-10-13", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0233", "tarikh": "2026-10-08", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0232", "tarikh": "2026-10-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0231", "tarikh": "2026-10-08", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0230", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "SHAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0229", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0228", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0227", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0226", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "AZIM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0225", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0224", "tarikh": "2026-10-06", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0223", "tarikh": "2026-10-05", "bulan": "MAC", "nama": "SYARAFAT", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0222", "tarikh": "2026-10-05", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0221", "tarikh": "2026-10-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0220", "tarikh": "2026-10-01", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0219", "tarikh": "2026-10-01", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0218", "tarikh": "2026-09-30", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0217", "tarikh": "2026-09-29", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0216", "tarikh": "2026-09-29", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0215", "tarikh": "2026-09-29", "bulan": "MAC", "nama": "ALIA", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0214", "tarikh": "2026-09-28", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0213", "tarikh": "2026-09-28", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0212", "tarikh": "2026-09-28", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0211", "tarikh": "2026-09-28", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0210", "tarikh": "2026-09-27", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0209", "tarikh": "2026-09-24", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0208", "tarikh": "2026-09-22", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0207", "tarikh": "2026-09-22", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0206", "tarikh": "2026-09-22", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0205", "tarikh": "2026-09-21", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0204", "tarikh": "2026-09-21", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0203", "tarikh": "2026-09-21", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0202", "tarikh": "2026-09-17", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0201", "tarikh": "2026-09-17", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0200", "tarikh": "2026-09-15", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0199", "tarikh": "2026-09-15", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0198", "tarikh": "2026-09-13", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0197", "tarikh": "2026-09-13", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0196", "tarikh": "2026-09-09", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0195", "tarikh": "2026-09-09", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0194", "tarikh": "2026-09-08", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0193", "tarikh": "2026-09-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0192", "tarikh": "2026-09-08", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0191", "tarikh": "2026-09-06", "bulan": "MAC", "nama": "SYARAFAT", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0190", "tarikh": "2026-09-06", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0189", "tarikh": "2026-09-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0188", "tarikh": "2026-09-04", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0187", "tarikh": "2026-09-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0186", "tarikh": "2026-08-24", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0185", "tarikh": "2026-08-24", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0184", "tarikh": "2026-08-24", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0183", "tarikh": "2026-08-23", "bulan": "MAC", "nama": "QISYA", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0182", "tarikh": "2026-08-23", "bulan": "MAC", "nama": "AISYAH", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0181", "tarikh": "2026-08-20", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0180", "tarikh": "2026-08-20", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0179", "tarikh": "2026-08-19", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0178", "tarikh": "2026-08-19", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0177", "tarikh": "2026-08-18", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0176", "tarikh": "2026-08-18", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0175", "tarikh": "2026-08-17", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0174", "tarikh": "2026-08-17", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0173", "tarikh": "2026-08-17", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0172", "tarikh": "2026-08-16", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0171", "tarikh": "2026-08-16", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0170", "tarikh": "2026-08-12", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0169", "tarikh": "2026-08-12", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0168", "tarikh": "2026-08-12", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0167", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0166", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0165", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0164", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0163", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0162", "tarikh": "2026-08-11", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0161", "tarikh": "2026-08-09", "bulan": "MAC", "nama": "AISYAH", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0160", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0159", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0158", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0157", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0156", "tarikh": "2026-08-05", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0155", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0154", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0153", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0152", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0151", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0150", "tarikh": "2026-08-04", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0149", "tarikh": "2026-08-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0148", "tarikh": "2026-07-28", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0147", "tarikh": "2026-07-28", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0146", "tarikh": "2026-07-27", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0145", "tarikh": "2026-07-27", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 7.0, "catatan": ""}, {"id": "GJ-0144", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0143", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0142", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0141", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0140", "tarikh": "2026-07-22", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0139", "tarikh": "2026-07-21", "bulan": "MAC", "nama": "SYARAFAT", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0138", "tarikh": "2026-07-21", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0137", "tarikh": "2026-07-21", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0136", "tarikh": "2026-07-20", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0135", "tarikh": "2026-07-13", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0134", "tarikh": "2026-07-13", "bulan": "MAC", "nama": "NISHANT", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0133", "tarikh": "2026-07-13", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0132", "tarikh": "2026-07-13", "bulan": "MAC", "nama": "FARID", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0131", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0130", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0129", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0128", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0127", "tarikh": "2026-07-09", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0126", "tarikh": "2026-07-08", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0125", "tarikh": "2026-07-08", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0124", "tarikh": "2026-07-08", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0123", "tarikh": "2026-07-07", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0122", "tarikh": "2026-07-07", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0121", "tarikh": "2026-07-07", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0120", "tarikh": "2026-07-07", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0119", "tarikh": "2026-07-06", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0118", "tarikh": "2026-07-05", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0117", "tarikh": "2026-07-05", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0116", "tarikh": "2026-07-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0115", "tarikh": "2026-06-30", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0114", "tarikh": "2026-06-30", "bulan": "MAC", "nama": "NISHANT", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0113", "tarikh": "2026-06-30", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0112", "tarikh": "2026-06-29", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0111", "tarikh": "2026-06-29", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0110", "tarikh": "2026-06-28", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0109", "tarikh": "2026-06-28", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0108", "tarikh": "2026-06-25", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0107", "tarikh": "2026-06-25", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0106", "tarikh": "2026-06-25", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0105", "tarikh": "2026-06-24", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0104", "tarikh": "2026-06-24", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0103", "tarikh": "2026-06-23", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0102", "tarikh": "2026-06-23", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0101", "tarikh": "2026-06-22", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0100", "tarikh": "2026-06-22", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0099", "tarikh": "2026-06-21", "bulan": "MAC", "nama": "NISHANT", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0098", "tarikh": "2026-06-21", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0097", "tarikh": "2026-06-21", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0096", "tarikh": "2026-06-18", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0095", "tarikh": "2026-06-18", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0094", "tarikh": "2026-06-16", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 8.0, "catatan": ""}, {"id": "GJ-0093", "tarikh": "2026-06-15", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0092", "tarikh": "2026-06-15", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0091", "tarikh": "2026-06-15", "bulan": "MAC", "nama": "IZZUL", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0090", "tarikh": "2026-06-15", "bulan": "MAC", "nama": "AZIM", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0089", "tarikh": "2026-06-14", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0088", "tarikh": "2026-06-14", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0087", "tarikh": "2026-06-09", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0086", "tarikh": "2026-06-09", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0085", "tarikh": "2026-06-08", "bulan": "MAC", "nama": "SHAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0084", "tarikh": "2026-06-08", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0083", "tarikh": "2026-06-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0082", "tarikh": "2026-06-08", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0081", "tarikh": "2026-06-07", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 4.0, "catatan": ""}, {"id": "GJ-0080", "tarikh": "2026-06-05", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0079", "tarikh": "2026-06-05", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0078", "tarikh": "2026-06-05", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0077", "tarikh": "2026-06-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0076", "tarikh": "2026-06-04", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0075", "tarikh": "2026-06-04", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0074", "tarikh": "2026-06-04", "bulan": "MAC", "nama": "AMIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0073", "tarikh": "2026-05-21", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0072", "tarikh": "2026-05-20", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0071", "tarikh": "2026-05-20", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0070", "tarikh": "2026-05-19", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0069", "tarikh": "2026-05-18", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0068", "tarikh": "2026-05-18", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0067", "tarikh": "2026-05-10", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0066", "tarikh": "2026-05-10", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0065", "tarikh": "2026-05-10", "bulan": "MAC", "nama": "AZIM", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0064", "tarikh": "2026-05-10", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0063", "tarikh": "2026-05-05", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0062", "tarikh": "2026-05-05", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0061", "tarikh": "2026-05-05", "bulan": "MAC", "nama": "AMIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0060", "tarikh": "2026-05-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0059", "tarikh": "2026-05-04", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0058", "tarikh": "2026-05-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0057", "tarikh": "2026-04-28", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0056", "tarikh": "2026-04-27", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0055", "tarikh": "2026-04-27", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0054", "tarikh": "2026-04-26", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0053", "tarikh": "2026-04-24", "bulan": "MAC", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0052", "tarikh": "2026-04-23", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0051", "tarikh": "2026-04-23", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0050", "tarikh": "2026-04-23", "bulan": "MAC", "nama": "ALIA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0049", "tarikh": "2026-04-20", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0048", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "SHAH", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0047", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0046", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0045", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "AMIR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0044", "tarikh": "2026-04-19", "bulan": "MAC", "nama": "ALIA", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0043", "tarikh": "2026-04-16", "bulan": "MAC", "nama": "AISYAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0042", "tarikh": "2026-04-10", "bulan": "MAC", "nama": "WAFIY", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0041", "tarikh": "2026-04-10", "bulan": "MAC", "nama": "HAZIQ", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0040", "tarikh": "2026-04-10", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0039", "tarikh": "2026-04-10", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0038", "tarikh": "2026-04-05", "bulan": "MAC", "nama": "WAFIY", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0037", "tarikh": "2026-04-05", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0036", "tarikh": "2026-04-05", "bulan": "MAC", "nama": "AIMAN PUDIN", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0035", "tarikh": "2026-04-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0034", "tarikh": "2026-03-31", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0033", "tarikh": "2026-03-31", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0032", "tarikh": "2026-03-31", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0031", "tarikh": "2026-03-31", "bulan": "MAC", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 3.0, "catatan": ""}, {"id": "GJ-0030", "tarikh": "2026-03-30", "bulan": "MAC", "nama": "IRDINA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0029", "tarikh": "2026-03-30", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0028", "tarikh": "2026-03-30", "bulan": "MAC", "nama": "FARID", "jenis": "HADIR (P)", "jumlah": 0.0, "catatan": "Tanda 'P' dalam rekod asal"}, {"id": "GJ-0027", "tarikh": "2026-03-29", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0026", "tarikh": "2026-03-29", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0025", "tarikh": "2026-03-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0024", "tarikh": "2026-03-08", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 6.0, "catatan": ""}, {"id": "GJ-0023", "tarikh": "2026-03-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0022", "tarikh": "2026-02-08", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0021", "tarikh": "2026-02-08", "bulan": "MAC", "nama": "IKRAM", "jenis": "GAJI HARIAN", "jumlah": 5.0, "catatan": ""}, {"id": "GJ-0020", "tarikh": "2026-02-08", "bulan": "MAC", "nama": "AKMAL", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0019", "tarikh": "2026-02-08", "bulan": "MAC", "nama": "AIMAN BESAR", "jenis": "GAJI HARIAN", "jumlah": 2.0, "catatan": ""}, {"id": "GJ-0018", "tarikh": "2026-02-07", "bulan": "MAC", "nama": "KUMITIRA", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0017", "tarikh": "2026-02-02", "bulan": "FEB", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0016", "tarikh": "2026-01-29", "bulan": "JAN", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0015", "tarikh": "2026-01-28", "bulan": "JAN", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0014", "tarikh": "2026-01-28", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0013", "tarikh": "2026-01-27", "bulan": "JAN", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0012", "tarikh": "2026-01-26", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0011", "tarikh": "2026-01-25", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0010", "tarikh": "2026-01-22", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0009", "tarikh": "2026-01-21", "bulan": "JAN", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0008", "tarikh": "2026-01-21", "bulan": "JAN", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0007", "tarikh": "2026-01-20", "bulan": "JAN", "nama": "HAFIQ HAKIMI", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0006", "tarikh": "2026-01-20", "bulan": "JAN", "nama": "ADIB", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0005", "tarikh": "2026-01-19", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0004", "tarikh": "2026-01-18", "bulan": "JAN", "nama": "MUZAKIR", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0003", "tarikh": "2026-01-04", "bulan": "MAC", "nama": "QISYA", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}, {"id": "GJ-0002", "tarikh": "2026-01-04", "bulan": "MAC", "nama": "PANG BAO DE", "jenis": "GAJI HARIAN", "jumlah": 1.0, "catatan": ""}, {"id": "GJ-0001", "tarikh": "2026-01-04", "bulan": "MAC", "nama": "INSYIRAH", "jenis": "HADIR (/)", "jumlah": 0.0, "catatan": "Tanda '/' dalam rekod asal"}];
 
 const DEFAULT_CATALOG = [
-  { kod: "PRD-01", kategori: "KACANG/BISKUT", harga: 1.00, ikon: "🍪", status: "AKTIF" },
-  { kod: "PRD-02", kategori: "KACANG/BISKUT (RM2.00)", harga: 2.00, ikon: "🥜", status: "AKTIF" },
-  { kod: "PRD-03", kategori: "AISKRIM", harga: 1.00, ikon: "🍦", status: "AKTIF" },
-  { kod: "PRD-04", kategori: "COCO JAR", harga: 2.00, ikon: "🍫", status: "AKTIF" },
-  { kod: "PRD-05", kategori: "KEK (RM1.50)", harga: 1.50, ikon: "🧁", status: "AKTIF" },
-  { kod: "PRD-06", kategori: "KEK (RM2.00)", harga: 2.00, ikon: "🍰", status: "AKTIF" },
-  { kod: "PRD-07", kategori: "KEK (RM5.00)", harga: 5.00, ikon: "🎂", status: "AKTIF" },
-  { kod: "PRD-08", kategori: "SOSEJ", harga: 2.00, ikon: "🌭", status: "AKTIF" },
-  { kod: "PRD-09", kategori: "DADIH", harga: 0.70, ikon: "🍮", status: "AKTIF" },
-  { kod: "PRD-10", kategori: "JAGUNG KUKUS", harga: 3.00, ikon: "🌽", status: "AKTIF" },
-  { kod: "PRD-11", kategori: "WAFFLE", harga: 3.00, ikon: "🧇", status: "AKTIF" },
-  { kod: "PRD-12", kategori: "AIR MINUMAN", harga: 2.00, ikon: "🥤", status: "AKTIF" }
+  { kod: "PRD-01", kategori: "KACANG/BISKUT", harga: 1.00, ikon: "🍪", gambar: "", status: "AKTIF" },
+  { kod: "PRD-02", kategori: "KACANG/BISKUT (RM2.00)", harga: 2.00, ikon: "🥜", gambar: "", status: "AKTIF" },
+  { kod: "PRD-03", kategori: "AISKRIM", harga: 1.00, ikon: "🍦", gambar: "", status: "AKTIF" },
+  { kod: "PRD-04", kategori: "COCO JAR", harga: 2.00, ikon: "🍫", gambar: "", status: "AKTIF" },
+  { kod: "PRD-05", kategori: "KEK (RM1.50)", harga: 1.50, ikon: "🧁", gambar: "", status: "AKTIF" },
+  { kod: "PRD-06", kategori: "KEK (RM2.00)", harga: 2.00, ikon: "🍰", gambar: "", status: "AKTIF" },
+  { kod: "PRD-07", kategori: "KEK (RM5.00)", harga: 5.00, ikon: "🎂", gambar: "", status: "AKTIF" },
+  { kod: "PRD-08", kategori: "SOSEJ", harga: 2.00, ikon: "🌭", gambar: "", status: "AKTIF" },
+  { kod: "PRD-09", kategori: "DADIH", harga: 0.70, ikon: "🍮", gambar: "", status: "AKTIF" },
+  { kod: "PRD-10", kategori: "JAGUNG KUKUS", harga: 3.00, ikon: "🌽", gambar: "", status: "AKTIF" },
+  { kod: "PRD-11", kategori: "WAFFLE", harga: 3.00, ikon: "🧇", gambar: "", status: "AKTIF" },
+  { kod: "PRD-12", kategori: "AIR MINUMAN", harga: 2.00, ikon: "🥤", gambar: "", status: "AKTIF" }
 ];
 
 let state = {
@@ -995,6 +1117,24 @@ function initFormState() {
   });
 }
 
+function stepperRowHTML(safeKey, field, label, value, idx, colorClass) {
+  return '<div class="stepper-row">'
+    + '<label class="stepper-label">' + label + '</label>'
+    + '<div class="stepper">'
+    + '<button type="button" class="step-btn minus" aria-label="Kurang 1 ' + label + '"'
+    + ' onpointerdown="stepHoldStart(event, \'' + safeKey + '\', \'' + field + '\', -1, ' + idx + ')"'
+    + ' onpointerup="stepHoldEnd()" onpointerleave="stepHoldEnd()" onpointercancel="stepHoldEnd()"'
+    + ' onclick="stepClick(event, \'' + safeKey + '\', \'' + field + '\', -1, ' + idx + ')">−</button>'
+    + '<input id="fld_' + field + '_' + idx + '" type="number" inputmode="numeric" pattern="[0-9]*" step="1" min="0" value="' + (value || '') + '" placeholder="0"'
+    + ' oninput="updateItemField(\'' + safeKey + '\', \'' + field + '\', this.value, ' + idx + ')"'
+    + ' onfocus="this.select()"'
+    + ' class="step-input glass-pill ' + (colorClass || '') + ' font-extrabold outline-none focus:ring-2 focus:ring-pink-400" aria-label="' + label + '" />'
+    + '<button type="button" class="step-btn plus" aria-label="Tambah 1 ' + label + '"'
+    + ' onpointerdown="stepHoldStart(event, \'' + safeKey + '\', \'' + field + '\', 1, ' + idx + ')"'
+    + ' onpointerup="stepHoldEnd()" onpointerleave="stepHoldEnd()" onpointercancel="stepHoldEnd()"'
+    + ' onclick="stepClick(event, \'' + safeKey + '\', \'' + field + '\', 1, ' + idx + ')">+</button>'
+    + '</div></div>';
+}
 function renderProductGrid() {
   const grid = document.getElementById("productGrid");
   const active = state.catalog.filter(c => c.status === "AKTIF");
@@ -1026,7 +1166,7 @@ function renderProductGrid() {
       <div class="glass-3d ${highlightBorder} p-3.5 md:p-4 flex flex-col justify-between gap-2.5">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2 min-w-0">
-            <span class="text-2xl shrink-0">${c.ikon || "📦"}</span>
+            ${productVisual(c, "w-12 h-12 text-2xl shrink-0")}
             <div class="min-w-0">
               <div class="font-extrabold text-sm leading-tight truncate">${c.kategori}</div>
               <div class="text-[11px] font-bold text-pink-600">RM ${c.harga.toFixed(2)} / unit</div>
@@ -1038,33 +1178,14 @@ function renderProductGrid() {
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2">
-          <div>
-            <label class="block text-[10px] font-extrabold subtext mb-1 text-center">Stok Awal</label>
-            <input type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="${it.stokAwal || ''}" placeholder="0"
-              oninput="updateItemField('${safeKey}', 'stokAwal', this.value, ${idx})"
-              class="w-full glass-pill px-2 py-2.5 min-h-[56px] font-extrabold text-center outline-none focus:ring-2 focus:ring-pink-400" />
-          </div>
-          <div>
-            <label class="block text-[10px] font-extrabold subtext mb-1 text-center">+ Tambah</label>
-            <input id="tambah_${idx}" type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="${it.stokTambah || ''}" placeholder="0"
-              oninput="updateItemField('${safeKey}', 'stokTambah', this.value, ${idx})"
-              class="w-full glass-pill px-2 py-2.5 min-h-[56px] font-extrabold text-center text-pink-600 outline-none focus:ring-2 focus:ring-pink-400" />
-          </div>
-          <div>
-            <label class="block text-[10px] font-extrabold subtext mb-1 text-center">Baki Akhir</label>
-            <input type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="${it.bakiStok || ''}" placeholder="0"
-              oninput="updateItemField('${safeKey}', 'bakiStok', this.value, ${idx})"
-              class="w-full glass-pill px-2 py-2.5 min-h-[56px] font-extrabold text-center text-amber-600 outline-none focus:ring-2 focus:ring-amber-400" />
-          </div>
+        <div class="space-y-2">
+          ${stepperRowHTML(safeKey, 'stokAwal', 'Stok Awal', it.stokAwal, idx, '')}
+          ${stepperRowHTML(safeKey, 'stokTambah', '+ Tambah', it.stokTambah, idx, 'text-pink-600')}
+          ${stepperRowHTML(safeKey, 'bakiStok', 'Baki Akhir', it.bakiStok, idx, 'text-amber-600')}
         </div>
 
         <div class="flex items-center justify-between pt-1.5 border-t border-slate-400/20">
-          <div class="flex gap-1.5">
-            <button type="button" onclick="quickAddStock('${safeKey}', 10, ${idx})" class="btn-chip">+10</button>
-            <button type="button" onclick="quickAddStock('${safeKey}', 20, ${idx})" class="btn-chip">+20</button>
-            <button type="button" onclick="quickAddStock('${safeKey}', 50, ${idx})" class="btn-chip">+50</button>
-          </div>
+          <div class="text-[11px] font-bold subtext">Terjual = (Stok Awal + Tambah) − Baki Akhir</div>
           <div class="text-xs font-bold subtext">Terjual: <span id="sold_${idx}" class="font-extrabold text-emerald-600">${terjual}</span></div>
         </div>
       </div>
@@ -1086,13 +1207,42 @@ function updateItemField(safeKey, field, val, idx) {
   recalcTotals();
 }
 
-function quickAddStock(safeKey, delta, idx) {
-  const key = decodeURIComponent(safeKey);
+/* ===== v8.6 — Stepper satu-satu (ganti cip +10/+20/+50) ===== */
+var _lastStepPointer = 0;
+var _stepHoldTimer = null;
+var _stepHoldInt = null;
+function pulseStepField(el) {
+  if (!el) return;
+  el.classList.remove("step-pulse");
+  void el.offsetWidth;
+  el.classList.add("step-pulse");
+}
+function stepItemField(safeKey, field, delta, idx) {
+  var key = decodeURIComponent(safeKey);
   if (!state.formItems[key]) return;
-  state.formItems[key].stokTambah = (Number(state.formItems[key].stokTambah) || 0) + delta;
-  const inp = document.getElementById("tambah_" + idx);
-  if (inp) inp.value = state.formItems[key].stokTambah;
-  updateItemField(safeKey, "stokTambah", state.formItems[key].stokTambah, idx);
+  var next = Math.max(0, (Number(state.formItems[key][field]) || 0) + delta);
+  state.formItems[key][field] = next;
+  var input = document.getElementById("fld_" + field + "_" + idx);
+  if (input) { input.value = next; pulseStepField(input); }
+  updateItemField(safeKey, field, next, idx);
+  if (navigator.vibrate) navigator.vibrate(6);
+}
+function stepHoldStart(ev, safeKey, field, delta, idx) {
+  _lastStepPointer = Date.now();
+  stepItemField(safeKey, field, delta, idx);
+  clearTimeout(_stepHoldTimer); clearInterval(_stepHoldInt);
+  _stepHoldTimer = setTimeout(function () {
+    _stepHoldInt = setInterval(function () { stepItemField(safeKey, field, delta, idx); }, 90);
+  }, 450);
+  if (ev && ev.preventDefault) ev.preventDefault();
+}
+function stepHoldEnd() {
+  clearTimeout(_stepHoldTimer); clearInterval(_stepHoldInt);
+  _stepHoldTimer = null; _stepHoldInt = null;
+}
+function stepClick(ev, safeKey, field, delta, idx) {
+  if (Date.now() - _lastStepPointer < 700) return; // sudah distep oleh pointerdown
+  stepItemField(safeKey, field, delta, idx);
 }
 
 function recalcTotals() {
@@ -1257,7 +1407,7 @@ async function syncFromCloud(silent = false) {
     if (!json.ok) throw new Error(json.error);
     const d = json.data;
     state.brandName = (d.settings && d.settings.NAMA_PERNIAGAAN) || state.brandName;
-    if (d.catalog && d.catalog.length) state.catalog = d.catalog;
+    if (d.catalog && d.catalog.length) state.catalog = mergeCatalogImages(d.catalog);
     state.dailyList = d.dailyList || [];
     state.categoryStats = d.categoryStats || [];
     localStorage.setItem("kh_catalog", JSON.stringify(state.catalog));
@@ -1447,20 +1597,89 @@ async function deleteDay(tarikh) {
   } catch (err) { showToast("❌ " + err.message, "error"); }
 }
 
+/* ===== v8.5 — Gambar sebenar / ikon produk ===== */
+var ICON_PRESET = ["🍪", "🥜", "🍦", "🍫", "🧁", "🍰", "🎂", "🌭", "🍮", "🌽", "🧇", "🥤", "🍩", "🍿", "🍬", "🧃", "🥛", "🍞", "🥐", "🍕", "🍟", "🥪", "🍜", "📦"];
+function productVisual(c, cls) {
+  var k = cls || "w-11 h-11 text-2xl";
+  if (c && c.gambar && String(c.gambar).indexOf("data:image/") === 0) return '<img src="' + c.gambar + '" alt="" class="prod-thumb ' + k + '" />';
+  return '<span class="' + k + ' flex items-center justify-center shrink-0">' + (c && c.ikon ? c.ikon : "📦") + '</span>';
+}
+function mergeCatalogImages(serverCatalog) {
+  var local = {};
+  try { (JSON.parse(localStorage.getItem("kh_catalog") || "[]") || []).forEach(function (c) { if (c && c.gambar) { local[c.kod] = c.gambar; local["NAMA:" + c.kategori] = c.gambar; } }); } catch (e) {}
+  (state.catalog || []).forEach(function (c) { if (c && c.gambar) { local[c.kod] = c.gambar; local["NAMA:" + c.kategori] = c.gambar; } });
+  return (serverCatalog || []).map(function (c) { var g = local[c.kod] || local["NAMA:" + c.kategori] || c.gambar || ""; if (g) c.gambar = g; return c; });
+}
+function renderCatGambarPreview() {
+  var el = document.getElementById("catGambarPreview"); if (!el) return;
+  var g = window._catGambarDraft || "";
+  el.innerHTML = g ? '<img src="' + g + '" alt="Gambar produk" class="prod-thumb w-16 h-16" />' : '<span class="w-16 h-16 flex items-center justify-center text-3xl">📦</span>';
+}
+function handleCatGambarFile(input) {
+  var file = input && input.files && input.files[0];
+  if (!file) return;
+  if (file.size > 8 * 1024 * 1024) return showToast("Gambar terlalu besar (maks 8MB sebelum dikecilkan).", "error");
+  var reader = new FileReader();
+  reader.onload = function (e) {
+    var img = new Image();
+    img.onload = function () {
+      try {
+        var max = 320, w = img.width, h = img.height;
+        var scale = Math.min(1, max / Math.max(w, h));
+        var cv = document.createElement("canvas");
+        cv.width = Math.max(1, Math.round(w * scale)); cv.height = Math.max(1, Math.round(h * scale));
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+        window._catGambarDraft = cv.toDataURL("image/jpeg", 0.72);
+        window._catGambarCleared = false;
+        renderCatGambarPreview();
+        showToast("Gambar dimuat naik & dikecilkan", "success");
+      } catch (err) { showToast("Gambar tidak dapat diproses: " + err.message, "error"); }
+    };
+    img.onerror = function () { showToast("Fail bukan gambar yang sah.", "error"); };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  input.value = "";
+}
+function clearCatGambarDraft() { window._catGambarDraft = ""; window._catGambarCleared = true; renderCatGambarPreview(); }
+function renderCatIkonGrid() {
+  var grid = document.getElementById("catIkonGrid"); if (!grid) return;
+  var cur = (document.getElementById("catIkon") ? document.getElementById("catIkon").value.trim() : "") || "📦";
+  grid.innerHTML = ICON_PRESET.map(function (ic) { return '<button type="button" onclick="pickCatIkon(\'' + ic + '\')" class="ikon-pick' + (ic === cur ? ' aktif' : '') + '" aria-label="Ikon ' + ic + '">' + ic + '</button>'; }).join("");
+}
+function pickCatIkon(ic) { var el = document.getElementById("catIkon"); if (el) el.value = ic; renderCatIkonGrid(); }
+function editProduct(kod) {
+  var c = (state.catalog || []).find(function (x) { return x.kod === kod; });
+  if (!c) return;
+  document.getElementById("catKod").value = c.kod;
+  document.getElementById("catNama").value = c.kategori;
+  document.getElementById("catHarga").value = c.harga;
+  document.getElementById("catIkon").value = c.ikon || "📦";
+  window._catGambarDraft = c.gambar || "";
+  window._catGambarCleared = false;
+  renderCatGambarPreview(); renderCatIkonGrid();
+  var el = document.getElementById("catNama"); if (el) el.focus();
+  showToast("Menyunting " + c.kategori + " — ubah gambar/ikon kemudian tekan Simpan", "info");
+}
 function renderCatalogManager() {
   const wrap = document.getElementById("catalogManagerList");
+  if (!wrap) return;
   wrap.innerHTML = state.catalog.map(c => `
     <div class="glass-pill p-3 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5 min-w-0">
-        <span class="text-xl shrink-0">${c.ikon}</span>
+        ${productVisual(c, "w-11 h-11 text-2xl")}
         <div class="min-w-0">
           <div class="text-xs font-extrabold truncate">${c.kategori}</div>
-          <div class="text-[11px] subtext">${c.kod} • <b>RM ${Number(c.harga).toFixed(2)}</b></div>
+          <div class="text-[11px] subtext">${c.kod} • <b>RM ${Number(c.harga).toFixed(2)}</b>${c.gambar ? ' • 🖼️ Gambar' : ''}</div>
         </div>
       </div>
-      <button onclick="removeProduct('${c.kod}')" class="text-rose-500 text-xs font-extrabold px-2.5 py-1.5 min-h-[34px] rounded-xl bg-rose-500/10 active:scale-95 shrink-0">Padam</button>
+      <div class="flex gap-1.5 shrink-0">
+        <button onclick="editProduct('${c.kod}')" class="text-violet-700 text-xs font-extrabold px-2.5 py-1.5 min-h-[44px] rounded-xl bg-violet-500/10 active:scale-95">✏️ Sunting</button>
+        <button onclick="removeProduct('${c.kod}')" class="text-rose-500 text-xs font-extrabold px-2.5 py-1.5 min-h-[44px] rounded-xl bg-rose-500/10 active:scale-95">Padam</button>
+      </div>
     </div>
   `).join("");
+  renderCatIkonGrid();
 }
 
 async function addOrUpdateProduct() {
@@ -1468,6 +1687,7 @@ async function addOrUpdateProduct() {
   const kategori = document.getElementById("catNama").value.trim().toUpperCase();
   const harga = Number(document.getElementById("catHarga").value) || 0;
   const ikon = document.getElementById("catIkon").value.trim() || "📦";
+  const gambar = window._catGambarDraft || "";
   if (!kategori || harga <= 0) return showToast("Isi nama produk dan harga yang sah.", "error");
 
   const pin = prompt("Masukkan PIN Admin (Lalai: 1234):");
@@ -1476,20 +1696,32 @@ async function addOrUpdateProduct() {
     const res = await fetch(state.gasUrl, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "saveProduct", kod, kategori, harga, ikon, status: "AKTIF", pin })
+      body: JSON.stringify({ action: "saveProduct", kod, kategori, harga, ikon, gambarAda: gambar ? "ADA_GAMBAR" : "", status: "AKTIF", pin })
     });
     const json = await res.json();
     if (!json.ok) throw new Error(json.error);
-    state.catalog = json.data.catalog;
+    state.catalog = mergeCatalogImages(json.data.catalog);
+    var saved = state.catalog.find(function (x) { return x.kod === kod; });
+    if (saved) { if (gambar) saved.gambar = gambar; else if (window._catGambarCleared) delete saved.gambar; }
   } catch (err) { return showToast("❌ " + err.message, "error"); }
 
-  localStorage.setItem("kh_catalog", JSON.stringify(state.catalog));
+  try { localStorage.setItem("kh_catalog", JSON.stringify(state.catalog)); }
+  catch (e) {
+    var s2 = state.catalog.find(function (x) { return x.kod === kod; });
+    if (s2) delete s2.gambar;
+    try { localStorage.setItem("kh_catalog", JSON.stringify(state.catalog)); } catch (e2) {}
+    showToast("Storan telefon penuh — gambar tidak disimpan. Cuba gambar lebih kecil.", "error");
+  }
   document.getElementById("catKod").value = "";
   document.getElementById("catNama").value = "";
   document.getElementById("catHarga").value = "";
+  document.getElementById("catIkon").value = "🍩";
+  window._catGambarDraft = ""; window._catGambarCleared = false;
+  renderCatGambarPreview(); renderCatIkonGrid();
   initFormState();
   renderProductGrid();
   renderCatalogManager();
+  renderPosGrid();
   showToast("✅ Katalog produk dikemas kini!", "success");
 }
 
@@ -1941,10 +2173,56 @@ var posSettings = {};
 var posCart = {};
 var posPayMethod = "TUNAI";
 var posLastReceipt = null;
+/* ===== v8.5 — 3 paparan resit printer, header & footer sendiri ===== */
+function resitTemplatLalai(kod) {
+  if (kod === "MODEN") return { nama: "KH PACKAGING", header2: "KEUSAHAWANAN PRO\nSistem Jualan & Audit Stok", alamat: "", telefon: "", logoTeks: "KH", footer: "Terima kasih kerana menyokong\nKeusahawanan Pelajar!", tunjukAlamat: false, tunjukTelefon: false, tunjukQR: true, qrTeks: "Imbas untuk maklum balas" };
+  if (kod === "RINGKAS") return { nama: "KH PACKAGING", header2: "", alamat: "", telefon: "", logoTeks: "KH", footer: "Terima kasih!", tunjukAlamat: false, tunjukTelefon: false, tunjukQR: false, qrTeks: "Imbas untuk maklum balas" };
+  return { nama: "KH PACKAGING", header2: "KEUSAHAWANAN PRO\nSistem Jualan & Audit Stok", alamat: "Koperasi Sekolah", telefon: "", logoTeks: "KH", footer: "Terima kasih kerana menyokong\nKeusahawanan Pelajar!", tunjukAlamat: true, tunjukTelefon: true, tunjukQR: true, qrTeks: "Imbas untuk maklum balas" };
+}
+function pastikanTemplatData() {
+  if (!posSettings.templatResit) posSettings.templatResit = "KLASIK";
+  if (!posSettings.templatData || typeof posSettings.templatData !== "object") posSettings.templatData = {};
+  ["KLASIK", "MODEN", "RINGKAS"].forEach(function (k) {
+    var asas = resitTemplatLalai(k);
+    if (k === "KLASIK") ["nama", "header2", "alamat", "telefon", "logoTeks", "footer", "qrTeks", "tunjukAlamat", "tunjukTelefon", "tunjukQR"].forEach(function (f) { if (posSettings[f] !== undefined && posSettings[f] !== null) asas[f] = posSettings[f]; });
+    posSettings.templatData[k] = Object.assign({}, asas, posSettings.templatData[k] || {});
+  });
+}
+function resitTemplatAktif() { pastikanTemplatData(); return posSettings.templatData[posSettings.templatResit] || posSettings.templatData.KLASIK; }
+function saveResitFormKeTemplat() {
+  pastikanTemplatData();
+  var d = resitTemplatAktif();
+  var map = { resitNama: "nama", resitHeader2: "header2", resitAlamat: "alamat", resitTelefon: "telefon", resitLogoTeks: "logoTeks", resitFooter: "footer", resitQrTeks: "qrTeks", resitTunjukAlamat: "tunjukAlamat", resitTunjukTelefon: "tunjukTelefon", resitTunjukQR: "tunjukQR" };
+  Object.keys(map).forEach(function (id) { var el = document.getElementById(id); if (!el) return; d[map[id]] = el.type === "checkbox" ? el.checked : el.value; });
+  ["nama", "header2", "alamat", "telefon", "logoTeks", "footer", "qrTeks", "tunjukAlamat", "tunjukTelefon", "tunjukQR"].forEach(function (f) { posSettings[f] = d[f]; });
+}
+function muatResitFormDariTemplat() {
+  pastikanTemplatData();
+  var d = resitTemplatAktif();
+  var map = { resitNama: "nama", resitHeader2: "header2", resitAlamat: "alamat", resitTelefon: "telefon", resitLogoTeks: "logoTeks", resitFooter: "footer", resitQrTeks: "qrTeks", resitTunjukAlamat: "tunjukAlamat", resitTunjukTelefon: "tunjukTelefon", resitTunjukQR: "tunjukQR" };
+  Object.keys(map).forEach(function (id) { var el = document.getElementById(id); if (!el) return; var v = d[map[id]]; if (el.type === "checkbox") el.checked = !!v; else el.value = (v == null ? "" : v); });
+}
+function renderResitTemplatCards() {
+  pastikanTemplatData();
+  document.querySelectorAll("[data-templat]").forEach(function (b) { b.classList.toggle("aktif", b.dataset.templat === posSettings.templatResit); });
+}
+function setResitTemplat(kod) {
+  if (kod !== "KLASIK" && kod !== "MODEN" && kod !== "RINGKAS") return;
+  saveResitFormKeTemplat();
+  posSettings.templatResit = kod;
+  try { localStorage.setItem("kh_pos_settings", JSON.stringify(posSettings)); } catch (e) {}
+  muatResitFormDariTemplat();
+  renderResitTemplatCards();
+  renderReceiptPreview();
+  savePosSettings();
+  showToast("Paparan resit: " + (kod === "KLASIK" ? "Klasik Terma" : kod === "MODEN" ? "Moden Kad" : "Ringkas Pantas"), "success");
+}
 function posDefaultSettings() {
   return {
     enabled: true, fastMode: false, training: false,
     printerType: "SISTEM", paperSize: "80", pinGuru: "1234",
+    templatResit: "KLASIK",
+    templatData: { KLASIK: resitTemplatLalai("KLASIK"), MODEN: resitTemplatLalai("MODEN"), RINGKAS: resitTemplatLalai("RINGKAS") },
     nama: "KH PACKAGING", header2: "KEUSAHAWANAN PRO\nSistem Jualan & Audit Stok",
     alamat: "Koperasi Sekolah", telefon: "", logoTeks: "KH",
     footer: "Terima kasih kerana menyokong\nKeusahawanan Pelajar!",
@@ -1963,10 +2241,16 @@ function loadPosSettings() {
     var v = posSettings[map[id]];
     if (el.type === "checkbox") el.checked = !!v; else el.value = (v == null ? "" : v);
   });
+  pastikanTemplatData();
+  muatResitFormDariTemplat();
+  renderResitTemplatCards();
+  if (typeof renderCatIkonGrid === "function") renderCatIkonGrid();
+  if (typeof renderCatGambarPreview === "function") renderCatGambarPreview();
   applyPosMode();
   renderReceiptPreview();
 }
 function savePosSettings() {
+  saveResitFormKeTemplat();
   var map = { posEnabled: "enabled", posFastMode: "fastMode", posTraining: "training", posPrinterType: "printerType", posPaperSize: "paperSize", posPinGuru: "pinGuru", resitNama: "nama", resitHeader2: "header2", resitAlamat: "alamat", resitTelefon: "telefon", resitLogoTeks: "logoTeks", resitFooter: "footer", resitTunjukAlamat: "tunjukAlamat", resitTunjukTelefon: "tunjukTelefon", resitTunjukQR: "tunjukQR", resitQrTeks: "qrTeks" };
   Object.keys(map).forEach(function (id) {
     var el = document.getElementById(id);
@@ -1987,7 +2271,14 @@ function savePosSettings() {
         POS_RESIT_NAMA: posSettings.nama, POS_RESIT_HEADER2: posSettings.header2,
         POS_RESIT_ALAMAT: posSettings.alamat, POS_RESIT_TELEFON: posSettings.telefon,
         POS_RESIT_LOGO: posSettings.logoTeks, POS_RESIT_FOOTER: posSettings.footer,
-        POS_RESIT_QR_TEKS: posSettings.qrTeks
+        POS_RESIT_QR_TEKS: posSettings.qrTeks,
+        POS_TEMPLAT_RESIT: posSettings.templatResit || "KLASIK",
+        POS_RESIT_NAMA_MODEN: (posSettings.templatData && posSettings.templatData.MODEN ? posSettings.templatData.MODEN.nama : ""),
+        POS_RESIT_HEADER2_MODEN: (posSettings.templatData && posSettings.templatData.MODEN ? posSettings.templatData.MODEN.header2 : ""),
+        POS_RESIT_FOOTER_MODEN: (posSettings.templatData && posSettings.templatData.MODEN ? posSettings.templatData.MODEN.footer : ""),
+        POS_RESIT_NAMA_RINGKAS: (posSettings.templatData && posSettings.templatData.RINGKAS ? posSettings.templatData.RINGKAS.nama : ""),
+        POS_RESIT_HEADER2_RINGKAS: (posSettings.templatData && posSettings.templatData.RINGKAS ? posSettings.templatData.RINGKAS.header2 : ""),
+        POS_RESIT_FOOTER_RINGKAS: (posSettings.templatData && posSettings.templatData.RINGKAS ? posSettings.templatData.RINGKAS.footer : "")
       } }) }).catch(function () {});
     }
   } catch (e) {}
@@ -2027,7 +2318,7 @@ function renderPosGrid() {
   grid.innerHTML = list.map(function (c) {
     var qty = posCart[c.kategori] || 0;
     return '<button type="button" onclick="addToPosCart(\'' + encodeURIComponent(c.kategori) + '\')" class="pos-product-btn glass-3d tilt-card p-3 flex flex-col justify-between gap-1 text-left">'
-      + '<span class="text-2xl tilt-pop">' + (c.ikon || "📦") + '</span>'
+      + '<span class="tilt-pop">' + productVisual(c, "w-11 h-11 text-2xl") + '</span>'
       + '<span class="font-extrabold text-[13px] leading-tight">' + c.kategori + '</span>'
       + '<span class="flex items-center justify-between"><span class="font-extrabold text-pink-600 text-sm">RM ' + Number(c.harga).toFixed(2) + '</span>' + (qty ? '<span class="px-2 py-0.5 rounded-full bg-pink-500 text-white text-[11px] font-extrabold">× ' + qty + '</span>' : '') + '</span></button>';
   }).join("");
@@ -2070,7 +2361,7 @@ function renderPosCart() {
       var c = (state.catalog || []).find(function (x) { return x.kategori === k; });
       if (!c) return "";
       var amt = posCart[k] * Number(c.harga);
-      return '<div class="glass-pill p-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="font-extrabold text-xs truncate">' + c.kategori + '</div><div class="text-[11px] subtext font-bold">RM ' + Number(c.harga).toFixed(2) + ' × ' + posCart[k] + ' = RM ' + amt.toFixed(2) + '</div></div><div class="flex items-center gap-1 shrink-0"><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', -1)" class="btn-chip" style="min-width:44px;min-height:44px">−</button><span class="font-extrabold w-6 text-center">' + posCart[k] + '</span><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', 1)" class="btn-chip" style="min-width:44px;min-height:44px">+</button></div></div>';
+      return '<div class="glass-pill p-2.5 flex items-center justify-between gap-2"><div class="flex items-center gap-2 min-w-0">' + productVisual(c, "w-9 h-9 text-lg") + '<div class="min-w-0"><div class="font-extrabold text-xs truncate">' + c.kategori + '</div><div class="text-[11px] subtext font-bold">RM ' + Number(c.harga).toFixed(2) + ' × ' + posCart[k] + ' = RM ' + amt.toFixed(2) + '</div></div></div><div class="flex items-center gap-1 shrink-0"><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', -1)" class="btn-chip" style="min-width:44px;min-height:44px">−</button><span class="font-extrabold w-6 text-center">' + posCart[k] + '</span><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', 1)" class="btn-chip" style="min-width:44px;min-height:44px">+</button></div></div>';
     }).join("");
   }
   var tt = posTotals();
@@ -2094,47 +2385,94 @@ function setPosPayMethod(m) {
 function setPosCash(v) { var el = document.getElementById("posCash"); if (el) { el.value = v; renderPosCart(); } }
 function setPosCashExact() { var el = document.getElementById("posCash"); if (el) { el.value = posTotals().total.toFixed(2); renderPosCart(); } }
 function escHtml(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-function buildReceiptHTML(r) {
-  var s = posSettings;
-  var lines = [];
-  lines.push('<div class="r-center"><div style="font-size:20px;font-weight:800">' + escHtml(s.logoTeks || "KH") + '</div>');
-  lines.push('<div style="font-weight:800;font-size:14px">' + escHtml(s.nama || "") + '</div>');
-  (s.header2 || "").split("\n").forEach(function (l) { if (l.trim()) lines.push('<div>' + escHtml(l) + '</div>'); });
-  if (s.tunjukAlamat && s.alamat) lines.push('<div>' + escHtml(s.alamat) + '</div>');
-  if (s.tunjukTelefon && s.telefon) lines.push('<div>Tel: ' + escHtml(s.telefon) + '</div>');
-  lines.push('</div><hr>');
-  lines.push('<div class="r-row"><span>No. Resit</span><b>' + escHtml(r.id) + '</b></div>');
-  lines.push('<div class="r-row"><span>Tarikh</span><span>' + escHtml(r.tarikh) + ' ' + escHtml(r.masa) + '</span></div>');
-  lines.push('<div class="r-row"><span>Kaedah</span><span>' + escHtml(r.kaedah) + '</span></div>');
-  lines.push('<div class="r-row"><span>Juruwang</span><b>' + escHtml(r.cashier || (posCashier ? posCashier.nama : '-')) + '</b></div>');
-  if (r.training) lines.push('<div class="r-center" style="font-weight:800">*** MOD LATIHAN — TIDAK DIREKOD ***</div>');
-  lines.push('<hr>');
+function resitBarisItem(r) {
+  var out = [];
   r.items.forEach(function (it) {
-    lines.push('<div class="r-row"><span>' + escHtml(it.kategori) + ' × ' + it.qty + '</span><span>RM ' + Number(it.amt).toFixed(2) + '</span></div>');
-    lines.push('<div style="font-size:11px;opacity:0.7">RM ' + Number(it.harga).toFixed(2) + ' / unit</div>');
+    out.push('<div class="r-row"><span>' + escHtml(it.kategori) + ' × ' + it.qty + '</span><span>RM ' + Number(it.amt).toFixed(2) + '</span></div>');
+    out.push('<div style="font-size:11px;opacity:0.7">RM ' + Number(it.harga).toFixed(2) + ' / unit</div>');
   });
-  lines.push('<hr>');
-  lines.push('<div class="r-row"><span>Subtotal</span><span>RM ' + Number(r.sub).toFixed(2) + '</span></div>');
-  if (r.disc > 0) lines.push('<div class="r-row"><span>Diskaun (' + r.discPct + '%)</span><span>-RM ' + Number(r.disc).toFixed(2) + '</span></div>');
-  if (r.tax > 0) lines.push('<div class="r-row"><span>Cukai (' + r.taxPct + '%)</span><span>RM ' + Number(r.tax).toFixed(2) + '</span></div>');
-  lines.push('<div class="r-row" style="font-size:16px;font-weight:800"><span>JUMLAH</span><span>RM ' + Number(r.total).toFixed(2) + '</span></div>');
+  return out.join("");
+}
+function resitBarisJumlah(r) {
+  var out = [];
+  out.push('<div class="r-row"><span>Subtotal</span><span>RM ' + Number(r.sub).toFixed(2) + '</span></div>');
+  if (r.disc > 0) out.push('<div class="r-row"><span>Diskaun (' + r.discPct + '%)</span><span>-RM ' + Number(r.disc).toFixed(2) + '</span></div>');
+  if (r.tax > 0) out.push('<div class="r-row"><span>Cukai (' + r.taxPct + '%)</span><span>RM ' + Number(r.tax).toFixed(2) + '</span></div>');
+  out.push('<div class="r-row" style="font-size:16px;font-weight:800"><span>JUMLAH</span><span>RM ' + Number(r.total).toFixed(2) + '</span></div>');
   if (r.kaedah === "TUNAI") {
-    lines.push('<div class="r-row"><span>Tunai</span><span>RM ' + Number(r.cash).toFixed(2) + '</span></div>');
-    lines.push('<div class="r-row" style="font-weight:800"><span>Baki</span><span>RM ' + Number(r.change).toFixed(2) + '</span></div>');
+    out.push('<div class="r-row"><span>Tunai</span><span>RM ' + Number(r.cash).toFixed(2) + '</span></div>');
+    out.push('<div class="r-row" style="font-weight:800"><span>Baki</span><span>RM ' + Number(r.change).toFixed(2) + '</span></div>');
   }
-  lines.push('<hr>');
-  (s.footer || "").split("\n").forEach(function (l) { if (l.trim()) lines.push('<div class="r-center">' + escHtml(l) + '</div>'); });
-  if (s.tunjukQR) lines.push('<div class="r-center" style="margin-top:8px;border:1px dashed #94A3B8;padding:8px">QR: ' + escHtml(s.qrTeks || "Maklum balas") + '</div>');
+  return out.join("");
+}
+function resitMeta(r) {
+  var out = [];
+  out.push('<div class="r-row"><span>No. Resit</span><b>' + escHtml(r.id) + '</b></div>');
+  out.push('<div class="r-row"><span>Tarikh</span><span>' + escHtml(r.tarikh) + ' ' + escHtml(r.masa) + '</span></div>');
+  out.push('<div class="r-row"><span>Kaedah</span><span>' + escHtml(r.kaedah) + '</span></div>');
+  out.push('<div class="r-row"><span>Juruwang</span><b>' + escHtml(r.cashier || (typeof posCashier !== "undefined" && posCashier ? posCashier.nama : '-')) + '</b></div>');
+  if (r.training) out.push('<div class="r-center" style="font-weight:800">*** MOD LATIHAN — TIDAK DIREKOD ***</div>');
+  return out.join("");
+}
+function buildReceiptKlasik(d, r) {
+  var lines = [];
+  lines.push('<div class="r-center"><div style="font-size:20px;font-weight:800">' + escHtml(d.logoTeks || "KH") + '</div>');
+  lines.push('<div style="font-weight:800;font-size:14px">' + escHtml(d.nama || "") + '</div>');
+  (d.header2 || "").split("\n").forEach(function (l) { if (l.trim()) lines.push('<div>' + escHtml(l) + '</div>'); });
+  if (d.tunjukAlamat && d.alamat) lines.push('<div>' + escHtml(d.alamat) + '</div>');
+  if (d.tunjukTelefon && d.telefon) lines.push('<div>Tel: ' + escHtml(d.telefon) + '</div>');
+  lines.push('</div><hr>');
+  lines.push(resitMeta(r));
+  lines.push('<hr>' + resitBarisItem(r) + '<hr>' + resitBarisJumlah(r) + '<hr>');
+  (d.footer || "").split("\n").forEach(function (l) { if (l.trim()) lines.push('<div class="r-center">' + escHtml(l) + '</div>'); });
+  if (d.tunjukQR) lines.push('<div class="r-center" style="margin-top:8px;border:1px dashed #94A3B8;padding:8px">QR: ' + escHtml(d.qrTeks || "Maklum balas") + '</div>');
   return lines.join("");
+}
+function buildReceiptModen(d, r) {
+  var lines = [];
+  lines.push('<div style="background:#1E1B4B;color:#fff;padding:10px 8px;text-align:center;border-radius:6px"><div style="font-size:22px;font-weight:800">' + escHtml(d.logoTeks || "KH") + '</div><div style="font-weight:800;font-size:15px">' + escHtml(d.nama || "") + '</div>');
+  (d.header2 || "").split("\n").forEach(function (l) { if (l.trim()) lines.push('<div style="font-size:12px;opacity:0.9">' + escHtml(l) + '</div>'); });
+  if (d.tunjukAlamat && d.alamat) lines.push('<div style="font-size:12px;opacity:0.9">' + escHtml(d.alamat) + '</div>');
+  if (d.tunjukTelefon && d.telefon) lines.push('<div style="font-size:12px;opacity:0.9">Tel: ' + escHtml(d.telefon) + '</div>');
+  lines.push('</div>');
+  lines.push('<div style="margin-top:8px">' + resitMeta(r) + '</div><hr>');
+  lines.push(resitBarisItem(r));
+  lines.push('<div style="border:2px solid #1E1B4B;border-radius:6px;padding:8px;margin-top:8px">' + resitBarisJumlah(r) + '</div>');
+  lines.push('<div style="margin-top:10px;text-align:center;font-weight:700">');
+  (d.footer || "").split("\n").forEach(function (l) { if (l.trim()) lines.push('<div>' + escHtml(l) + '</div>'); });
+  lines.push('</div>');
+  if (d.tunjukQR) lines.push('<div class="r-center" style="margin-top:8px;border:1px solid #1E1B4B;border-radius:6px;padding:8px">QR: ' + escHtml(d.qrTeks || "Maklum balas") + '</div>');
+  return lines.join("");
+}
+function buildReceiptRingkas(d, r) {
+  var lines = [];
+  lines.push('<div class="r-center"><b>' + escHtml(d.logoTeks || "KH") + ' — ' + escHtml(d.nama || "") + '</b></div>');
+  (d.header2 || "").split("\n").forEach(function (l) { if (l.trim()) lines.push('<div class="r-center">' + escHtml(l) + '</div>'); });
+  lines.push('<div class="r-center">' + escHtml(r.id) + ' • ' + escHtml(r.tarikh) + ' ' + escHtml(r.masa) + ' • ' + escHtml(r.kaedah) + '</div>');
+  if (r.training) lines.push('<div class="r-center" style="font-weight:800">*** MOD LATIHAN ***</div>');
+  lines.push('<hr>');
+  r.items.forEach(function (it) { lines.push('<div class="r-row"><span>' + escHtml(it.kategori) + ' × ' + it.qty + '</span><span>RM ' + Number(it.amt).toFixed(2) + '</span></div>'); });
+  lines.push('<hr>' + resitBarisJumlah(r) + '<hr>');
+  var f1 = (d.footer || "").split("\n").filter(function (l) { return l.trim(); });
+  if (f1.length) lines.push('<div class="r-center">' + escHtml(f1.join(" ")) + '</div>');
+  if (d.tunjukQR) lines.push('<div class="r-center">QR: ' + escHtml(d.qrTeks || "Maklum balas") + '</div>');
+  return lines.join("");
+}
+function buildReceiptHTML(r) {
+  var d = resitTemplatAktif();
+  var t = posSettings.templatResit || "KLASIK";
+  if (t === "MODEN") return buildReceiptModen(d, r);
+  if (t === "RINGKAS") return buildReceiptRingkas(d, r);
+  return buildReceiptKlasik(d, r);
 }
 function renderReceiptPreview() {
   var el = document.getElementById("receiptPreview");
   if (!el) return;
-  el.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto";
+  el.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto receipt-templat-" + String(posSettings.templatResit || "KLASIK").toLowerCase();
   var sample = { id: "R0001", tarikh: new Date().toISOString().slice(0, 10), masa: "10:00", kaedah: "TUNAI", cashier: "CONTOH", training: false, items: [{ kategori: "KACANG/BISKUT", qty: 2, harga: 1.00, amt: 2.00 }, { kategori: "AISKRIM", qty: 1, harga: 1.00, amt: 1.00 }], sub: 3.00, disc: 0, discPct: 0, tax: 0, taxPct: 0, total: 3.00, cash: 5.00, change: 2.00 };
   el.innerHTML = buildReceiptHTML(sample);
   var pv = document.getElementById("posReceiptPreview");
-  if (pv && posLastReceipt) { pv.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto"; pv.innerHTML = buildReceiptHTML(posLastReceipt); }
+  if (pv && posLastReceipt) { pv.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto receipt-templat-" + String(posSettings.templatResit || "KLASIK").toLowerCase(); pv.innerHTML = buildReceiptHTML(posLastReceipt); }
 }
 function updatePosOfflineBadge() {
   var el = document.getElementById("posOfflineBadge");
@@ -2176,7 +2514,7 @@ function checkoutPos() {
     }
   } catch (e) {}
   var pv = document.getElementById("posReceiptPreview");
-  if (pv) { pv.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto"; pv.innerHTML = buildReceiptHTML(posLastReceipt); }
+  if (pv) { pv.className = "receipt-paper " + (posSettings.paperSize === "58" ? "receipt-58" : "receipt-80") + " p-3 mx-auto receipt-templat-" + String(posSettings.templatResit || "KLASIK").toLowerCase(); pv.innerHTML = buildReceiptHTML(posLastReceipt); }
   var modal = document.getElementById("posReceiptModal");
   if (modal) { modal.classList.remove("hidden"); modal.classList.add("flex"); }
   updatePosOfflineBadge();

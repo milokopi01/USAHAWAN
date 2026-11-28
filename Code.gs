@@ -1,6 +1,6 @@
 /**
  * =========================================================================
- * KH PACKAGING — KEUSAHAWANAN PRO v5 (Google Apps Script Backend)
+ * KH PACKAGING — KEUSAHAWANAN PRO v8.5 (Google Apps Script Backend)
  * Termasuk Modul Jualan Harian + Audit Tunai + Gaji Pekerja PPKI
  * =========================================================================
  * Panduan Kemas Kini Apps Script:
@@ -104,7 +104,14 @@ function getSettings() {
     POS_RESIT_TELEFON: "",
     POS_RESIT_LOGO: "KH",
     POS_RESIT_FOOTER: "Terima kasih kerana menyokong Keusahawanan Pelajar!",
-    POS_RESIT_QR_TEKS: "Imbas untuk maklum balas"
+    POS_RESIT_QR_TEKS: "Imbas untuk maklum balas",
+    POS_TEMPLAT_RESIT: "KLASIK",
+    POS_RESIT_NAMA_MODEN: "KH PACKAGING",
+    POS_RESIT_HEADER2_MODEN: "KEUSAHAWANAN PRO",
+    POS_RESIT_FOOTER_MODEN: "Terima kasih kerana menyokong Keusahawanan Pelajar!",
+    POS_RESIT_NAMA_RINGKAS: "KH PACKAGING",
+    POS_RESIT_HEADER2_RINGKAS: "",
+    POS_RESIT_FOOTER_RINGKAS: "Terima kasih!"
   };
   if (!sh) return res;
   const rows = sh.getDataRange().getValues();
@@ -130,6 +137,7 @@ function getCatalog() {
       kategori: nama,
       harga: Number(rows[i][2]) || 0,
       ikon: String(rows[i][3] || "📦").trim(),
+      gambarAda: String(rows[i][5] || "").trim(),
       status: String(rows[i][4] || "AKTIF").trim().toUpperCase()
     });
   }
@@ -287,7 +295,7 @@ function savePosSettings(payload) {
     sh.appendRow(["Kunci", "Nilai"]);
   }
   const settings = payload.settings || {};
-  const allowed = ["POS_MOD","POS_MOD_LAJU","POS_MOD_LATIHAN","POS_PIN_GURU","POS_JENIS_PENCETAK","POS_SAIZ_KERTAS","POS_RESIT_NAMA","POS_RESIT_HEADER2","POS_RESIT_ALAMAT","POS_RESIT_TELEFON","POS_RESIT_LOGO","POS_RESIT_FOOTER","POS_RESIT_QR_TEKS"];
+  const allowed = ["POS_MOD","POS_MOD_LAJU","POS_MOD_LATIHAN","POS_PIN_GURU","POS_JENIS_PENCETAK","POS_SAIZ_KERTAS","POS_RESIT_NAMA","POS_RESIT_HEADER2","POS_RESIT_ALAMAT","POS_RESIT_TELEFON","POS_RESIT_LOGO","POS_RESIT_FOOTER","POS_RESIT_QR_TEKS","POS_TEMPLAT_RESIT","POS_RESIT_NAMA_MODEN","POS_RESIT_HEADER2_MODEN","POS_RESIT_FOOTER_MODEN","POS_RESIT_NAMA_RINGKAS","POS_RESIT_HEADER2_RINGKAS","POS_RESIT_FOOTER_RINGKAS"];
   const rows = sh.getDataRange().getValues();
   const rowByKey = {};
   for (let i = 1; i < rows.length; i++) {
@@ -501,6 +509,7 @@ function saveProduct(payload) {
   const kategori = String(payload.kategori || "").trim().toUpperCase();
   const harga = Number(payload.harga) || 0;
   const ikon = String(payload.ikon || "📦").trim();
+  const gambarAda = String(payload.gambarAda || "").trim();
   const status = String(payload.status || "AKTIF").trim().toUpperCase();
 
   if (!kategori || harga <= 0) throw new Error("Nama kategori dan harga mesti diisi.");
@@ -509,12 +518,12 @@ function saveProduct(payload) {
   let updated = false;
   for (let i = 1; i < rows.length; i++) {
     if (String(rows[i][0]).trim() === kod) {
-      sh.getRange(i + 1, 1, 1, 5).setValues([[kod, kategori, harga, ikon, status]]);
+      sh.getRange(i + 1, 1, 1, 6).setValues([[kod, kategori, harga, ikon, status, gambarAda]]);
       updated = true;
       break;
     }
   }
-  if (!updated) sh.appendRow([kod, kategori, harga, ikon, status]);
+  if (!updated) sh.appendRow([kod, kategori, harga, ikon, status, gambarAda]);
   return { saved: true, catalog: getCatalog() };
 }
 
