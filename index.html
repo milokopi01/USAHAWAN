@@ -2,12 +2,12 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzg2cyqswanuVEnaG8vlLd3DiS4dXanTX0J_-ZVj8660lMTXdDsQt42ofUf3g88F97E/exec";</script>
+  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzfndp5CwRNhHRYKrn2ZyEqMpYhM5cyL9qlYMnTZ1cbgz9NzXrIEpqDWlTT5XWegjbg/exec";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#8B5CF6" />
-  <title>KH Keusahawanan Pro — Sistem POS v8.6</title>
+  <title>KH Keusahawanan Pro — Sistem POS v8.8</title>
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -456,6 +456,101 @@
     body.dark-glass .step-pulse { animation-name: stepPulseDark; }
     @keyframes stepPulseDark { 0% { background: #4C1D95; transform: scale(1.07); } 100% { background: #0F172A; transform: scale(1); } }
 
+    /* ===== v8.7 — Kad produk POS besar, kemas & lebih 3D ===== */
+    .pos-product-btn {
+      position: relative;
+      min-height: 178px !important;
+      text-align: center;
+      border-radius: 22px !important;
+      background: linear-gradient(180deg, #FFFFFF 0%, #FDF2F8 100%) !important;
+      border: 1.5px solid #E2E8F0 !important;
+      border-bottom: 5px solid rgba(236, 72, 153, 0.45) !important;
+      box-shadow: 0 6px 0 rgba(236, 72, 153, 0.22), 0 16px 26px -10px rgba(30, 27, 75, 0.35), inset 0 2px 0 #FFFFFF !important;
+    }
+    #tab-pos .pos-product-btn { min-height: 178px; }
+    .pos-product-btn::before {
+      content: ""; position: absolute; top: 0; left: 14px; right: 14px; height: 4px; border-radius: 999px;
+      background: linear-gradient(90deg, #F59E0B, #EC4899, #8B5CF6, #06B6D4);
+    }
+    .pos-product-btn:active { transform: translateY(4px) scale(0.98); box-shadow: 0 1px 0 rgba(236, 72, 153, 0.22), 0 6px 12px -6px rgba(30, 27, 75, 0.30) !important; }
+    body.dark-glass .pos-product-btn { background: linear-gradient(180deg, #312E81, #1E1B4B) !important; border-color: #4C1D95 !important; }
+    /* Pentas visual: gambar/ikon besar timbul atas pentas */
+    .pos-visual-stage {
+      width: 84px; height: 84px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      background: linear-gradient(180deg, #FFFFFF, #FEF3C7);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      box-shadow: inset 0 3px 8px rgba(124, 58, 237, 0.14), inset 0 -3px 6px rgba(236, 72, 153, 0.12), 0 6px 12px -4px rgba(30, 27, 75, 0.28);
+    }
+    body.dark-glass .pos-visual-stage { background: linear-gradient(180deg, #4C1D95, #1E1B4B); }
+    .pos-visual-stage img, .pos-visual-stage .prod-emoji { width: 72px; height: 72px; }
+    .pos-visual-stage .prod-emoji { font-size: 48px; }
+    .pos-visual-stage .prod-img-zoom { border-radius: 16px; box-shadow: 0 4px 0 rgba(124, 58, 237, 0.28), 0 8px 14px -4px rgba(30, 27, 75, 0.35); }
+    /* Ikon timbul dengan bayang jatuh */
+    .prod-emoji { filter: drop-shadow(0 5px 4px rgba(30, 27, 75, 0.30)); }
+    /* Nama berpusat, ruang 2 baris supaya harga sejajar */
+    .pos-name {
+      font-weight: 800; font-size: 13px; line-height: 1.25; min-height: 33px;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+    }
+    /* Harga jadi pil gradien timbul, sentiasa di bawah kad */
+    .pos-price-pill {
+      margin-top: auto; display: inline-flex; align-items: center; justify-content: center;
+      padding: 6px 14px; border-radius: 999px;
+      background: linear-gradient(135deg, #F59E0B, #EC4899 55%, #8B5CF6);
+      color: #FFFFFF; font-weight: 800; font-size: 14px;
+      box-shadow: 0 3px 0 rgba(124, 58, 237, 0.45), 0 8px 14px -6px rgba(236, 72, 153, 0.5);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.20);
+    }
+    /* Lencana kuantiti timbul di penjuru kad */
+    .pos-qty-badge {
+      position: absolute; top: -8px; right: -6px; z-index: 2;
+      min-width: 30px; height: 30px; padding: 0 8px; border-radius: 999px;
+      background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFFFFF;
+      font-size: 13px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 3px 0 rgba(124, 58, 237, 0.45), 0 8px 14px -6px rgba(236, 72, 153, 0.55);
+    }
+    /* Pentas visual kad Rekod Harian */
+    .rekod-visual-stage {
+      width: 60px; height: 60px; border-radius: 16px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(180deg, #FFFFFF, #FEF3C7);
+      box-shadow: inset 0 2px 6px rgba(124, 58, 237, 0.12), 0 5px 10px -4px rgba(30, 27, 75, 0.30);
+    }
+    body.dark-glass .rekod-visual-stage { background: linear-gradient(180deg, #4C1D95, #1E1B4B); }
+    .rekod-visual-stage img { width: 48px; height: 48px; }
+
+    /* ===== v8.8 — Modal dalam app (putih + warna asas, 3D) ===== */
+    .app-modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 16px; animation: modalFade 0.18s ease; }
+    .app-modal-card { position: relative; width: 100%; max-width: 340px; background: #FFFFFF; border-radius: 24px; padding: 22px 20px 20px; text-align: center; box-shadow: 0 6px 0 rgba(236, 72, 153, 0.25), 0 24px 48px -12px rgba(15, 23, 42, 0.45), inset 0 2px 0 #FFFFFF; animation: modalPop 0.22s ease; overflow: hidden; }
+    .app-modal-strip { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #F59E0B, #EC4899, #8B5CF6, #06B6D4); }
+    .app-modal-icon { width: 64px; height: 64px; margin: 2px auto 10px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 30px; background: linear-gradient(180deg, #FFFFFF, #FEF3C7); box-shadow: inset 0 2px 6px rgba(124, 58, 237, 0.14), 0 6px 12px -4px rgba(30, 27, 75, 0.28); }
+    .app-modal-title { font-size: 18px; font-weight: 800; color: #1E1B4B; }
+    .app-modal-msg { font-size: 13px; font-weight: 600; color: #64748B; margin-top: 4px; line-height: 1.5; }
+    .pin-dots { display: flex; justify-content: center; gap: 9px; margin: 18px 0 14px; }
+    .pin-dot { width: 17px; height: 17px; border-radius: 999px; background: #FFFFFF; border: 2px solid #CBD5E1; box-shadow: inset 0 2px 4px rgba(100, 116, 139, 0.25); }
+    .pin-dot.isi { background: linear-gradient(135deg, #EC4899, #8B5CF6); border-color: #8B5CF6; box-shadow: 0 2px 6px rgba(236, 72, 153, 0.5); }
+    .pin-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .pin-key { min-height: 60px; border-radius: 16px; font-size: 22px; font-weight: 800; color: #1E1B4B; background: #FFFFFF; border: 2px solid #E2E8F0; border-bottom: 4px solid #CBD5E1; box-shadow: 0 3px 0 rgba(100, 116, 139, 0.25), 0 8px 14px -8px rgba(30, 27, 75, 0.30); }
+    .pin-key:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(100, 116, 139, 0.25); }
+    .pin-key-text { font-size: 14px; color: #E11D48; }
+    .pin-sahkan { margin-top: 10px; width: 100%; min-height: 56px; border-radius: 16px; font-weight: 800; font-size: 15px; color: #FFFFFF; background: linear-gradient(135deg, #F59E0B, #EC4899 55%, #8B5CF6); border-bottom: 4px solid rgba(124, 58, 237, 0.5); box-shadow: 0 3px 0 rgba(124, 58, 237, 0.45), 0 8px 14px -6px rgba(236, 72, 153, 0.5); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.20); }
+    .pin-sahkan:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(124, 58, 237, 0.45); }
+    .pin-sahkan:disabled { opacity: 0.45; }
+    .app-modal-btn { flex: 1; min-height: 52px; border-radius: 14px; font-weight: 800; padding: 12px; font-size: 14px; }
+    .app-modal-btn-ok { color: #FFFFFF; background: linear-gradient(135deg, #F59E0B, #EC4899 55%, #8B5CF6); border-bottom: 3px solid rgba(124, 58, 237, 0.5); box-shadow: 0 3px 0 rgba(124, 58, 237, 0.45), 0 8px 14px -6px rgba(236, 72, 153, 0.45); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.20); }
+    .app-modal-btn-ok:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(124, 58, 237, 0.45); }
+    .app-modal-btn-cancel { background: #FFFFFF; color: #334155; border: 2px solid #CBD5E1; border-bottom: 3px solid #94A3B8; box-shadow: 0 3px 0 rgba(100, 116, 139, 0.35); }
+    .app-modal-btn-cancel:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(100, 116, 139, 0.35); }
+    @keyframes modalFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modalPop { from { opacity: 0; transform: translateY(12px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    /* ===== v8.8 — Zum gambar produk ===== */
+    .prod-img-zoom { display: block; overflow: hidden; border-radius: 12px; border: 2px solid #FFFFFF; box-shadow: 0 4px 0 rgba(124, 58, 237, 0.28), 0 8px 14px -4px rgba(30, 27, 75, 0.30); flex-shrink: 0; }
+    .pos-visual-stage .prod-img-zoom { width: 72px; height: 72px; border-radius: 16px; }
+    .rekod-visual-stage .prod-img-zoom { width: 48px; height: 48px; }
+
   </style>
 </head>
 <body>
@@ -786,8 +881,15 @@
                 <button type="button" onclick="clearCatGambarDraft()" class="glass-pill px-3 py-2 min-h-[48px] text-xs font-extrabold text-rose-600">🗑 Buang Gambar</button>
               </div>
             </div>
+            <div id="catZoomRow" class="mt-1 flex items-center gap-2" style="display:none">
+              <span class="text-[11px] font-extrabold subtext shrink-0">Zum</span>
+              <button type="button" onclick="stepCatGambarZoom(-0.1)" class="step-btn minus" style="width:44px;height:44px;min-width:44px;min-height:44px;font-size:20px" aria-label="Kecilkan gambar">−</button>
+              <input id="catGambarZoom" type="range" min="1" max="2.5" step="0.1" value="1" oninput="setCatGambarZoom(this.value)" class="flex-1 accent-pink-500" aria-label="Zum gambar" />
+              <button type="button" onclick="stepCatGambarZoom(0.1)" class="step-btn plus" style="width:44px;height:44px;min-width:44px;min-height:44px;font-size:20px" aria-label="Besarkan gambar">+</button>
+              <span id="catGambarZoomLabel" class="text-xs font-extrabold w-11 text-center shrink-0">1.0×</span>
+            </div>
             <input id="catGambarInput" type="file" accept="image/*" class="hidden" onchange="handleCatGambarFile(this)" />
-            <p class="text-[11px] subtext">Gambar dikecilkan automatik (maks 320px) dan disimpan dalam telefon ini sahaja — tidak dihantar ke Google Sheet. Kalau tiada gambar, ikon di sebelah akan dipakai.</p>
+            <p class="text-[11px] subtext">Gambar dikecilkan automatik (maks 320px) dan disimpan dalam telefon ini sahaja — tidak dihantar ke Google Sheet. Kalau tiada gambar, ikon di sebelah akan dipakai. Guna peluncur Zum untuk besarkan atau kecilkan gambar; zum yang dipilih disimpan bersama gambar dalam telefon ini.</p>
           </div>
           <div class="glass-pill p-3 space-y-2">
             <div class="text-[10px] font-extrabold uppercase subtext">Pilih Ikon (kalau tiada gambar)</div>
@@ -940,7 +1042,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-3.5 md:gap-4 items-start">
         <div class="lg:col-span-3 space-y-3">
           <input id="posSearch" type="text" placeholder="Cari produk... (tahan salah eja pun boleh)" oninput="renderPosGrid()" class="w-full glass-pill px-3.5 py-2.5 min-h-[56px] font-bold outline-none" />
-          <div id="posGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+          <div id="posGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
         </div>
 
         <div class="lg:col-span-2 glass-3d p-4 md:p-5 space-y-3 lg:sticky lg:top-24">
@@ -1166,7 +1268,7 @@ function renderProductGrid() {
       <div class="glass-3d ${highlightBorder} p-3.5 md:p-4 flex flex-col justify-between gap-2.5">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2 min-w-0">
-            ${productVisual(c, "w-12 h-12 text-2xl shrink-0")}
+            <span class="rekod-visual-stage">${productVisual(c, "w-12 h-12 text-3xl shrink-0")}</span>
             <div class="min-w-0">
               <div class="font-extrabold text-sm leading-tight truncate">${c.kategori}</div>
               <div class="text-[11px] font-bold text-pink-600">RM ${c.harga.toFixed(2)} / unit</div>
@@ -1581,7 +1683,7 @@ function editDay(tarikh) {
 }
 
 async function deleteDay(tarikh) {
-  const pin = prompt(`Masukkan PIN Admin untuk memadam rekod tarikh ${tarikh}:`);
+  const pin = await showPinModal({ title: "PIN Admin", message: "Masukkan PIN Admin untuk memadam rekod tarikh " + tarikh + ":" });
   if (!pin) return;
   try {
     const res = await fetch(state.gasUrl, {
@@ -1597,23 +1699,118 @@ async function deleteDay(tarikh) {
   } catch (err) { showToast("❌ " + err.message, "error"); }
 }
 
+/* ===== v8.8 — Modal dalam app (ganti prompt/confirm pelayar — domain tidak lagi terpapar) ===== */
+function _appModalRoot() {
+  var r = document.getElementById("appModalRoot");
+  if (!r) { r = document.createElement("div"); r.id = "appModalRoot"; document.body.appendChild(r); }
+  return r;
+}
+function _closeAppModal() { var r = document.getElementById("appModalRoot"); if (r) r.innerHTML = ""; }
+function showPinModal(opts) {
+  opts = opts || {};
+  return new Promise(function (resolve) {
+    var root = _appModalRoot();
+    var pin = "";
+    root.innerHTML =
+      '<div class="app-modal-overlay" id="appModalOverlay">'
+      + '<div class="app-modal-card" role="dialog" aria-modal="true">'
+      + '<div class="app-modal-strip"></div>'
+      + '<div class="app-modal-icon">🔒</div>'
+      + '<div class="app-modal-title">' + (opts.title || "PIN") + '</div>'
+      + '<div class="app-modal-msg">' + (opts.message || "Masukkan PIN:") + '</div>'
+      + '<div class="pin-dots" id="pinDots">'
+      + '<span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>'
+      + '</div>'
+      + '<div class="pin-keys">'
+      + [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return '<button type="button" class="pin-key" data-digit="' + n + '">' + n + '</button>'; }).join("")
+      + '<button type="button" class="pin-key pin-key-text" id="pinCancel">Batal</button>'
+      + '<button type="button" class="pin-key" data-digit="0">0</button>'
+      + '<button type="button" class="pin-key" id="pinBack">⌫</button>'
+      + '</div>'
+      + '<button type="button" class="pin-sahkan" id="pinOk" disabled>✓ SAHKAN PIN</button>'
+      + '</div></div>';
+    var done = false;
+    function finish(v) { if (done) return; done = true; document.removeEventListener("keydown", onKey, true); _closeAppModal(); resolve(v); }
+    function render() {
+      var dots = root.querySelectorAll(".pin-dot");
+      for (var i = 0; i < dots.length; i++) dots[i].classList.toggle("isi", i < pin.length);
+      var ok = root.querySelector("#pinOk"); if (ok) ok.disabled = pin.length === 0;
+    }
+    function onKey(e) {
+      if (/^[0-9]$/.test(e.key) && pin.length < 6) { pin += e.key; render(); }
+      else if (e.key === "Backspace") { pin = pin.slice(0, -1); render(); }
+      else if (e.key === "Escape") { finish(null); }
+      else if (e.key === "Enter" && pin.length > 0) { finish(pin); }
+    }
+    document.addEventListener("keydown", onKey, true);
+    var keys = root.querySelectorAll("[data-digit]");
+    for (var k = 0; k < keys.length; k++) keys[k].addEventListener("click", function () { if (pin.length < 6) { pin += this.getAttribute("data-digit"); render(); } });
+    root.querySelector("#pinBack").addEventListener("click", function () { pin = pin.slice(0, -1); render(); });
+    root.querySelector("#pinCancel").addEventListener("click", function () { finish(null); });
+    root.querySelector("#pinOk").addEventListener("click", function () { if (pin.length > 0) finish(pin); });
+    root.querySelector("#appModalOverlay").addEventListener("click", function (e) { if (e.target.id === "appModalOverlay") finish(null); });
+  });
+}
+function showConfirmModal(opts) {
+  opts = opts || {};
+  return new Promise(function (resolve) {
+    var root = _appModalRoot();
+    root.innerHTML =
+      '<div class="app-modal-overlay" id="appModalOverlay">'
+      + '<div class="app-modal-card" role="dialog" aria-modal="true">'
+      + '<div class="app-modal-strip"></div>'
+      + '<div class="app-modal-icon">' + (opts.icon || "❓") + '</div>'
+      + '<div class="app-modal-title">' + (opts.title || "Sahkan?") + '</div>'
+      + '<div class="app-modal-msg">' + (opts.message || "") + '</div>'
+      + '<div style="display:flex;gap:8px;margin-top:18px">'
+      + '<button type="button" id="appModalCancel" class="app-modal-btn app-modal-btn-cancel">' + (opts.cancelText || "Batal") + '</button>'
+      + '<button type="button" id="appModalOk" class="app-modal-btn app-modal-btn-ok">' + (opts.okText || "Ya") + '</button>'
+      + '</div>'
+      + '</div></div>';
+    var done = false;
+    function finish(v) { if (done) return; done = true; document.removeEventListener("keydown", onKey, true); _closeAppModal(); resolve(v); }
+    function onKey(e) { if (e.key === "Escape") finish(false); if (e.key === "Enter") finish(true); }
+    document.addEventListener("keydown", onKey, true);
+    root.querySelector("#appModalOk").addEventListener("click", function () { finish(true); });
+    root.querySelector("#appModalCancel").addEventListener("click", function () { finish(false); });
+    root.querySelector("#appModalOverlay").addEventListener("click", function (e) { if (e.target.id === "appModalOverlay") finish(false); });
+  });
+}
 /* ===== v8.5 — Gambar sebenar / ikon produk ===== */
 var ICON_PRESET = ["🍪", "🥜", "🍦", "🍫", "🧁", "🍰", "🎂", "🌭", "🍮", "🌽", "🧇", "🥤", "🍩", "🍿", "🍬", "🧃", "🥛", "🍞", "🥐", "🍕", "🍟", "🥪", "🍜", "📦"];
 function productVisual(c, cls) {
   var k = cls || "w-11 h-11 text-2xl";
-  if (c && c.gambar && String(c.gambar).indexOf("data:image/") === 0) return '<img src="' + c.gambar + '" alt="" class="prod-thumb ' + k + '" />';
-  return '<span class="' + k + ' flex items-center justify-center shrink-0">' + (c && c.ikon ? c.ikon : "📦") + '</span>';
+  if (c && c.gambar && String(c.gambar).indexOf("data:image/") === 0) {
+    var z = Math.max(1, Math.min(2.5, Number(c.gambarZoom) || 1));
+    return '<span class="prod-img-zoom ' + k + '"><img src="' + c.gambar + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block;transform:scale(' + z + ')" /></span>';
+  }
+  return '<span class="prod-emoji ' + k + ' flex items-center justify-center shrink-0">' + (c && c.ikon ? c.ikon : "📦") + '</span>';
 }
 function mergeCatalogImages(serverCatalog) {
-  var local = {};
-  try { (JSON.parse(localStorage.getItem("kh_catalog") || "[]") || []).forEach(function (c) { if (c && c.gambar) { local[c.kod] = c.gambar; local["NAMA:" + c.kategori] = c.gambar; } }); } catch (e) {}
-  (state.catalog || []).forEach(function (c) { if (c && c.gambar) { local[c.kod] = c.gambar; local["NAMA:" + c.kategori] = c.gambar; } });
-  return (serverCatalog || []).map(function (c) { var g = local[c.kod] || local["NAMA:" + c.kategori] || c.gambar || ""; if (g) c.gambar = g; return c; });
+  var local = {}, localZoom = {};
+  try { (JSON.parse(localStorage.getItem("kh_catalog") || "[]") || []).forEach(function (c) { if (c && c.gambar) { local[c.kod] = c.gambar; local["NAMA:" + c.kategori] = c.gambar; if (c.gambarZoom) { localZoom[c.kod] = c.gambarZoom; localZoom["NAMA:" + c.kategori] = c.gambarZoom; } } }); } catch (e) {}
+  (state.catalog || []).forEach(function (c) { if (c && c.gambar) { local[c.kod] = c.gambar; local["NAMA:" + c.kategori] = c.gambar; if (c.gambarZoom) { localZoom[c.kod] = c.gambarZoom; localZoom["NAMA:" + c.kategori] = c.gambarZoom; } } });
+  return (serverCatalog || []).map(function (c) { var g = local[c.kod] || local["NAMA:" + c.kategori] || c.gambar || ""; if (g) c.gambar = g; var z = localZoom[c.kod] || localZoom["NAMA:" + c.kategori] || c.gambarZoom; if (z) c.gambarZoom = z; return c; });
 }
+function syncCatZoomUI() {
+  var z = window._catGambarZoom || 1;
+  var s = document.getElementById("catGambarZoom"); if (s) s.value = z;
+  var l = document.getElementById("catGambarZoomLabel"); if (l) l.textContent = z.toFixed(1) + "×";
+}
+function setCatGambarZoom(v) {
+  var z = Math.max(1, Math.min(2.5, Math.round(Number(v || 1) * 10) / 10));
+  window._catGambarZoom = z;
+  syncCatZoomUI();
+  renderCatGambarPreview();
+}
+function stepCatGambarZoom(d) { setCatGambarZoom((window._catGambarZoom || 1) + d); }
 function renderCatGambarPreview() {
   var el = document.getElementById("catGambarPreview"); if (!el) return;
   var g = window._catGambarDraft || "";
-  el.innerHTML = g ? '<img src="' + g + '" alt="Gambar produk" class="prod-thumb w-16 h-16" />' : '<span class="w-16 h-16 flex items-center justify-center text-3xl">📦</span>';
+  var z = window._catGambarZoom || 1;
+  el.innerHTML = g ? '<span class="prod-img-zoom w-16 h-16"><img src="' + g + '" alt="Gambar produk" style="width:100%;height:100%;object-fit:cover;display:block;transform:scale(' + z + ')" /></span>' : '<span class="w-16 h-16 flex items-center justify-center text-3xl">📦</span>';
+  var zr = document.getElementById("catZoomRow"); if (zr) zr.style.display = g ? "flex" : "none";
+  syncCatZoomUI();
 }
 function handleCatGambarFile(input) {
   var file = input && input.files && input.files[0];
@@ -1631,7 +1828,7 @@ function handleCatGambarFile(input) {
         cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
         window._catGambarDraft = cv.toDataURL("image/jpeg", 0.72);
         window._catGambarCleared = false;
-        renderCatGambarPreview();
+        setCatGambarZoom(1);
         showToast("Gambar dimuat naik & dikecilkan", "success");
       } catch (err) { showToast("Gambar tidak dapat diproses: " + err.message, "error"); }
     };
@@ -1641,7 +1838,7 @@ function handleCatGambarFile(input) {
   reader.readAsDataURL(file);
   input.value = "";
 }
-function clearCatGambarDraft() { window._catGambarDraft = ""; window._catGambarCleared = true; renderCatGambarPreview(); }
+function clearCatGambarDraft() { window._catGambarDraft = ""; window._catGambarCleared = true; window._catGambarZoom = 1; renderCatGambarPreview(); }
 function renderCatIkonGrid() {
   var grid = document.getElementById("catIkonGrid"); if (!grid) return;
   var cur = (document.getElementById("catIkon") ? document.getElementById("catIkon").value.trim() : "") || "📦";
@@ -1656,6 +1853,7 @@ function editProduct(kod) {
   document.getElementById("catHarga").value = c.harga;
   document.getElementById("catIkon").value = c.ikon || "📦";
   window._catGambarDraft = c.gambar || "";
+  window._catGambarZoom = c.gambarZoom || 1;
   window._catGambarCleared = false;
   renderCatGambarPreview(); renderCatIkonGrid();
   var el = document.getElementById("catNama"); if (el) el.focus();
@@ -1688,9 +1886,10 @@ async function addOrUpdateProduct() {
   const harga = Number(document.getElementById("catHarga").value) || 0;
   const ikon = document.getElementById("catIkon").value.trim() || "📦";
   const gambar = window._catGambarDraft || "";
+  const gambarZoom = gambar ? (window._catGambarZoom || 1) : 1;
   if (!kategori || harga <= 0) return showToast("Isi nama produk dan harga yang sah.", "error");
 
-  const pin = prompt("Masukkan PIN Admin (Lalai: 1234):");
+  const pin = await showPinModal({ title: "PIN Admin", message: "Masukkan PIN Admin (Lalai: 1234):" });
   if (!pin) return;
   try {
     const res = await fetch(state.gasUrl, {
@@ -1702,7 +1901,7 @@ async function addOrUpdateProduct() {
     if (!json.ok) throw new Error(json.error);
     state.catalog = mergeCatalogImages(json.data.catalog);
     var saved = state.catalog.find(function (x) { return x.kod === kod; });
-    if (saved) { if (gambar) saved.gambar = gambar; else if (window._catGambarCleared) delete saved.gambar; }
+    if (saved) { if (gambar) { saved.gambar = gambar; saved.gambarZoom = gambarZoom; } else if (window._catGambarCleared) { delete saved.gambar; delete saved.gambarZoom; } }
   } catch (err) { return showToast("❌ " + err.message, "error"); }
 
   try { localStorage.setItem("kh_catalog", JSON.stringify(state.catalog)); }
@@ -1716,7 +1915,7 @@ async function addOrUpdateProduct() {
   document.getElementById("catNama").value = "";
   document.getElementById("catHarga").value = "";
   document.getElementById("catIkon").value = "🍩";
-  window._catGambarDraft = ""; window._catGambarCleared = false;
+  window._catGambarDraft = ""; window._catGambarCleared = false; window._catGambarZoom = 1;
   renderCatGambarPreview(); renderCatIkonGrid();
   initFormState();
   renderProductGrid();
@@ -1726,7 +1925,7 @@ async function addOrUpdateProduct() {
 }
 
 async function removeProduct(kod) {
-  const pin = prompt("Masukkan PIN Admin untuk padam produk:");
+  const pin = await showPinModal({ title: "PIN Admin", message: "Masukkan PIN Admin untuk padam produk:" });
   if (!pin) return;
   try {
     const res = await fetch(state.gasUrl, {
@@ -1983,7 +2182,7 @@ async function saveGajiRecord() {
 }
 
 async function deleteGajiRecord(id) {
-  const pin = prompt("Masukkan PIN Admin (Lalai: 1234) untuk memadam rekod gaji ini:");
+  const pin = await showPinModal({ title: "PIN Admin", message: "Masukkan PIN Admin (Lalai: 1234) untuk memadam rekod gaji ini:" });
   if (!pin) return;
   try {
     const res = await fetch(state.gasUrl, {
@@ -2317,10 +2516,11 @@ function renderPosGrid() {
   if (!list.length) { grid.innerHTML = '<div class="col-span-full glass-3d p-6 text-center text-xs font-bold subtext">Tiada produk dijumpai. Semak ejaan atau tambah produk dalam Katalog.</div>'; return; }
   grid.innerHTML = list.map(function (c) {
     var qty = posCart[c.kategori] || 0;
-    return '<button type="button" onclick="addToPosCart(\'' + encodeURIComponent(c.kategori) + '\')" class="pos-product-btn glass-3d tilt-card p-3 flex flex-col justify-between gap-1 text-left">'
-      + '<span class="tilt-pop">' + productVisual(c, "w-11 h-11 text-2xl") + '</span>'
-      + '<span class="font-extrabold text-[13px] leading-tight">' + c.kategori + '</span>'
-      + '<span class="flex items-center justify-between"><span class="font-extrabold text-pink-600 text-sm">RM ' + Number(c.harga).toFixed(2) + '</span>' + (qty ? '<span class="px-2 py-0.5 rounded-full bg-pink-500 text-white text-[11px] font-extrabold">× ' + qty + '</span>' : '') + '</span></button>';
+    return '<button type="button" onclick="addToPosCart(\'' + encodeURIComponent(c.kategori) + '\')" class="pos-product-btn glass-3d tilt-card p-3 flex flex-col items-center text-center gap-1.5">'
+      + (qty ? '<span class="pos-qty-badge">× ' + qty + '</span>' : '')
+      + '<span class="pos-visual-stage tilt-pop">' + productVisual(c, "w-[72px] h-[72px] text-5xl") + '</span>'
+      + '<span class="pos-name">' + c.kategori + '</span>'
+      + '<span class="pos-price-pill">RM ' + Number(c.harga).toFixed(2) + '</span></button>';
   }).join("");
 }
 function addToPosCart(safeKey) {
@@ -2361,7 +2561,7 @@ function renderPosCart() {
       var c = (state.catalog || []).find(function (x) { return x.kategori === k; });
       if (!c) return "";
       var amt = posCart[k] * Number(c.harga);
-      return '<div class="glass-pill p-2.5 flex items-center justify-between gap-2"><div class="flex items-center gap-2 min-w-0">' + productVisual(c, "w-9 h-9 text-lg") + '<div class="min-w-0"><div class="font-extrabold text-xs truncate">' + c.kategori + '</div><div class="text-[11px] subtext font-bold">RM ' + Number(c.harga).toFixed(2) + ' × ' + posCart[k] + ' = RM ' + amt.toFixed(2) + '</div></div></div><div class="flex items-center gap-1 shrink-0"><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', -1)" class="btn-chip" style="min-width:44px;min-height:44px">−</button><span class="font-extrabold w-6 text-center">' + posCart[k] + '</span><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', 1)" class="btn-chip" style="min-width:44px;min-height:44px">+</button></div></div>';
+      return '<div class="glass-pill p-2.5 flex items-center justify-between gap-2"><div class="flex items-center gap-2 min-w-0">' + productVisual(c, "w-11 h-11 text-xl") + '<div class="min-w-0"><div class="font-extrabold text-xs truncate">' + c.kategori + '</div><div class="text-[11px] subtext font-bold">RM ' + Number(c.harga).toFixed(2) + ' × ' + posCart[k] + ' = RM ' + amt.toFixed(2) + '</div></div></div><div class="flex items-center gap-1 shrink-0"><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', -1)" class="btn-chip" style="min-width:44px;min-height:44px">−</button><span class="font-extrabold w-6 text-center">' + posCart[k] + '</span><button onclick="posChangeQty(\'' + encodeURIComponent(k) + '\', 1)" class="btn-chip" style="min-width:44px;min-height:44px">+</button></div></div>';
     }).join("");
   }
   var tt = posTotals();
@@ -2483,12 +2683,13 @@ function updatePosOfflineBadge() {
   else if (q.length) { el.textContent = "● Dalam talian — " + q.length + " belum sync"; el.className = "px-2.5 py-1.5 rounded-full bg-amber-500/20 text-amber-700 text-[11px] font-extrabold"; }
   else { el.textContent = "● Dalam talian"; el.className = "px-2.5 py-1.5 rounded-full bg-emerald-500/15 text-emerald-700 text-[11px] font-extrabold"; }
 }
-function checkoutPos() {
+async function checkoutPos() {
   if (!posCashier || !posCashier.nama) { applyCashierGate(); showToast("Masukkan dan sahkan nama cashier dahulu sebelum guna POS.", "error"); return; }
   var tt = posTotals();
   if (!tt.count) return showToast("Bakul kosong. Ketik produk dahulu.", "error");
   if (tt.discPct > 10) {
-    var pin = window.prompt("Diskaun melebihi 10%. Masukkan PIN Guru:");
+    var pin = await showPinModal({ title: "PIN Guru", message: "Diskaun melebihi 10%. Masukkan PIN Guru:" });
+    if (pin === null) return;
     if (pin !== String(posSettings.pinGuru || "1234")) return showToast("PIN Guru tidak sah. Diskaun dibatalkan.", "error");
   }
   var cash = 0;
@@ -2812,8 +3013,8 @@ function startPosCashierSession() {
   showToast("Sesi POS dimulakan — Juruwang: " + nama, "success");
   applyCashierGate();
 }
-function changePosCashier() {
-  if (!window.confirm("Tukar cashier akan menamatkan sesi semasa. Teruskan?")) return;
+async function changePosCashier() {
+  if (!(await showConfirmModal({ title: "Tukar Cashier?", message: "Tukar cashier akan menamatkan sesi semasa. Teruskan?", okText: "Ya, Tukar", cancelText: "Batal", icon: "👤" }))) return;
   endPosCashierSession(true);
   var el = document.getElementById("posCashierName");
   if (el) { el.value = ""; el.focus(); }
