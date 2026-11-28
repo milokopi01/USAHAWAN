@@ -1,7 +1,7 @@
 {
-  "name": "KH Keusahawanan Pro — Sistem POS v8.8",
+  "name": "KH Keusahawanan Pro — Sistem POS v8.9",
   "short_name": "KH POS Pro",
-  "description": "Aplikasi PWA 3D futuristik dengan skrin mula 3D, kad condong sebenar, carta 3D, panel neon dan mod gelap neon untuk rekod stok, jualan harian, audit tunai, gaji pekerja dan analitik, disambung ke Google Sheets.",
+  "description": "Aplikasi PWA 3D futuristik dengan skrin mula 3D, kad condong sebenar, carta 3D, panel neon dan mod gelap neon untuk rekod stok, jualan harian, audit tunai, gaji pekerja dan analitik.",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait-primary",

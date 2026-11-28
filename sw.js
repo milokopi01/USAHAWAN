@@ -1,4 +1,4 @@
-const CACHE_NAME = "kh-keusahawanan-pro-v8-8-pos";
+const CACHE_NAME = "kh-keusahawanan-pro-v8-9-pos";
 const CORE_ASSETS = [
   "./",
   "./index.html",

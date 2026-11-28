@@ -2,12 +2,12 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzg2cyqswanuVEnaG8vlLd3DiS4dXanTX0J_-ZVj8660lMTXdDsQt42ofUf3g88F97E/exec";</script>
+  <script>const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzfndp5CwRNhHRYKrn2ZyEqMpYhM5cyL9qlYMnTZ1cbgz9NzXrIEpqDWlTT5XWegjbg/exec";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#8B5CF6" />
-  <title>KH Keusahawanan Pro — Sistem POS v8.8</title>
+  <title>KH Keusahawanan Pro — Sistem POS v8.9</title>
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -602,7 +602,7 @@
 
       <div class="flex items-center gap-1.5 shrink-0">
         <button onclick="togglePosMode()" id="posModeBtn" title="Tekan untuk buka Kaunter POS" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🛒 POS: ON — Buka</button>
-        <button onclick="syncFromCloud()" title="Segerak Google Sheet" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🔄<span class="hidden sm:inline ml-1">Segerak</span></button>
+        <button onclick="syncFromCloud()" title="Segerak data" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🔄<span class="hidden sm:inline ml-1">Segerak</span></button>
         <button onclick="toggleTheme()" id="themeBtn" title="Tukar Tema Glass" class="glass-pill px-2.5 py-2 min-h-[60px] text-xs font-extrabold active:scale-95 transition">🌙</button>
       </div>
     </div>
@@ -732,7 +732,7 @@
       <div id="formGajiPanel" class="glass-3d p-4 md:p-5 space-y-3 scroll-mt-24">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-extrabold">➕ Rekod Gaji / Bayaran Baharu</h3>
-          <span class="text-[10px] font-bold subtext">Terus ke Google Sheet</span>
+          <span class="text-[10px] font-bold subtext">Disimpan terus</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
@@ -889,7 +889,7 @@
               <span id="catGambarZoomLabel" class="text-xs font-extrabold w-11 text-center shrink-0">1.0×</span>
             </div>
             <input id="catGambarInput" type="file" accept="image/*" class="hidden" onchange="handleCatGambarFile(this)" />
-            <p class="text-[11px] subtext">Gambar dikecilkan automatik (maks 320px) dan disimpan dalam telefon ini sahaja — tidak dihantar ke Google Sheet. Kalau tiada gambar, ikon di sebelah akan dipakai. Guna peluncur Zum untuk besarkan atau kecilkan gambar; zum yang dipilih disimpan bersama gambar dalam telefon ini.</p>
+            <p class="text-[11px] subtext">Gambar dikecilkan automatik (maks 320px) dan disimpan dalam telefon ini sahaja — tidak dimuat naik ke mana-mana. Kalau tiada gambar, ikon di sebelah akan dipakai. Guna peluncur Zum untuk besarkan atau kecilkan gambar; zum yang dipilih disimpan bersama gambar dalam telefon ini.</p>
           </div>
           <div class="glass-pill p-3 space-y-2">
             <div class="text-[10px] font-extrabold uppercase subtext">Pilih Ikon (kalau tiada gambar)</div>
@@ -1024,7 +1024,7 @@
       <div id="posCashierGate" class="glass-3d pos-cashier-gate p-5 md:p-6 space-y-3.5">
         <h3 class="text-base md:text-lg font-extrabold">🔐 Sebelum Guna POS — Sahkan Nama Cashier</h3>
         <p class="text-sm font-bold">Kaunter POS tidak boleh digunakan selagi nama cashier belum dimasukkan dan disahkan betul.</p>
-        <p class="text-xs subtext font-bold">Nama ini akan dicetak pada setiap resit dan direkod ke Google Sheet. Cashier yang bertugas bertanggungjawab atas sebarang ketirisan atau ralat jual beli dalam sesi ini.</p>
+        <p class="text-xs subtext font-bold">Nama ini akan dicetak pada setiap resit dan direkod dalam sistem. Cashier yang bertugas bertanggungjawab atas sebarang ketirisan atau ralat jual beli dalam sesi ini.</p>
         <div>
           <label class="block text-[10px] font-extrabold uppercase subtext mb-1">Nama Cashier (pilih dari senarai pekerja atau taip)</label>
           <input id="posCashierName" list="posCashierList" type="text" placeholder="Contoh: AIMAN" autocomplete="off" oninput="validateCashierGate()" class="pos-cashier-name w-full glass-pill px-3.5 py-2.5 min-h-[60px] font-extrabold outline-none" />
@@ -1491,8 +1491,8 @@ async function saveDailyRecord() {
       body: JSON.stringify({ action: "saveDailySales", tarikh, jualanSebenar, catatan, items })
     });
     const json = await res.json();
-    if (!json.ok) throw new Error(json.error || "Ralat Google Sheet");
-    showToast("✅ Rekod berjaya disimpan ke Google Sheet!", "success");
+    if (!json.ok) throw new Error(json.error || "Ralat sambungan");
+    showToast("✅ Rekod berjaya disimpan!", "success");
     await syncFromCloud(true);
   } catch (err) {
     showToast("⚠️ Gagal ke Cloud (Disimpan di telefon): " + err.message, "error");
@@ -1528,7 +1528,7 @@ async function syncFromCloud(silent = false) {
     initFormState();
     renderProductGrid();
     populateYearFilter();
-    if (!silent) showToast("☁️ Data Google Sheet berjaya disegerakkan!", "success");
+    if (!silent) showToast("☁️ Data berjaya disegerakkan!", "success");
   } catch (err) {
     updateConnBadge(false);
     if (!silent) showToast("❌ Ralat sambungan: " + err.message, "error");
@@ -1539,7 +1539,7 @@ function updateConnBadge(connected) {
   const b = document.getElementById("connBadge");
   if (connected) {
     b.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 text-[10px] md:text-xs font-bold";
-    b.textContent = "● Disambung ke Google Sheet";
+    b.textContent = "● Dalam talian";
   } else {
     b.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 text-[10px] md:text-xs font-bold";
     b.textContent = "● Mod Luar Talian";
@@ -1693,7 +1693,7 @@ async function deleteDay(tarikh) {
     });
     const json = await res.json();
     if (!json.ok) throw new Error(json.error);
-    showToast("🗑️ Rekod dipadam dari Google Sheet.", "success");
+    showToast("🗑️ Rekod dipadam.", "success");
     await syncFromCloud(true);
     renderHistory();
   } catch (err) { showToast("❌ " + err.message, "error"); }
@@ -2165,7 +2165,7 @@ async function saveGajiRecord() {
     if (!state.staffNames.includes(nama)) state.staffNames.push(nama);
     localStorage.setItem("kh_gaji_list", JSON.stringify(state.gajiList));
     localStorage.setItem("kh_staff_names", JSON.stringify(state.staffNames));
-    showToast("✅ Rekod gaji berjaya disimpan ke Google Sheet!", "success");
+    showToast("✅ Rekod gaji berjaya disimpan!", "success");
   } catch (err) {
     state.gajiList.unshift(newRec);
     if (!state.staffNames.includes(nama)) state.staffNames.push(nama);
@@ -2790,7 +2790,7 @@ async function recordPosToSheet() {
     var r2 = await fetch(state.gasUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "saveDailySales", tarikh: tarikh, jualanSebenar: Number(totalExpected.toFixed(2)), catatan: "POS " + posLastReceipt.id + (posLastReceipt.cashier ? " - Juruwang: " + posLastReceipt.cashier : ""), items: items }) });
     var j2 = await r2.json();
     if (!j2.ok) throw new Error(j2.error || "Ralat Sheet");
-    showToast("Resit direkod ke Google Sheet", "success");
+    showToast("Resit direkod", "success");
     await syncFromCloud(true);
   } catch (e) {
     showToast("Gagal ke Cloud, resit disimpan di telefon: " + e.message, "error");
